@@ -8,7 +8,6 @@
 package skein
 {
 import skein.binding.BindingTests;
-import skein.states.StatesTests;
 
 [Suite]
 [RunWith("org.flexunit.runners.Suite")]

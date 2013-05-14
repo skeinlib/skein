@@ -7,8 +7,6 @@
  */
 package skein.binding.core
 {
-import flash.utils.Dictionary;
-
 import skein.core.skein_internal;
 
 use namespace skein_internal;

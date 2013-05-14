@@ -7,9 +7,6 @@
  */
 package skein.binding.operators.comparison
 {
-import org.flexunit.asserts.assertFalse;
-import org.flexunit.asserts.assertTrue;
-
 public class LessOperatorTest
 {
     public function LessOperatorTest()

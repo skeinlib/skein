@@ -7,8 +7,6 @@
  */
 package skein.impl.feathers.components.builder.components
 {
-import skein.impl.feathers.components.builder.components.*;
-
 import feathers.layout.HorizontalLayout;
 
 import skein.components.builder.components.HGroupBuilder;

@@ -9,11 +9,17 @@ package skein
 {
 import flash.utils.Dictionary;
 
-import skein.impl.feathers.states.FeathersStateHolder;
 import skein.states.StateHolder;
 
 public class States
 {
+    private static var factory:Class;
+
+    public static function setFactory(value:Class):void
+    {
+        factory = value;
+    }
+
     private static var holders:Dictionary;
 
     public static function host(host:Object):StateHolder
@@ -21,7 +27,7 @@ public class States
         if (!holders)
             holders = new Dictionary(true);
 
-        return new FeathersStateHolder(host);
+        return new factory(host);
 //        return holders[host] || (holders[host] = new FeathersStateHolder(host));
     }
 }

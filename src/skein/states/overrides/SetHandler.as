@@ -10,9 +10,7 @@ package skein.states.overrides
 import flash.utils.Dictionary;
 
 import skein.core.skein_internal;
-
 import skein.states.core.StateGlobals;
-
 import skein.utils.WeakReference;
 
 use namespace skein_internal;

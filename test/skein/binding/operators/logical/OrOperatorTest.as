@@ -7,8 +7,6 @@
  */
 package skein.binding.operators.logical
 {
-import org.flexunit.asserts.assertEquals;
-
 public class OrOperatorTest
 {
     public function OrOperatorTest()

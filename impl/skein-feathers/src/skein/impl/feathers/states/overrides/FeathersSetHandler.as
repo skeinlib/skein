@@ -8,7 +8,6 @@
 package skein.impl.feathers.states.overrides
 {
 import skein.states.overrides.SetHandler;
-import skein.utils.WeakReference;
 
 public class FeathersSetHandler extends SetHandler
 {

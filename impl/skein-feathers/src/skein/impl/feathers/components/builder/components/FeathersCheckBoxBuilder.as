@@ -7,8 +7,6 @@
  */
 package skein.impl.feathers.components.builder.components
 {
-import skein.impl.feathers.components.builder.components.*;
-
 import feathers.controls.Check;
 
 import skein.components.builder.components.CheckBoxBuilder;

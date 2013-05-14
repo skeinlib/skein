@@ -8,20 +8,19 @@
 package skein
 {
 import skein.components.builder.BuilderFactory;
-import skein.impl.feathers.componenets.builder.FeathersBuilderFactory;
 
 public class Components
 {
-    private static var factory:BuilderFactory;
+    private static var factory:Class;
 
-    public static function setFactory(value:BuilderFactory):void
+    public static function setFactory(value:Class):void
     {
         factory = value;
     }
 
     public static function host(host:Object):BuilderFactory
     {
-        return new FeathersBuilderFactory(host);
+        return new factory(host);
     }
 }
 }

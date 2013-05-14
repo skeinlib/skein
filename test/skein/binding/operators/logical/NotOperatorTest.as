@@ -7,9 +7,6 @@
  */
 package skein.binding.operators.logical
 {
-import org.flexunit.asserts.assertFalse;
-import org.flexunit.asserts.assertTrue;
-
 public class NotOperatorTest
 {
     public function NotOperatorTest()

@@ -10,7 +10,6 @@ package skein.states.core
 import flash.utils.Dictionary;
 
 import skein.core.skein_internal;
-
 import skein.states.State;
 
 use namespace skein_internal;

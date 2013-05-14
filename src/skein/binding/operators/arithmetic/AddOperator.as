@@ -7,7 +7,6 @@
  */
 package skein.binding.operators.arithmetic
 {
-import skein.binding.core.Operator;
 import skein.binding.core.OperatorBase;
 
 public class AddOperator extends OperatorBase
