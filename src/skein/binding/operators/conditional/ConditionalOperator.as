@@ -13,7 +13,7 @@ public class ConditionalOperator extends OperatorBase
 {
     //--------------------------------------------------------------------------
     //
-    //  Overridden methods
+    //  Constructor
     //
     //--------------------------------------------------------------------------
 

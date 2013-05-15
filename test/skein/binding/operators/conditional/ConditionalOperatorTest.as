@@ -7,6 +7,8 @@
  */
 package skein.binding.operators.conditional
 {
+import org.flexunit.asserts.assertEquals;
+
 public class ConditionalOperatorTest
 {
     public function ConditionalOperatorTest()

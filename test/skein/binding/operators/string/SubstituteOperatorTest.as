@@ -7,6 +7,8 @@
  */
 package skein.binding.operators.string
 {
+import org.flexunit.asserts.assertEquals;
+
 public class SubstituteOperatorTest
 {
     public function SubstituteOperatorTest()

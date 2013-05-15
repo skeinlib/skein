@@ -14,6 +14,7 @@ import skein.binding.operators.arithmetic.SubtractOperatorTest;
 import skein.binding.operators.comparison.EqualOperatorTest;
 import skein.binding.operators.comparison.GreaterOperatorTest;
 import skein.binding.operators.conditional.ConditionalOperatorTest;
+import skein.binding.operators.conditional.SwitchOperatorTest;
 import skein.binding.operators.logical.AndOperatorTest;
 import skein.binding.operators.logical.NotOperatorTest;
 import skein.binding.operators.logical.OrOperatorTest;
@@ -30,6 +31,7 @@ public class OperatorsTests
     public var divide:DivideOperatorTest;
 
     public var conditional:ConditionalOperatorTest;
+    public var inspect:SwitchOperatorTest;
 
     public var and:AndOperatorTest;
     public var or:OrOperatorTest;

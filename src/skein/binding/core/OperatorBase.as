@@ -65,9 +65,14 @@ public class OperatorBase implements Operator
 
         for each (var operand:Object in this.operands)
         {
-            if (operand is Source)
-                Source(operand).setCallback(handler);
+            this.setOperand(operand);
         }
+    }
+
+    protected function setOperand(operand:Object):void
+    {
+        if (operand is Source)
+            Source(operand).setCallback(handler);
     }
 
     //--------------------------------------------------------------------------

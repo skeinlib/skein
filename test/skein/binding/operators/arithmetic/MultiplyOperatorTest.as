@@ -7,6 +7,8 @@
  */
 package skein.binding.operators.arithmetic
 {
+import org.flexunit.asserts.assertEquals;
+
 public class MultiplyOperatorTest
 {
     public function MultiplyOperatorTest()

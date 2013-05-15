@@ -13,7 +13,9 @@ import skein.components.builder.components.ButtonBuilder;
 import skein.components.builder.mixins.ComponentMixin;
 import skein.components.builder.mixins.EventDispatcherMixin;
 import skein.components.builder.mixins.LayoutElementMixin;
+import skein.components.builder.mixins.ObjectNature;
 import skein.components.builder.mixins.SpriteMixin;
+import skein.components.builder.mixins.impl.DefaultObjectNature;
 import skein.core.PropertySetter;
 import skein.impl.feathers.components.builder.*;
 import skein.impl.feathers.components.builder.mixins.FeathersComponentNature;
@@ -36,10 +38,11 @@ public class FeathersButtonBuilder extends FeathersBuilder implements ButtonBuil
         this.host = host;
         createInstance();
 
-        this.spriteMixin = new FeathersSpriteNature(this.instance);
-        this.componentMixin = new FeathersComponentNature(this.instance);
-        this.layoutElementMixin = new FeathersLayoutElementNature(this.instance);
-        this.eventDispatcherMixin = new FeathersEventDispatcherNature(this.instance);
+        this.objectNature = new DefaultObjectNature(this.instance);
+        this.spriteNature = new FeathersSpriteNature(this.instance);
+        this.componentNature = new FeathersComponentNature(this.instance);
+        this.layoutElementNature = new FeathersLayoutElementNature(this.instance);
+        this.eventDispatcherNature = new FeathersEventDispatcherNature(this.instance);
     }
 
     //--------------------------------------------------------------------------
@@ -52,13 +55,15 @@ public class FeathersButtonBuilder extends FeathersBuilder implements ButtonBuil
     //  Variables: Mixins
     //-------------------------------------
 
-    private var spriteMixin:SpriteMixin;
+    private var objectNature:ObjectNature;
 
-    private var componentMixin:ComponentMixin;
+    private var spriteNature:SpriteMixin;
 
-    private var layoutElementMixin:LayoutElementMixin;
+    private var componentNature:ComponentMixin;
 
-    private var eventDispatcherMixin:EventDispatcherMixin;
+    private var layoutElementNature:LayoutElementMixin;
+
+    private var eventDispatcherNature:EventDispatcherMixin;
 
     //--------------------------------------------------------------------------
     //
@@ -93,75 +98,86 @@ public class FeathersButtonBuilder extends FeathersBuilder implements ButtonBuil
     //--------------------------------------------------------------------------
 
     //------------------------------------
+    //  Methods: Object
+    //------------------------------------
+
+    public function set(property:String, value:Object):ButtonBuilder
+    {
+        objectNature.set(property, value);
+
+        return this;
+    }
+
+    //------------------------------------
     //  Methods: Sprite
     //------------------------------------
 
     public function x(value:Object):ButtonBuilder
     {
-        spriteMixin.x(value);
+        spriteNature.x(value);
 
         return this;
     }
 
     public function y(value:Object):ButtonBuilder
     {
-        spriteMixin.y(value);
+        spriteNature.y(value);
 
         return this;
     }
 
     public function width(value:Object):ButtonBuilder
     {
-        spriteMixin.width(value);
+        spriteNature.width(value);
 
         return this;
     }
 
     public function height(value:Object):ButtonBuilder
     {
-        spriteMixin.height(value);
+        spriteNature.height(value);
 
         return this;
     }
 
     public function rotation(value:Object, axis:String = null):ButtonBuilder
     {
-        spriteMixin.rotation(value, axis);
+        spriteNature.rotation(value, axis);
 
         return this;
     }
 
     public function visible(value:Object):ButtonBuilder
     {
-        spriteMixin.visible(value);
+        spriteNature.visible(value);
 
         return this;
     }
 
     public function alpha(value:Object):ButtonBuilder
     {
-        spriteMixin.alpha(value);
+        spriteNature.alpha(value);
 
         return this;
     }
 
     public function z(value:Object):ButtonBuilder
     {
-        spriteMixin.z(value);
+        spriteNature.z(value);
 
         return this;
     }
 
     public function scale(value:Object, axis:String = null):ButtonBuilder
     {
-        spriteMixin.scale(value, axis);
+        spriteNature.scale(value, axis);
 
         return this;
     }
 
     public function mask(value:Object):ButtonBuilder
     {
-        spriteMixin.mask(value);
+        spriteNature.mask(value);
 
         return this;
     }
@@ -172,7 +188,7 @@ public class FeathersButtonBuilder extends FeathersBuilder implements ButtonBuil
 
     public function on(type:String, handler:Function, weak:Boolean = true):ButtonBuilder
     {
-        eventDispatcherMixin.on(type, handler, weak);
+        eventDispatcherNature.on(type, handler, weak);
 
         return this;
     }
@@ -183,42 +199,42 @@ public class FeathersButtonBuilder extends FeathersBuilder implements ButtonBuil
 
     public function left(value:Object):ButtonBuilder
     {
-        layoutElementMixin.left(value);
+        layoutElementNature.left(value);
 
         return this;
     }
 
     public function top(value:Object):ButtonBuilder
     {
-        layoutElementMixin.top(value);
+        layoutElementNature.top(value);
 
         return this;
     }
 
     public function right(value:Object):ButtonBuilder
     {
-        layoutElementMixin.right(value);
+        layoutElementNature.right(value);
 
         return this;
     }
 
     public function bottom(value:Object):ButtonBuilder
     {
-        layoutElementMixin.bottom(value);
+        layoutElementNature.bottom(value);
 
         return this;
     }
 
     public function horizontalCenter(value:Object):ButtonBuilder
     {
-        layoutElementMixin.horizontalCenter(value);
+        layoutElementNature.horizontalCenter(value);
 
         return this;
     }
 
     public function verticalCenter(value:Object):ButtonBuilder
     {
-        layoutElementMixin.verticalCenter(value);
+        layoutElementNature.verticalCenter(value);
 
         return this;
     }
@@ -236,14 +252,14 @@ public class FeathersButtonBuilder extends FeathersBuilder implements ButtonBuil
 
     public function styleName(value:Object):ButtonBuilder
     {
-        componentMixin.styleName(value);
+        componentNature.styleName(value);
 
         return this;
     }
 
     public function enabled(value:Object):ButtonBuilder
     {
-        componentMixin.enabled(value);
+        componentNature.enabled(value);
 
         return this;
     }

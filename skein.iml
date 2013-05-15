@@ -17,7 +17,7 @@
             <entry module-name="spicelib-util" build-configuration-name="spicelib-util">
               <dependency linkage="Merged" />
             </entry>
-            <entry library-id="ded069e2-c3b4-4512-8add-42fb54a93dd2">
+            <entry library-id="7725ffcd-bdf6-4688-a499-34aac54d2b58">
               <dependency linkage="Merged" />
             </entry>
           </entries>
@@ -45,13 +45,13 @@
     <orderEntry type="module" module-name="spicelib-reflect" exported="" />
     <orderEntry type="module-library" exported="">
       <library type="flex">
-        <properties id="ded069e2-c3b4-4512-8add-42fb54a93dd2" />
+        <properties id="7725ffcd-bdf6-4688-a499-34aac54d2b58" />
         <CLASSES>
           <root url="file://$MODULE_DIR$/libs" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/../mobitile-tools/libs" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/libs" recursive="false" />
       </library>
     </orderEntry>
   </component>

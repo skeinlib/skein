@@ -57,6 +57,8 @@ public interface ButtonBuilder extends Builder
 
     function enabled(value:Object):ButtonBuilder;
 
+    function set(property:String, value:Object):ButtonBuilder;
+
     //-----------------------------------
     //  Methods: LayoutElement
     //-----------------------------------

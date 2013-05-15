@@ -1,9 +1,10 @@
 package skein.binding
 {
+import skein.binding.core.MethodSource;
 import skein.binding.core.PropertyDestination;
 
-public function getter(site:Object, property:String):PropertyDestination
+public function getter(site:Object, method:String):MethodSource
 {
-    return new PropertyDestination(site, property);
+    return new MethodSource(site, method);
 }
 }
