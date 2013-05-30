@@ -78,5 +78,7 @@ public interface TextInputBuilder extends Builder
     //-----------------------------------
 
     function text(value:Object):TextInputBuilder;
+
+    function multiline(value:Object):TextInputBuilder;
 }
 }

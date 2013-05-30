@@ -247,5 +247,12 @@ public class FeathersTextInputBuilder extends FeathersBuilder implements TextInp
 
         return this;
     }
+
+    public function multiline(value:Object):TextInputBuilder
+    {
+        PropertySetter.set(this.instance.textEditorProperties, "multiline", value);
+
+        return this;
+    }
 }
 }

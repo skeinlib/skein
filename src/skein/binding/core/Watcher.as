@@ -7,12 +7,22 @@
  */
 package skein.binding.core
 {
+import flash.events.EventDispatcher;
+
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Metadata;
 import org.spicefactory.lib.reflect.Property;
 
 public class Watcher
 {
+    //--------------------------------------------------------------------------
+    //
+    //  Class constants
+    //
+    //--------------------------------------------------------------------------
+
+    private static const CHANGE:String = "change";
+
     //--------------------------------------------------------------------------
     //
     //  Class functions
@@ -93,12 +103,12 @@ public class Watcher
         return next ? next.getValue() : this.getHostPropertyValue();
     }
 
-    public function setCallback(callback:Function):void
+    public function setHandler(callback:Function):void
     {
         this.callback = callback;
 
         if (this.next)
-            this.next.setCallback(callback);
+            this.next.setHandler(callback);
     }
 
     //-------------------------------------
@@ -139,7 +149,7 @@ public class Watcher
             {
                 if (this.host.addEventListener.length == 5)
                 {
-                    this.host.addEventListener(this.events[i], handler, false, 0, true);
+                    this.host.addEventListener(this.events[i], handler, false, 0, false);
                 }
                 else
                 {
@@ -163,6 +173,8 @@ public class Watcher
         var info:ClassInfo = ClassInfo.forInstance(host);
 
         var property:Property = info.getProperty(this.name);
+
+        //TODO: Throw warning if property not found.
 
         var map:Object = {};
 
@@ -206,11 +218,6 @@ public class Watcher
                 case 1 : this.callback(event); break;
             }
         }
-    }
-
-    private function nextChangeHandler():void
-    {
-
     }
 }
 }

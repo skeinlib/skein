@@ -9,7 +9,6 @@ package skein.binding.core
 {
 public interface Destination
 {
-    function setSite(site:Object):void;
     function getSite():Object;
 
     function setValue(value:*):void;

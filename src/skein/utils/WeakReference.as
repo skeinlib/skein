@@ -9,7 +9,7 @@ package skein.utils
 {
 import flash.utils.Dictionary;
 
-public class WeakReference
+public class WeakReference implements Reference
 {
     public function WeakReference(value:Object)
     {
@@ -22,7 +22,7 @@ public class WeakReference
 
     private var d:Dictionary;
 
-    public function get value():Object
+    public function get value():*
     {
         for (var value:Object in d)
             return value;

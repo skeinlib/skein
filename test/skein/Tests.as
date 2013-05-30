@@ -8,6 +8,7 @@
 package skein
 {
 import skein.binding.BindingTests;
+import skein.complex.ComplexTests;
 
 [Suite]
 [RunWith("org.flexunit.runners.Suite")]
@@ -15,5 +16,7 @@ public class Tests
 {
 //    public var states:StatesTests;
     public var binding:BindingTests;
+
+    public var complex:ComplexTests;
 }
 }

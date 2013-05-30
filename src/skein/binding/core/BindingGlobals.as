@@ -74,7 +74,6 @@ public class BindingGlobals
                     return;
                 }
             }
-
         }
     }
 
@@ -94,6 +93,7 @@ public class BindingGlobals
         return null;
     }
 
+    [Deprecated]
     skein_internal static function getBindingSite(binding:Binding):Object
     {
         var member:String = binding.getDestinationMember();
@@ -117,6 +117,24 @@ public class BindingGlobals
     skein_internal static function dispose(host:Object):void
     {
          // does nothing yet
+    }
+
+    skein_internal static function getBindings():Array
+    {
+        var result:Array = [];
+
+        if (!bindings)
+            return result;
+
+        for each (var b:Object in bindings)
+        {
+            for each (var installed:Array in b)
+            {
+                result = result.concat(installed);
+            }
+        }
+
+        return result;
     }
 }
 }

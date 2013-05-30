@@ -22,7 +22,7 @@ public class BindingUtil
                 site[property] = watcher.getValue();
             }
 
-            watcher.setCallback(assign);
+            watcher.setHandler(assign);
             assign();
         }
     }
@@ -38,7 +38,7 @@ public class BindingUtil
                 setter(watcher.getValue());
             }
 
-            watcher.setCallback(assign);
+            watcher.setHandler(assign);
             assign();
         }
 

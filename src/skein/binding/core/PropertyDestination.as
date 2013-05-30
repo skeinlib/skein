@@ -7,13 +7,15 @@
  */
 package skein.binding.core
 {
+import skein.utils.WeakReference;
+
 public class PropertyDestination implements Destination
 {
     public function PropertyDestination(site:Object, property:String)
     {
         super();
 
-        this.site = site;
+        this.site = new WeakReference(site);
         this.property = property;
     }
 
@@ -27,7 +29,7 @@ public class PropertyDestination implements Destination
 
     public function getSite():Object
     {
-        return this.site;
+        return this.site.value;
     }
 
     public function getMember():String
@@ -37,7 +39,7 @@ public class PropertyDestination implements Destination
 
     public function setValue(value:*):void
     {
-        this.site[this.property] = value;
+        this.site.value[this.property] = value;
     }
 }
 }

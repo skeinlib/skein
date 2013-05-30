@@ -8,6 +8,9 @@
 package skein.binding.core
 {
 import skein.core.skein_internal;
+import skein.utils.Reference;
+import skein.utils.StrongReference;
+import skein.utils.WeakReference;
 
 use namespace skein_internal;
 
@@ -24,7 +27,7 @@ public class Binding
         super();
 
         this.destination = destination;
-        this.source = source;
+        this.source = new WeakReference(source);
     }
 
     //--------------------------------------------------------------------------
@@ -34,7 +37,7 @@ public class Binding
     //--------------------------------------------------------------------------
 
     private var destination:Destination;
-    private var source:Source;
+    public var source:Reference;
 
     //----------------------------------
     //  Variables: Flags
@@ -56,13 +59,7 @@ public class Binding
     {
         if (!this.enabled) return;
 
-        var site:Object = BindingGlobals.getBindingSite(this);
-
-        this.destination.setSite(site);
-
-        this.destination.setValue(this.source.getValue());
-
-        this.destination.setSite(null);
+        this.destination.setValue(this.source.value.getValue());
     }
 
     public function enable():void
@@ -83,19 +80,29 @@ public class Binding
     {
         var site:Object = this.destination.getSite();
 
-        this.destination.setSite(null);
-
         BindingGlobals.installBinding(this, site);
 
-        this.source.setCallback(this.callback);
+        this.source.value.setCallback(this.callback);
     }
 
     skein_internal function remove():void
     {
-        this.source.setCallback(null);
+        this.source.value.setCallback(null);
         this.source = null;
 
+        this.destination = null;
+
         BindingGlobals.removeBinding(this);
+    }
+
+    skein_internal function getDestination():Destination
+    {
+        return this.destination;
+    }
+
+    skein_internal function getSource():Source
+    {
+        return this.source.value;
     }
 
     skein_internal function getDestinationMember():String
@@ -121,65 +128,5 @@ public class Binding
     {
         this.execute();
     }
-
-
-
-
-//    //----------------------------------
-//    //  Variables: Internal
-//    //----------------------------------
-//
-//    skein_internal var property:String;
-//
-////    skein_internal var source:Source;
-//
-//    //--------------------------------------------------------------------------
-//    //
-//    //  Methods
-//    //
-//    //--------------------------------------------------------------------------
-//
-//    public function execute():void
-//    {
-//        if (!this.enabled)
-//            return;
-//
-//        var site:Object = BindingGlobals.getBindingSite(this);
-//
-//        if (site)
-//        {
-//            site[property] = this.source.getValue();
-//        }
-//    }
-//
-//    public function enable():void
-//    {
-//        this.enabled = true;
-//    }
-//
-//    public function disable():void
-//    {
-//        this.enabled = false;
-//    }
-//
-//    public function remove():void
-//    {
-//        this.source.setCallback(null);
-//        this.source = null;
-//
-//        BindingGlobals.removeBinding(this);
-//    }
-//
-//    public function dispose():void
-//    {
-//        BindingGlobals.removeBinding(this);
-//
-//        source.dispose();
-//    }
-//
-//    private function callback():void
-//    {
-//        this.execute();
-//    }
 }
 }

@@ -7,12 +7,15 @@
  */
 package skein.binding.core
 {
+import skein.utils.WeakReference;
+
 public class MethodDestination implements Destination
 {
     public function MethodDestination(site:Object, setter:String)
     {
         super();
 
+        this.site = new WeakReference(site);
         this.setter = setter;
     }
 
@@ -20,19 +23,14 @@ public class MethodDestination implements Destination
 
     private var site:Object;
 
-    public function setSite(site:Object):void
-    {
-        this.site = site;
-    }
-
     public function getSite():Object
     {
-        return this.site;
+        return this.site.value;
     }
 
     public function setValue(value:*):void
     {
-        this.site[this.setter](value);
+        this.site.value[this.setter](value);
     }
 
     public function getMember():String
