@@ -23,6 +23,7 @@ public class SetProperty extends OverrideBase implements Override
     //
     //--------------------------------------------------------------------------
 
+    // TODO: Enable nested property some like "loginForm.registerButton.layout" it's a requirement for support Feather's layout properties.
     public function SetProperty(property:String, member:String, value:Object)
     {
         super(property, member, value);
