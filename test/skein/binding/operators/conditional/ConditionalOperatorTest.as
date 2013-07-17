@@ -20,6 +20,8 @@ public class ConditionalOperatorTest
     {
         assertEquals(1, new ConditionalOperator(true).ifTrue(1).ifFalse(2).getValue());
         assertEquals(2, new ConditionalOperator(false).ifTrue(1).ifFalse(2).getValue());
+
+        assertEquals("test", new ConditionalOperator(false).ifTrue(null).ifFalse("test").getValue());
     }
 }
 }
