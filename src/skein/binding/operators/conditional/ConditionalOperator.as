@@ -40,7 +40,7 @@ public class ConditionalOperator extends OperatorBase
 
     private function get isAllOperandsDefined():Boolean
     {
-        return this.temp[0] != undefined && this.temp[1] != undefined && this.temp[2] != undefined;
+        return this.temp[0] !== undefined && this.temp[1] !== undefined && this.temp[2] !== undefined;
     }
 
     //--------------------------------------------------------------------------
