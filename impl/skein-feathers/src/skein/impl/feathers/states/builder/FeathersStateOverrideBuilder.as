@@ -50,6 +50,41 @@ public class FeathersStateOverrideBuilder extends DefaultStateOverrideBuilder im
         return this;
     }
 
+    override public function left(value:Object):StateOverrideBuilder
+    {
+        return super.left(value);
+    }
+
+    override public function top(value:Object):StateOverrideBuilder
+    {
+        return super.top(value);
+    }
+
+    override public function right(value:Object):StateOverrideBuilder
+    {
+        return super.right(value);
+    }
+
+    override public function bottom(value:Object):StateOverrideBuilder
+    {
+        return super.bottom(value);
+    }
+
+    override public function horizontalCenter(value:Object):StateOverrideBuilder
+    {
+        return super.horizontalCenter(value);
+    }
+
+    override public function verticalCenter(value:Object):StateOverrideBuilder
+    {
+        return super.verticalCenter(value);
+    }
+
+    override public function includeInLayout(value:Object):StateOverrideBuilder
+    {
+        return super.includeInLayout(value);
+    }
+
     override public function on(event:String, handler:Function):StateOverrideBuilder
     {
         StateGlobals.putHandler(this.state, this.part as String, event, handler);
