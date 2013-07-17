@@ -52,6 +52,24 @@ public interface StateOverrideBuilder
     function disable():StateOverrideBuilder;
 
     //------------------------------------
+    // Methods: Layout Element
+    //------------------------------------
+
+    function left(value:Object):StateOverrideBuilder;
+
+    function top(value:Object):StateOverrideBuilder;
+
+    function right(value:Object):StateOverrideBuilder;
+
+    function bottom(value:Object):StateOverrideBuilder;
+
+    function horizontalCenter(value:Object):StateOverrideBuilder;
+
+    function verticalCenter(value:Object):StateOverrideBuilder;
+
+    function includeInLayout(value:Object):StateOverrideBuilder;
+
+    //------------------------------------
     // Methods: Events
     //------------------------------------
 

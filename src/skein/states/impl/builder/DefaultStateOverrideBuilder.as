@@ -124,6 +124,55 @@ public class DefaultStateOverrideBuilder implements StateOverrideBuilder
         return this;
     }
 
+    public function left(value:Object):StateOverrideBuilder
+    {
+        this.set("left", value);
+
+        return this;
+    }
+
+    public function top(value:Object):StateOverrideBuilder
+    {
+        this.set("top", value);
+
+        return this;
+    }
+
+    public function right(value:Object):StateOverrideBuilder
+    {
+        this.set("right", value);
+
+        return this;
+    }
+
+    public function bottom(value:Object):StateOverrideBuilder
+    {
+        this.set("bottom", value);
+
+        return this;
+    }
+
+    public function horizontalCenter(value:Object):StateOverrideBuilder
+    {
+        this.set("horizontalCenter", value);
+
+        return this;
+    }
+
+    public function verticalCenter(value:Object):StateOverrideBuilder
+    {
+        this.set("verticalCenter", value);
+
+        return null;
+    }
+
+    public function includeInLayout(value:Object):StateOverrideBuilder
+    {
+        this.set("includeInLayout", value);
+
+        return this;
+    }
+
     public function on(event:String, handler:Function):StateOverrideBuilder
     {
         StateGlobals.putHandler(this.state, this.part as String, event, handler);
