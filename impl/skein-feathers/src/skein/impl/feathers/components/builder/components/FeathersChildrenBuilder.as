@@ -16,6 +16,8 @@ import skein.components.builder.components.HGroupBuilder;
 import skein.components.builder.components.ImageBuilder;
 import skein.components.builder.components.LabelBuilder;
 import skein.components.builder.components.ListBuilder;
+import skein.components.builder.components.NumericStepperBuilder;
+import skein.components.builder.components.PickerBuilder;
 import skein.components.builder.components.TextAreaBuilder;
 import skein.components.builder.components.TextInputBuilder;
 import skein.components.builder.components.VGroupBuilder;
@@ -31,7 +33,7 @@ public class FeathersChildrenBuilder implements ChildrenBuilder
         return null;
     }
 
-    public function input():TextInputBuilder
+    public function input(generator:Class = null):TextInputBuilder
     {
         return null;
     }
@@ -87,6 +89,16 @@ public class FeathersChildrenBuilder implements ChildrenBuilder
     }
 
     public function textArea():TextAreaBuilder
+    {
+        return null;
+    }
+
+    public function stepper():NumericStepperBuilder
+    {
+        return null;
+    }
+
+    public function picker(generator:Class = null):PickerBuilder
     {
         return null;
     }

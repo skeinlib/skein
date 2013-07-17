@@ -15,6 +15,8 @@ import skein.components.builder.components.HGroupBuilder;
 import skein.components.builder.components.ImageBuilder;
 import skein.components.builder.components.LabelBuilder;
 import skein.components.builder.components.ListBuilder;
+import skein.components.builder.components.NumericStepperBuilder;
+import skein.components.builder.components.PickerBuilder;
 import skein.components.builder.components.TextAreaBuilder;
 import skein.components.builder.components.TextInputBuilder;
 import skein.components.builder.components.VGroupBuilder;
@@ -27,7 +29,7 @@ public interface BuilderFactory
 
     function label():LabelBuilder;
 
-    function input():TextInputBuilder;
+    function input(generator:Class = null):TextInputBuilder;
 
     function textArea():TextAreaBuilder;
 
@@ -42,5 +44,9 @@ public interface BuilderFactory
     function hgroup():HGroupBuilder;
 
     function image():ImageBuilder;
+
+    function stepper():NumericStepperBuilder;
+
+    function picker(generator:Class = null):PickerBuilder;
 }
 }

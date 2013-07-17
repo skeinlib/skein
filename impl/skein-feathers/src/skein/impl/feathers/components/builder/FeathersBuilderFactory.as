@@ -16,6 +16,8 @@ import skein.components.builder.components.HGroupBuilder;
 import skein.components.builder.components.ImageBuilder;
 import skein.components.builder.components.LabelBuilder;
 import skein.components.builder.components.ListBuilder;
+import skein.components.builder.components.NumericStepperBuilder;
+import skein.components.builder.components.PickerBuilder;
 import skein.components.builder.components.TextAreaBuilder;
 import skein.components.builder.components.TextInputBuilder;
 import skein.components.builder.components.VGroupBuilder;
@@ -27,6 +29,8 @@ import skein.impl.feathers.components.builder.components.FeathersHGroupBuilder;
 import skein.impl.feathers.components.builder.components.FeathersImageBuilder;
 import skein.impl.feathers.components.builder.components.FeathersLabelBuilder;
 import skein.impl.feathers.components.builder.components.FeathersListBuilder;
+import skein.impl.feathers.components.builder.components.FeathersNumericStepperBuilder;
+import skein.impl.feathers.components.builder.components.FeathersPickerBuilder;
 import skein.impl.feathers.components.builder.components.FeathersTextAreaBuilder;
 import skein.impl.feathers.components.builder.components.FeathersTextInputBuilder;
 import skein.impl.feathers.components.builder.components.FeathersVGroupBuilder;
@@ -52,9 +56,9 @@ public class FeathersBuilderFactory implements BuilderFactory
         return new FeathersGroupBuilder(host);
     }
 
-    public function input():TextInputBuilder
+    public function input(generator:Class = null):TextInputBuilder
     {
-        return new FeathersTextInputBuilder(host);
+        return new FeathersTextInputBuilder(host, generator);
     }
 
     public function textArea():TextAreaBuilder
@@ -95,6 +99,16 @@ public class FeathersBuilderFactory implements BuilderFactory
     public function component(factory:Object):ComponentBuilder
     {
         return new FeathersComponentBuilder(host, factory);
+    }
+
+    public function stepper():NumericStepperBuilder
+    {
+        return new FeathersNumericStepperBuilder(host);
+    }
+
+    public function picker(generator:Class = null):PickerBuilder
+    {
+        return new FeathersPickerBuilder(host, generator);
     }
 }
 }
