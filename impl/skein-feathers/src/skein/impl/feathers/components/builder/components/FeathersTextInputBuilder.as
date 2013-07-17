@@ -9,6 +9,8 @@ package skein.impl.feathers.components.builder.components
 {
 import feathers.controls.TextInput;
 
+import skein.components.builder.components.ButtonBuilder;
+
 import skein.components.builder.components.TextInputBuilder;
 import skein.components.builder.mixins.ComponentMixin;
 import skein.components.builder.mixins.EventDispatcherMixin;
@@ -29,12 +31,12 @@ public class FeathersTextInputBuilder extends FeathersBuilder implements TextInp
     //
     //--------------------------------------------------------------------------
 
-    public function FeathersTextInputBuilder(host:Object)
+    public function FeathersTextInputBuilder(host:Object, generator:Class=null)
     {
         super();
 
         this.host = host;
-        this._instance = new TextInput();
+        this._instance = generator ? new generator() : new TextInput();
 
         this.spriteMixin = new FeathersSpriteNature(this.instance);
         this.componentMixin = new FeathersComponentNature(this.instance);
@@ -80,6 +82,17 @@ public class FeathersTextInputBuilder extends FeathersBuilder implements TextInp
     //  Methods
     //
     //--------------------------------------------------------------------------
+
+    //------------------------------------
+    //  Methods: Object
+    //------------------------------------
+
+    public function set(property:String, value:Object):TextInputBuilder
+    {
+        PropertySetter.set(this.instance, property, value);
+
+        return this;
+    }
 
     //------------------------------------
     //  Methods: Sprite
@@ -251,6 +264,57 @@ public class FeathersTextInputBuilder extends FeathersBuilder implements TextInp
     public function multiline(value:Object):TextInputBuilder
     {
         PropertySetter.set(this.instance.textEditorProperties, "multiline", value);
+
+        return this;
+    }
+
+    public function prompt(value:Object):TextInputBuilder
+    {
+        PropertySetter.set(this.instance, "prompt", value);
+
+        return this;
+    }
+
+    public function restrict(value:Object):TextInputBuilder
+    {
+        PropertySetter.set(this.instance.textEditorProperties, "restrict", value);
+
+        return this;
+    }
+
+
+    public function editable(value:Object):TextInputBuilder
+    {
+        PropertySetter.set(this.instance, "isEditable", value);
+
+        return this;
+    }
+
+    public function displayAsPassword(value:Object):TextInputBuilder
+    {
+        PropertySetter.set(this.instance.textEditorProperties, "displayAsPassword", value);
+
+        return this;
+    }
+
+    public function textAlign(value:Object):TextInputBuilder
+    {
+//        PropertySetter.set(this.instance.textEditorProperties, "textAlign", value);
+//        PropertySetter.set(this.instance.promptProperties, "textFormat.@align", value);
+
+        return this;
+    }
+
+    public function softKeyboardType(value:Object):TextInputBuilder
+    {
+        PropertySetter.set(this.instance.textEditorProperties, "softKeyboardType", value);
+
+        return this;
+    }
+
+    public function maxChars(value:Object):TextInputBuilder
+    {
+        PropertySetter.set(this.instance, "maxChars", value);
 
         return this;
     }

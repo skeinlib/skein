@@ -18,6 +18,12 @@ public interface TextInputBuilder extends Builder
     //--------------------------------------------------------------------------
 
     //-----------------------------------
+    //  Methods: Object
+    //-----------------------------------
+
+    function set(property:String, value:Object):TextInputBuilder;
+
+    //-----------------------------------
     //  Methods: EventDispatcher
     //-----------------------------------
 
@@ -79,6 +85,20 @@ public interface TextInputBuilder extends Builder
 
     function text(value:Object):TextInputBuilder;
 
+    function prompt(value:Object):TextInputBuilder;
+
+    function restrict(value:Object):TextInputBuilder;
+
+    function editable(value:Object):TextInputBuilder;
+
     function multiline(value:Object):TextInputBuilder;
+
+    function displayAsPassword(value:Object):TextInputBuilder;
+
+    function textAlign(value:Object):TextInputBuilder;
+
+    function maxChars(value:Object):TextInputBuilder;
+
+    function softKeyboardType(value:Object):TextInputBuilder;
 }
 }
