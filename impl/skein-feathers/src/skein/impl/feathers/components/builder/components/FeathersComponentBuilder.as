@@ -232,6 +232,13 @@ public class FeathersComponentBuilder extends FeathersBuilder implements Compone
         return this;
     }
 
+    public function includeInLayout(value:Object):ComponentBuilder
+    {
+        layoutElementMixin.includeInLayout(value);
+
+        return this;
+    }
+
     //-----------------------------------
     //  Methods: Component
     //-----------------------------------

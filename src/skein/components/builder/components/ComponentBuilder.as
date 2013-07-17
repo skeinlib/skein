@@ -63,6 +63,8 @@ public interface ComponentBuilder extends Builder
 
     function verticalCenter(value:Object):ComponentBuilder;
 
+    function includeInLayout(value:Object):ComponentBuilder;
+
     //-----------------------------------
     //  Methods: Component
     //-----------------------------------
