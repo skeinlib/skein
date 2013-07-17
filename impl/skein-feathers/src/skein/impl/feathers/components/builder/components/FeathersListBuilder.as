@@ -23,6 +23,12 @@ import skein.impl.feathers.components.builder.mixins.FeathersSpriteNature;
 
 public class FeathersListBuilder extends FeathersBuilder implements ListBuilder
 {
+    //--------------------------------------------------------------------------
+    //
+    //  Constructor
+    //
+    //--------------------------------------------------------------------------
+
     public function FeathersListBuilder(host:Object, generator:Class=null)
     {
         super();
@@ -270,6 +276,7 @@ public class FeathersListBuilder extends FeathersBuilder implements ListBuilder
         return this;
     }
 
+    // TODO: Consider support for binding
     public function renderer(value:Object):ListBuilder
     {
         if (value is Function)
