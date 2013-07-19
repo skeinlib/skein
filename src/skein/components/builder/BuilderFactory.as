@@ -25,7 +25,7 @@ public interface BuilderFactory
 {
     function component(factory:Object):ComponentBuilder;
 
-    function button():ButtonBuilder;
+    function button(generator:Class=null):ButtonBuilder;
 
     function label():LabelBuilder;
 

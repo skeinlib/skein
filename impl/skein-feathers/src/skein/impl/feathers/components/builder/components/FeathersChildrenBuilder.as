@@ -28,7 +28,7 @@ public class FeathersChildrenBuilder implements ChildrenBuilder
     {
     }
 
-    public function button():ButtonBuilder
+    public function button(generator:Class = null):ButtonBuilder
     {
         return null;
     }

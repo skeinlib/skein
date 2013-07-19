@@ -31,12 +31,13 @@ public class FeathersButtonBuilder extends FeathersBuilder implements ButtonBuil
     //
     //--------------------------------------------------------------------------
 
-    public function FeathersButtonBuilder(host:Object)
+    public function FeathersButtonBuilder(host:Object, generator:Class=null)
     {
         super();
 
         this.host = host;
-        createInstance();
+
+        this._instance = generator ? new generator() : new Button();
 
         this.objectNature = new DefaultObjectNature(this.instance);
         this.spriteNature = new FeathersSpriteNature(this.instance);
@@ -85,11 +86,6 @@ public class FeathersButtonBuilder extends FeathersBuilder implements ButtonBuil
     //  Overridden methods
     //
     //--------------------------------------------------------------------------
-
-    override protected function createInstance():void
-    {
-        this._instance =  new Button();
-    }
 
     //--------------------------------------------------------------------------
     //

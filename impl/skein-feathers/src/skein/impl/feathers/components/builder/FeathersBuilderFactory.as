@@ -46,9 +46,9 @@ public class FeathersBuilderFactory implements BuilderFactory
 
     private var host:Object;
 
-    public function button():ButtonBuilder
+    public function button(generator:Class=null):ButtonBuilder
     {
-        return new FeathersButtonBuilder(host);
+        return new FeathersButtonBuilder(host, generator);
     }
 
     public function group():GroupBuilder
