@@ -19,7 +19,7 @@ public class SubscriberGroup
         super();
     }
 
-    public var subscribers:Array;
+    public var subscribers:Array = [];
 
     public function init():void
     {

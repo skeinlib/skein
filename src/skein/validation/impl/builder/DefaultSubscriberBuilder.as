@@ -22,6 +22,8 @@ public class DefaultSubscriberBuilder implements SubscriberBuilder
         this.parent = parent;
         this.group = group;
         this.subscriber = new Subscriber();
+
+        this.group.subscribers.push(this.subscriber);
     }
 
     private var parent:DefaultSubscriberGroupBuilder;
