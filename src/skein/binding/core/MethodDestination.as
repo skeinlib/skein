@@ -35,7 +35,7 @@ public class MethodDestination implements Destination
 
     public function getMember():String
     {
-        return "";
+        return setter;
     }
 }
 }

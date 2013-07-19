@@ -41,15 +41,15 @@ public class BindingGlobals
 
         var installed:Array = bindings[site][member] || (bindings[site][member] = []);
 
-        for each (var b:Binding in installed)
-        {
-            if (b.isEnabled())
-            {
-                trace("Warning: Binding has been forcibly disabled, site='"+ site +"', member='"+ member +"'");
-
-                b.disable();
-            }
-        }
+//        for each (var b:Binding in installed)
+//        {
+//            if (b.isEnabled())
+//            {
+//                trace("Warning: Binding has been forcibly disabled, site='"+ site +"', member='"+ member +"'");
+//
+//                b.disable();
+//            }
+//        }
 
         installed.push(binding);
     }
