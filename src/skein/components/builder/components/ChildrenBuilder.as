@@ -10,8 +10,8 @@ package skein.components.builder.components
 import skein.components.builder.Builder;
 import skein.components.builder.BuilderFactory;
 
-public interface ChildrenBuilder extends BuilderFactory, Builder
+public interface ChildrenBuilder
 {
-
+    function build():GroupBuilder;
 }
 }

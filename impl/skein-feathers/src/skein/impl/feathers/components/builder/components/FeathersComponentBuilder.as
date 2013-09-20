@@ -89,7 +89,7 @@ public class FeathersComponentBuilder extends FeathersBuilder implements Compone
     //
     //--------------------------------------------------------------------------
 
-    override protected function createInstance():void
+    override protected function createInstance(generator:Class = null):void
     {
         if (factory is Class)
             this._instance = new factory();

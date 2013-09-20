@@ -79,6 +79,8 @@ public interface GroupBuilder extends Builder
 
     function contains(...elements):GroupBuilder;
 
+    function children():ChildrenBuilder;
+
     //-----------------------------------
     //  Methods: Extra
     //-----------------------------------

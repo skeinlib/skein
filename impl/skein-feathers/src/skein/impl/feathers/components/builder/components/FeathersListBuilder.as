@@ -82,6 +82,17 @@ public class FeathersListBuilder extends FeathersBuilder implements ListBuilder
     //--------------------------------------------------------------------------
 
     //------------------------------------
+    //  Methods: Object
+    //------------------------------------
+
+    public function set(property:String, value:Object):ListBuilder
+    {
+        PropertySetter.set(instance, property, value);
+
+        return this;
+    }
+
+    //------------------------------------
     //  Methods: Sprite
     //------------------------------------
 

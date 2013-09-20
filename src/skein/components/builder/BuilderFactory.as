@@ -18,6 +18,7 @@ import skein.components.builder.components.ListBuilder;
 import skein.components.builder.components.NumericStepperBuilder;
 import skein.components.builder.components.PickerBuilder;
 import skein.components.builder.components.TextAreaBuilder;
+import skein.components.builder.components.TextBuilder;
 import skein.components.builder.components.TextInputBuilder;
 import skein.components.builder.components.VGroupBuilder;
 
@@ -33,15 +34,17 @@ public interface BuilderFactory
 
     function textArea():TextAreaBuilder;
 
+    function text(generator:Class = null):TextBuilder;
+
     function list(generator:Class=null):ListBuilder;
 
     function check():CheckBoxBuilder;
 
-    function group():GroupBuilder;
+    function group(generator:Class = null):GroupBuilder;
 
-    function vgroup():VGroupBuilder;
+    function vgroup(generator:Class = null):VGroupBuilder;
 
-    function hgroup():HGroupBuilder;
+    function hgroup(generator:Class = null):HGroupBuilder;
 
     function image():ImageBuilder;
 

@@ -13,16 +13,16 @@ import skein.components.builder.components.HGroupBuilder;
 
 public class FeathersHGroupBuilder extends FeathersGroupBuilder implements HGroupBuilder
 {
-    public function FeathersHGroupBuilder(host:Object)
+    public function FeathersHGroupBuilder(host:Object, generator:Class = null)
     {
-        super(host);
+        super(host, generator);
     }
 
-    override protected function createInstance():void
+    override protected function createInstance(generator:Class = null):void
     {
-        super.createInstance();
+        super.createInstance(generator);
 
-        this.instance.layout = new HorizontalLayout();
+        Object(instance).layout = new HorizontalLayout();
     }
 }
 }

@@ -31,8 +31,8 @@ public class FeathersBuilder implements Builder
     {
         if (this.instanceId)
         {
-            if (this.host && this.host.hasOwnProperty(this.instanceId.toString()))
-                this.host[this.instanceId] = _instance;
+            if (host && Object(host).hasOwnProperty(this.instanceId.toString()))
+                host[this.instanceId] = _instance;
         }
 
         return _instance;
@@ -48,7 +48,7 @@ public class FeathersBuilder implements Builder
         return this.build();
     }
 
-    protected function createInstance():void
+    protected function createInstance(generator:Class = null):void
     {
 
     }

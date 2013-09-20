@@ -81,7 +81,7 @@ public class FeathersTextAreaBuilder extends FeathersBuilder implements TextArea
     //
     //--------------------------------------------------------------------------
 
-    override protected function createInstance():void
+    override protected function createInstance(generator:Class = null):void
     {
         this._instance =  new TextArea();
     }

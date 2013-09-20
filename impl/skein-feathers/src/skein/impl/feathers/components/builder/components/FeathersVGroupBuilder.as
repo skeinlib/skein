@@ -13,16 +13,16 @@ import skein.components.builder.components.VGroupBuilder;
 
 public class FeathersVGroupBuilder extends FeathersGroupBuilder implements VGroupBuilder
 {
-    public function FeathersVGroupBuilder(host:Object)
+    public function FeathersVGroupBuilder(host:Object, generator:Class = null)
     {
-        super(host);
+        super(host, generator);
     }
 
-    override protected function createInstance():void
+    override protected function createInstance(generator:Class = null):void
     {
-        super.createInstance();
+        super.createInstance(generator);
 
-        this.instance.layout = new VerticalLayout();
+        Object(instance).layout = new VerticalLayout();
     }
 }
 }

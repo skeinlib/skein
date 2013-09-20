@@ -19,6 +19,7 @@ import skein.components.builder.components.ListBuilder;
 import skein.components.builder.components.NumericStepperBuilder;
 import skein.components.builder.components.PickerBuilder;
 import skein.components.builder.components.TextAreaBuilder;
+import skein.components.builder.components.TextBuilder;
 import skein.components.builder.components.TextInputBuilder;
 import skein.components.builder.components.VGroupBuilder;
 import skein.impl.feathers.components.builder.components.FeathersButtonBuilder;
@@ -32,6 +33,7 @@ import skein.impl.feathers.components.builder.components.FeathersListBuilder;
 import skein.impl.feathers.components.builder.components.FeathersNumericStepperBuilder;
 import skein.impl.feathers.components.builder.components.FeathersPickerBuilder;
 import skein.impl.feathers.components.builder.components.FeathersTextAreaBuilder;
+import skein.impl.feathers.components.builder.components.FeathersTextBuilder;
 import skein.impl.feathers.components.builder.components.FeathersTextInputBuilder;
 import skein.impl.feathers.components.builder.components.FeathersVGroupBuilder;
 
@@ -51,9 +53,14 @@ public class FeathersBuilderFactory implements BuilderFactory
         return new FeathersButtonBuilder(host, generator);
     }
 
-    public function group():GroupBuilder
+    public function group(generator:Class = null):GroupBuilder
     {
-        return new FeathersGroupBuilder(host);
+        return new FeathersGroupBuilder(host, generator);
+    }
+
+    public function text(generator:Class = null):TextBuilder
+    {
+        return new FeathersTextBuilder(host, generator);
     }
 
     public function input(generator:Class = null):TextInputBuilder
@@ -66,14 +73,14 @@ public class FeathersBuilderFactory implements BuilderFactory
         return new FeathersTextAreaBuilder(host);
     }
 
-    public function vgroup():VGroupBuilder
+    public function vgroup(generator:Class = null):VGroupBuilder
     {
-        return new FeathersVGroupBuilder(host);
+        return new FeathersVGroupBuilder(host, generator);
     }
 
-    public function hgroup():HGroupBuilder
+    public function hgroup(generator:Class = null):HGroupBuilder
     {
-        return new FeathersHGroupBuilder(host);
+        return new FeathersHGroupBuilder(host, generator);
     }
 
     public function check():CheckBoxBuilder

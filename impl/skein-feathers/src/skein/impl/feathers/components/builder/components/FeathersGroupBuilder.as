@@ -8,9 +8,11 @@
 package skein.impl.feathers.components.builder.components
 {
 import feathers.controls.ScrollContainer;
+import feathers.core.FeathersControl;
 import feathers.layout.AnchorLayout;
 import feathers.layout.VerticalLayout;
 
+import skein.components.builder.components.ChildrenBuilder;
 import skein.components.builder.components.GroupBuilder;
 import skein.components.builder.mixins.ComponentMixin;
 import skein.components.builder.mixins.ElementContainerMixin;
@@ -28,6 +30,9 @@ import skein.impl.feathers.components.builder.mixins.FeathersEventDispatcherNatu
 import skein.impl.feathers.components.builder.mixins.FeathersLayoutElementNature;
 import skein.impl.feathers.components.builder.mixins.FeathersSpriteNature;
 
+import starling.display.DisplayObjectContainer;
+import starling.display.Sprite;
+
 use namespace skein_internal;
 
 public class FeathersGroupBuilder extends FeathersBuilder implements GroupBuilder
@@ -38,7 +43,7 @@ public class FeathersGroupBuilder extends FeathersBuilder implements GroupBuilde
     //
     //--------------------------------------------------------------------------
 
-    public function FeathersGroupBuilder(host:Object)
+    public function FeathersGroupBuilder(host:Object, generator:Class = null)
     {
         super();
 
@@ -46,9 +51,9 @@ public class FeathersGroupBuilder extends FeathersBuilder implements GroupBuilde
 
         new VerticalLayout().hasOwnProperty("gap");
 
-        this.createInstance();
+        this.createInstance(generator);
 
-        this.spriteMixin = new FeathersSpriteNature(this.instance);
+        this.spriteMixin = new FeathersSpriteNature(this.instance as Sprite);
         this.componentMixin = new FeathersComponentNature(this.instance);
         this.layoutElementMixin = new FeathersLayoutElementNature(this.instance);
         this.eventDispatcherMixin = new FeathersEventDispatcherNature(this.instance);
@@ -85,9 +90,9 @@ public class FeathersGroupBuilder extends FeathersBuilder implements GroupBuilde
     //  instance
     //-------------------------------------
 
-    protected function get instance():ScrollContainer
+    protected function get instance():FeathersControl
     {
-        return _instance as ScrollContainer;
+        return _instance as FeathersControl;
     }
 
     //--------------------------------------------------------------------------
@@ -96,10 +101,10 @@ public class FeathersGroupBuilder extends FeathersBuilder implements GroupBuilde
     //
     //--------------------------------------------------------------------------
 
-    override protected function createInstance():void
+    override protected function createInstance(generator:Class = null):void
     {
-        this._instance = new ScrollContainer();
-        this.instance.layout = new AnchorLayout();
+        this._instance = generator ? new generator() : new ScrollContainer();
+        Object(this.instance).layout = new AnchorLayout();
     }
 
     //--------------------------------------------------------------------------
@@ -265,7 +270,7 @@ public class FeathersGroupBuilder extends FeathersBuilder implements GroupBuilde
     }
 
     //-----------------------------------
-    //  Methods: Group
+    //  Methods: ElementContainer
     //-----------------------------------
 
     public function contains(...elements):GroupBuilder
@@ -274,6 +279,15 @@ public class FeathersGroupBuilder extends FeathersBuilder implements GroupBuilde
 
         return this;
     }
+
+    public function children():ChildrenBuilder
+    {
+        return new FeathersChildrenBuilder(host, this, instance);
+    }
+
+    //-----------------------------------
+    //  Methods: Group
+    //-----------------------------------
 
     public function layout(value:Object):GroupBuilder
     {
@@ -286,8 +300,8 @@ public class FeathersGroupBuilder extends FeathersBuilder implements GroupBuilde
 
     public function gap(value:Object):GroupBuilder
     {
-        if (this.instance.layout && "gap" in this.instance.layout)
-            PropertySetter.set(this.instance.layout, "gap", value);
+        if (Object(instance).layout && "gap" in Object(instance).layout)
+            PropertySetter.set(Object(instance).layout, "gap", value);
 
         return this;
     }
@@ -315,48 +329,48 @@ public class FeathersGroupBuilder extends FeathersBuilder implements GroupBuilde
 
     public function paddingLeft(value:Object):GroupBuilder
     {
-        if (this.instance.layout && "paddingLeft" in this.instance.layout)
-            PropertySetter.set(this.instance.layout, "paddingLeft", value);
+        if (Object(instance).layout && "paddingLeft" in Object(instance).layout)
+            PropertySetter.set(Object(instance).layout, "paddingLeft", value);
 
         return this;
     }
 
     public function paddingTop(value:Object):GroupBuilder
     {
-        if (this.instance.layout && "paddingTop" in this.instance.layout)
-            PropertySetter.set(this.instance.layout, "paddingTop", value);
+        if (Object(instance).layout && "paddingTop" in Object(instance).layout)
+            PropertySetter.set(Object(instance).layout, "paddingTop", value);
 
         return this;
     }
 
     public function paddingRight(value:Object):GroupBuilder
     {
-        if (this.instance.layout && "paddingRight" in this.instance.layout)
-            PropertySetter.set(this.instance.layout, "paddingRight", value);
+        if (Object(instance).layout && "paddingRight" in Object(instance).layout)
+            PropertySetter.set(Object(instance).layout, "paddingRight", value);
 
         return this;
     }
 
     public function paddingBottom(value:Object):GroupBuilder
     {
-        if (this.instance.layout && "paddingBottom" in this.instance.layout)
-            PropertySetter.set(this.instance.layout, "paddingBottom", value);
+        if (Object(instance).layout && "paddingBottom" in Object(instance).layout)
+            PropertySetter.set(Object(instance).layout, "paddingBottom", value);
 
         return this;
     }
 
     public function horizontalAlign(value:Object):GroupBuilder
     {
-        if (this.instance.layout && "horizontalAlign" in this.instance.layout)
-            PropertySetter.set(this.instance.layout, "horizontalAlign", value);
+        if (Object(instance).layout && "horizontalAlign" in Object(instance).layout)
+            PropertySetter.set(Object(instance).layout, "horizontalAlign", value);
 
         return this;
     }
 
     public function verticalAlign(value:Object):GroupBuilder
     {
-        if (this.instance.layout && "verticalAlign" in this.instance.layout)
-            PropertySetter.set(this.instance.layout, "verticalAlign", value);
+        if (Object(instance).layout && "verticalAlign" in Object(instance).layout)
+            PropertySetter.set(Object(instance).layout, "verticalAlign", value);
 
         return this;
     }

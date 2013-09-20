@@ -24,7 +24,7 @@ public class FeathersCheckBoxBuilder extends FeathersButtonBuilder implements Ch
     //
     //--------------------------------------------------------------------------
 
-    override protected function createInstance():void
+    override protected function createInstance(generator:Class = null):void
     {
         this._instance = new Check();
     }
