@@ -27,7 +27,7 @@ public class DefaultSubscriberGroupBuilder implements SubscriberGroupBuilder
         return new DefaultSubscriberBuilder(this, this.group);
     }
 
-    public function build():Object
+    public function build():SubscriberGroup
     {
         this.group.init();
 

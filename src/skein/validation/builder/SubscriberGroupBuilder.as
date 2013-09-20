@@ -7,10 +7,12 @@
  */
 package skein.validation.builder
 {
+import skein.validation.SubscriberGroup;
+
 public interface SubscriberGroupBuilder
 {
     function addSubscriber():SubscriberBuilder;
 
-    function build():Object;
+    function build():SubscriberGroup;
 }
 }
