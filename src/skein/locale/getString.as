@@ -1,9 +1,18 @@
 package skein.locale
 {
-import skein.locale.core.ResourceManager;
+import skein.binding.core.MethodSource;
+import skein.binding.core.Source;
+import skein.locale.ResourceManager;
 
-public function getString(bundle:String, key:String, params:Array=null):Object
+public function getString(bundle:String, key:String, params:Array = null):Source
 {
-    return ResourceManager.instance.getString(bundle, key, params);
+    params ||= [];
+
+    params.unshift(key);
+    params.unshift(bundle);
+
+    return new MethodSource(ResourceManager.instance, "getString()", params);
+
+//    return ResourceManager.instance.getString(bundle, key, params);
 }
 }
