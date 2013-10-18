@@ -7,19 +7,18 @@
  */
 package skein.core
 {
-import skein.binding.core.BindingContext;
-import skein.binding.core.PropertyDestination;
-import skein.binding.core.Source;
+import flash.utils.getDefinitionByName;
 
 public class PropertySetter
 {
     public static function set(site:Object, property:String, value:Object):void
     {
-        if (value is Source)
-        {
-            var ctx:BindingContext = new BindingContext();
+        var SourceClass:Class = getDefinitionByName("skein.binding.core::Source") as Class;
+        var BindingContextClass:Class = getDefinitionByName("skein.binding.core::BindingContext") as Class;
 
-            ctx.bind(Source(value), new PropertyDestination(site, property));
+        if (SourceClass && BindingContextClass && value is SourceClass)
+        {
+            BindingContextClass["bindProperty"](site, property, value);
         }
         else
         {
