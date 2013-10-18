@@ -10,7 +10,6 @@ package skein.validation.validators
 import flash.events.EventDispatcher;
 
 import skein.validation.Validator;
-
 import skein.validation.data.ValidationResult;
 import skein.validation.events.ValidationEvent;
 
@@ -33,6 +32,10 @@ public class BasicValidator extends EventDispatcher implements Validator
     //
     //--------------------------------------------------------------------------
 
+    //-------------------------------------
+    //  source
+    //-------------------------------------
+
     private var _source:Object;
 
     public function get source():Object
@@ -49,6 +52,10 @@ public class BasicValidator extends EventDispatcher implements Validator
         addTriggerEvent();
     }
 
+    //-------------------------------------
+    //  property
+    //-------------------------------------
+
     private var _property:String;
 
     public function get property():String
@@ -64,6 +71,10 @@ public class BasicValidator extends EventDispatcher implements Validator
 
         addTriggerEvent();
     }
+
+    //-------------------------------------
+    //  triggerEvent
+    //-------------------------------------
 
     private var _triggerEvent:String = null;
 
@@ -89,6 +100,10 @@ public class BasicValidator extends EventDispatcher implements Validator
         addTriggerEvent();
     }
 
+    //-------------------------------------
+    //  required
+    //-------------------------------------
+
     private var _required:Boolean = true;
 
     public function get required():Boolean
@@ -100,6 +115,26 @@ public class BasicValidator extends EventDispatcher implements Validator
     {
         _required = value;
     }
+
+    //-------------------------------------
+    //  silence
+    //-------------------------------------
+
+    private var _silent:Boolean = false;
+
+    public function get silent():Boolean
+    {
+        return _silent;
+    }
+
+    public function set silent(value:Boolean):void
+    {
+        _silent = value;
+    }
+
+    //-------------------------------------
+    //  requiredFieldError
+    //-------------------------------------
 
     private var _requiredFieldError:String = "This is a required field.";
 
@@ -119,27 +154,30 @@ public class BasicValidator extends EventDispatcher implements Validator
     //
     //--------------------------------------------------------------------------
 
-    public function validate(value:Object=null):void
+    public function validate(value:Object = null, silentValidation:Boolean = false):ValidationEvent
     {
         value = value || getValueFormSource();
+
+        var event:ValidationEvent;
 
         if (required)
         {
             var results:Array = doValidation(value);
 
-            var event:ValidationEvent;
-
             if (results && results.length > 0)
                 event = new ValidationEvent(ValidationEvent.INVALID, results);
             else
                 event = new ValidationEvent(ValidationEvent.VALID);
-
-            dispatchEvent(event);
         }
         else
         {
-            dispatchEvent(new ValidationEvent(ValidationEvent.VALID));
+            event = new ValidationEvent(ValidationEvent.VALID);
         }
+
+        if (!silentValidation || event.type == ValidationEvent.VALID)
+            dispatchEvent(event);
+
+        return event;
     }
 
     protected function doValidation(value:Object):Array
@@ -213,7 +251,7 @@ public class BasicValidator extends EventDispatcher implements Validator
 
     private function triggerHandler(event:Object):void
     {
-        validate();
+        validate(null, _silent);
     }
 
 

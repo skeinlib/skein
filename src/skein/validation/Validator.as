@@ -9,6 +9,8 @@ package skein.validation
 {
 import flash.events.IEventDispatcher;
 
+import skein.validation.events.ValidationEvent;
+
 public interface Validator extends IEventDispatcher
 {
     function get source():Object;
@@ -20,6 +22,9 @@ public interface Validator extends IEventDispatcher
     function get triggerEvent():String;
     function set triggerEvent(value:String):void;
 
-    function validate(value:Object=null):void;
+    function get silent():Boolean;
+    function set silent(value:Boolean):void;
+
+    function validate(value:Object = null, silentValidation:Boolean = false):ValidationEvent;
 }
 }

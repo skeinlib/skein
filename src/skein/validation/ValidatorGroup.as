@@ -33,7 +33,7 @@ public class ValidatorGroup extends EventDispatcher
 
     private var validators:Array = [];
 
-    private var invalid:Array;
+    private var invalid:Array = [];
 
     //--------------------------------------------------------------------------
     //
@@ -54,7 +54,7 @@ public class ValidatorGroup extends EventDispatcher
     //  enabled
     //-------------------------------------
 
-    private var _enabled:Boolean;
+    private var _enabled:Boolean = true;
 
     [Bindable(event="enabledChanged")]
     public function get enabled():Boolean
@@ -83,31 +83,34 @@ public class ValidatorGroup extends EventDispatcher
         }
     }
 
-    public function validate(silent:Boolean):Boolean
+    public function validate(silentValidation:Boolean=false):Boolean
     {
         invalid.length = 0;
 
         if (enabled)
         {
-            doValidate(silent);
+            doValidate(silentValidation);
         }
 
         return isValid;
     }
 
-    private function doValidate(silent:Boolean):void
+    private function doValidate(silentValidation:Boolean):void
     {
         for each (var validator:Validator in validators)
         {
-//            var result:ValidationEvent = ValidatorProxy.validate(validator);
+            var result:ValidationEvent = validator.validate(null, silentValidation);
 
-//            if (result && result.)
+            if (result.results && result.results.length > 0)
+            {
+                addInvalid(validator);
+            }
         }
     }
 
     private function addInvalid(validator:Object):void
     {
-        if (invalid.indexOf(validator) != -1)
+        if (invalid.indexOf(validator) == -1)
         {
             invalid.push(validator);
 

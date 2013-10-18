@@ -11,7 +11,8 @@ import skein.validation.data.ValidationResult;
 
 public class PasswordValidator extends BasicValidator
 {
-    private static const PASSWORD_REGEXP:RegExp = /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})/;
+//    private static const PASSWORD_REGEXP:RegExp = /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})/;
+    private static const PASSWORD_REGEXP:RegExp = /(?!^[0-9]*$)(?!^[a-zA-Z!@#$%^&amp;*()_+=<&gt;?]*$)^([a-zA-Z!@#$%^&amp;*()_+=<&gt;?0-9]{6,15})$/;
 
     public function PasswordValidator()
     {
