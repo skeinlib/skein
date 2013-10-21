@@ -13,6 +13,13 @@ use namespace skein_internal;
 
 public class BindingContext
 {
+    public static function bindProperty(site:Object, property:String, value:Object):void
+    {
+        var ctx:BindingContext = new BindingContext();
+
+        ctx.bind(Source(value), new PropertyDestination(site, property));
+    }
+
     public function bind(source:Source, destination:Destination):Binding
     {
         var binding:Binding = new Binding(source, destination);

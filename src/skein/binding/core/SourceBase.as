@@ -38,5 +38,10 @@ public class SourceBase implements Source
     }
 
     public function dispose():void {}
+
+    public function toString():String
+    {
+        return String(getValue());
+    }
 }
 }

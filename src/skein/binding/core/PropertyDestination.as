@@ -7,6 +7,8 @@
  */
 package skein.binding.core
 {
+import org.hamcrest.core.throws;
+
 import skein.utils.WeakReference;
 
 public class PropertyDestination implements Destination
@@ -39,7 +41,23 @@ public class PropertyDestination implements Destination
 
     public function setValue(value:*):void
     {
-        this.site.value[this.property] = value;
+        try
+        {
+            this.site.value[this.property] = value;
+        }
+        catch(error:Error)
+        {
+            switch (error.errorID)
+            {
+                case 1009 :
+                        // ignore
+                    break;
+
+                default :
+                        throw error;
+                    break;
+            }
+        }
     }
 }
 }

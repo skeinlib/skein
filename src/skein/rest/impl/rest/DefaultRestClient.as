@@ -52,6 +52,8 @@ public class DefaultRestClient implements RestClient
 
     private var request:URLRequest;
 
+    private var responseCode:int;
+
     //
 
     private var removeDefaultHeaders:Boolean = false;
@@ -200,7 +202,7 @@ public class DefaultRestClient implements RestClient
 
             if (resultCallback != null)
             {
-                decodeResponse(loader.data, resultCallback);
+                decodeResult(loader.data, resultCallback);
             }
         }
 
@@ -212,12 +214,22 @@ public class DefaultRestClient implements RestClient
 
             if (errorCallback != null)
             {
-                decodeResponse(loader.data, errorCallback);
+                decodeError(loader.data,
+                    function(info:Object):void
+                    {
+                        if (errorCallback.length == 2)
+                            errorCallback(info, responseCode);
+                        else
+                            errorCallback(info);
+                    }
+                );
             }
         }
 
         function statusHandler(event:HTTPStatusEvent):void
         {
+            responseCode = event.status;
+
             if (statusCallback != null)
                 statusCallback(event.status);
         }
@@ -272,7 +284,7 @@ public class DefaultRestClient implements RestClient
         }
     }
 
-    private function decodeResponse(data:Object, callback:Function):void
+    private function decodeResult(data:Object, callback:Function):void
     {
         if (_decoder)
         {
@@ -282,6 +294,11 @@ public class DefaultRestClient implements RestClient
         {
             Decoder.forType(_contentType)(data, callback);
         }
+    }
+
+    private function decodeError(info:Object, callback:Function):void
+    {
+        Decoder.forType(_contentType)(info, callback);
     }
 
     private function encodeParams():String

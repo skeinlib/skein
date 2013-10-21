@@ -101,7 +101,6 @@ public class OperatorBase implements Operator
     //
     //--------------------------------------------------------------------------
 
-
     public function handler():void
     {
         if (this.callback)

@@ -11,6 +11,7 @@ import flash.events.EventDispatcher;
 
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Metadata;
+import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Property;
 
 public class Watcher
@@ -98,9 +99,9 @@ public class Watcher
     //  Methods: Public API
     //-------------------------------------
 
-    public function getValue():Object
+    public function getValue(params:Array = null):Object
     {
-        return next ? next.getValue() : this.getHostPropertyValue();
+        return next ? next.getValue(params) : this.getHostPropertyValue(params);
     }
 
     public function setHandler(callback:Function):void
@@ -174,9 +175,37 @@ public class Watcher
 
         var property:Property = info.getProperty(this.name);
 
-        //TODO: Throw warning if property not found.
+        result = getEventsFormProperty(info.getProperty(name)) ||
+                 getEventsFormMethod(info.getMethod(name.substring(0, name.indexOf("()"))));
 
-        var map:Object = {};
+        if (result == null)
+        {
+            throw new ReferenceError("Property " + name + " not found on " + info.simpleName);
+        }
+
+//        //TODO: Throw warning if property not found.
+//
+//        var map:Object = {};
+//
+//        for each (var bind:Metadata in property.getMetadata("Bind", true))
+//        {
+//            result.push(bind.getArgument("event"));
+//        }
+//
+//        for each (var bind:Metadata in property.getMetadata("Bindable", true))
+//        {
+//            result.push(bind.getDefaultArgument() || bind.getArgument("event"));
+//        }
+
+        return result;
+    }
+
+    private function getEventsFormProperty(property:Property):Vector.<String>
+    {
+        if (property == null)
+            return null;
+
+        var result:Vector.<String> = new <String>[];
 
         for each (var bind:Metadata in property.getMetadata("Bind", true))
         {
@@ -191,12 +220,44 @@ public class Watcher
         return result;
     }
 
-
-    private function getHostPropertyValue():Object
+    private function getEventsFormMethod(method:Method):Vector.<String>
     {
-        if (!host) return null;
+        if (method == null)
+            return null;
 
-        return getter != null ? getter(host) : host[name];
+        var result:Vector.<String> = new <String>[];
+
+        for each (var bind:Metadata in method.getMetadata("Bind", true))
+        {
+            result.push(bind.getArgument("event"));
+        }
+
+        for each (var bind:Metadata in method.getMetadata("Bindable", true))
+        {
+            result.push(bind.getDefaultArgument() || bind.getArgument("event"));
+        }
+
+        return result;
+    }
+
+    private function getHostPropertyValue(params:Array = null):Object
+    {
+        if (!host)
+            return null;
+
+//        return getter != null ? getter(host) : host[name];
+
+        if (getter != null)
+            return getter(host);
+
+        if (name.indexOf("()") != -1)
+        {
+            var f:Function = host[name.substring(0, name.indexOf("()"))];
+
+            return f.apply(host, params);
+        }
+
+        return host[name];
     }
 
     //--------------------------------------------------------------------------
