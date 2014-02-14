@@ -11,7 +11,7 @@ import flash.utils.Dictionary;
 
 import skein.core.skein_internal;
 import skein.states.core.StateGlobals;
-import skein.utils.WeakReference;
+import skein.core.WeakReference;
 
 use namespace skein_internal;
 

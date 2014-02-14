@@ -13,11 +13,11 @@ public class EmailValidator extends BasicValidator
 {
     //--------------------------------------------------------------------------
     //
-    //  Class constants
+    //  Class constants                                                            [_A-Za-z0-9-\\+]
     //
     //--------------------------------------------------------------------------
 
-    private static const EMAIL_REGEXP:RegExp = /^[a-z][\w.-]+@\w[\w.-]+\.[\w.-]*[a-z][a-z]$/i;
+    private static const EMAIL_REGEXP:RegExp = /^[a-z][\w.-\\+]+@\w[\w.-]+\.[\w.-]*[a-z][a-z]$/i;
 
     //--------------------------------------------------------------------------
     //
