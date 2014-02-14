@@ -99,6 +99,18 @@ public class Queue extends EventDispatcher
     //
     //--------------------------------------------------------------------------
 
+    //-------------------------------------
+    //  Methods: Public API
+    //-------------------------------------
+
+    public function add(...params:Array):void
+    {
+        if (params != null)
+        {
+            tasks = tasks.concat(params);
+        }
+    }
+
     public function start():void
     {
         enterFrameDispatcher = new Sprite();
@@ -114,6 +126,10 @@ public class Queue extends EventDispatcher
         ready = false;
     }
 
+    //-------------------------------------
+    //  Methods: Public API
+    //-------------------------------------
+
     protected function tick():void
     {
         if (busy) return;
@@ -123,6 +139,25 @@ public class Queue extends EventDispatcher
         if (task is Function)
         {
             task.apply(null, [callback]);
+        }
+        else if (task.hasOwnProperty("perform"))
+        {
+            if (task.hasOwnProperty("callback"))
+            {
+                task.callback = callback;
+                task.perform();
+            }
+            else
+            {
+                try
+                {
+                    callback(task.perform());
+                }
+                catch (error:Error)
+                {
+                    callback(error);
+                }
+            }
         }
     }
 

@@ -22,15 +22,19 @@ public class QueueBuilderImpl implements QueueBuilder
 
     private var maxThreadsForFrame:uint;
 
-    public function threads(maxThreadsForFrame:uint):QueueBuilder
+    public function threads(value:uint):QueueBuilder
     {
+        maxThreadsForFrame = value;
+
         return this;
     }
 
     private var maxTimeForFrame:uint;
 
-    public function time(maxTimeForFrame:uint):QueueBuilder
+    public function time(value:uint):QueueBuilder
     {
+        maxTimeForFrame = value;
+
         return this;
     }
 
