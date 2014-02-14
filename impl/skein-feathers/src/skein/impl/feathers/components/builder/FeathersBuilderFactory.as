@@ -98,9 +98,9 @@ public class FeathersBuilderFactory implements BuilderFactory
         return new FeathersImageBuilder(host);
     }
 
-    public function label():LabelBuilder
+    public function label(generator:Class = null):LabelBuilder
     {
-        return new FeathersLabelBuilder(host);
+        return new FeathersLabelBuilder(host, generator);
     }
 
     public function component(factory:Object):ComponentBuilder

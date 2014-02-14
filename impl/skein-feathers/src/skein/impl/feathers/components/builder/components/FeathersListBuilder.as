@@ -308,5 +308,12 @@ public class FeathersListBuilder extends FeathersBuilder implements ListBuilder
 
         return this;
     }
+
+    public function labelFunction(value:Object):ListBuilder
+    {
+        PropertySetter.set(this.instance.itemRendererProperties, "labelFunction", value);
+
+        return this;
+    }
 }
 }

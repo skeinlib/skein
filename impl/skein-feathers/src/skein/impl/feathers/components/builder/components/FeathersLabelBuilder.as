@@ -13,7 +13,9 @@ import skein.components.builder.components.LabelBuilder;
 import skein.components.builder.mixins.ComponentMixin;
 import skein.components.builder.mixins.EventDispatcherMixin;
 import skein.components.builder.mixins.LayoutElementMixin;
+import skein.components.builder.mixins.ObjectNature;
 import skein.components.builder.mixins.SpriteMixin;
+import skein.components.builder.mixins.impl.DefaultObjectNature;
 import skein.core.PropertySetter;
 import skein.impl.feathers.components.builder.*;
 import skein.impl.feathers.components.builder.mixins.FeathersComponentNature;
@@ -23,13 +25,15 @@ import skein.impl.feathers.components.builder.mixins.FeathersSpriteNature;
 
 public class FeathersLabelBuilder extends FeathersBuilder implements LabelBuilder
 {
-    public function FeathersLabelBuilder(host:Object)
+    public function FeathersLabelBuilder(host:Object, generator:Class = null)
     {
         super();
 
         this.host = host;
-        this._instance = new Label();
 
+        this._instance = generator ? new generator() : new Label();
+
+        this.objectNature = new DefaultObjectNature(this.instance);
         this.spriteMixin = new FeathersSpriteNature(this.instance);
         this.componentMixin = new FeathersComponentNature(this.instance);
         this.layoutElementMixin = new FeathersLayoutElementNature(this.instance);
@@ -43,8 +47,10 @@ public class FeathersLabelBuilder extends FeathersBuilder implements LabelBuilde
     //--------------------------------------------------------------------------
 
     //-------------------------------------
-    //  Variables: Mixins
+    //  Variables: Natures
     //-------------------------------------
+
+    private var objectNature:ObjectNature;
 
     private var spriteMixin:SpriteMixin;
 
@@ -149,6 +155,18 @@ public class FeathersLabelBuilder extends FeathersBuilder implements LabelBuilde
         return this;
     }
 
+    //------------------------------------
+    //  Methods: Object
+    //------------------------------------
+
+    public function set(property:String, value:Object):LabelBuilder
+    {
+        objectNature.set(property, value);
+
+        return this;
+    }
+
+
     //-----------------------------------
     //  Methods: EventDispatcher
     //-----------------------------------
@@ -244,6 +262,8 @@ public class FeathersLabelBuilder extends FeathersBuilder implements LabelBuilde
 
     public function textAlign(value:Object):LabelBuilder
     {
+        PropertySetter.set(this.instance.textRendererProperties, "textAlign", value);
+
         return this;
     }
 

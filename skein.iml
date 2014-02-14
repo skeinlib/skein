@@ -23,7 +23,9 @@
           </entries>
           <sdk name="3.6.0" />
         </dependencies>
-        <compiler-options />
+        <compiler-options>
+          <option name="additionalOptions" value="-advanced-telemetry=true" />
+        </compiler-options>
         <packaging-air-desktop />
         <packaging-android />
         <packaging-ios />

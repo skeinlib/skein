@@ -63,6 +63,8 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
 
     private var child:DisplayObject;
 
+    private var popupData:Object;
+
     //------------------------------------------------------------------------
     //
     //	Properties
@@ -120,7 +122,7 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
     //	reuse
     //----------------------------------
 
-    private var _reuse:Boolean;
+    private var _reuse:Boolean = false;
 
     [Bind(event="reuseChanged")]
     public function get reuse():Boolean
@@ -214,11 +216,10 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
 
     private function openPopup():void
     {
-        if (!this.child || !this.reuse)
-            this.child = this.getPopup();
+        if (child == null || !reuse)
+            child = getPopup();
 
-        this.child = this.getPopup();
-        this.child.addEventListener(Event.CLOSE, child_closeHandler);
+        child.addEventListener(Event.CLOSE, child_closeHandler);
 
         dispatchPopupEvent(PopupEvent.OPENING);
 
@@ -233,13 +234,15 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
     {
         if (!this.child) return;
 
-        this.child.removeEventListener(Event.CLOSE, child_closeHandler);
+        this.child.removeEventListener("close", child_closeHandler);
 
         this.dispatchPopupEvent(PopupEvent.CLOSING);
 
         PopUpManager.removePopUp(this.child, !this.reuse);
 
-        this.dispatchPopupEvent(PopupEvent.CLOSED);
+        this.dispatchPopupEvent(PopupEvent.CLOSED, popupData);
+
+        popupData = null;
     }
 
     private function getPopup():DisplayObject
@@ -249,6 +252,12 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
             var PopupClass:Class = _popup as Class;
 
             return new PopupClass();
+        }
+        else if (_popup is Function)
+        {
+            var popupFunction:Function = _popup as Function;
+
+            return popupFunction() as DisplayObject;
         }
         else
         {
@@ -288,12 +297,19 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
                     this.child.y = stage.height - this.child.height;
                     this.child.width = stage.width;
                 break;
+
+            case PopupPosition.FILL :
+                    this.child.x = 0
+                    this.child.y = 0;
+                    this.child.width = stage.width;
+                    this.child.height = stage.height;
+                break;
         }
     }
 
-    private function dispatchPopupEvent(type:String):void
+    private function dispatchPopupEvent(type:String, withData:Object=null):void
     {
-        this.dispatchEvent(new PopupEvent(type));
+        this.dispatchEvent(new PopupEvent(type, false, withData));
     }
 
     //------------------------------------------------------------------------
@@ -302,8 +318,13 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
     //
     //------------------------------------------------------------------------
 
-    private function child_closeHandler(event:Event):void
+    private function child_closeHandler(event:Object):void
     {
+        if (event && event.hasOwnProperty("data"))
+        {
+            popupData = event.data;
+        }
+
         this.open = false;
     }
 }

@@ -52,35 +52,35 @@ public class FeathersPopupWrapperBuilder implements PopupWrapperBuilder
         return this;
     }
 
-    public function popup(value):PopupWrapperBuilder
+    public function popup(value:Object):PopupWrapperBuilder
     {
         PropertySetter.set(wrapper, "popup", value);
 
         return this;
     }
 
-    public function onOpening(handler:Function, weak:Boolean):PopupWrapperBuilder
+    public function onOpening(handler:Function, weak:Boolean = false):PopupWrapperBuilder
     {
         wrapper.addEventListener(PopupEvent.OPENING, handler, false, 0, weak);
 
         return this;
     }
 
-    public function onOpened(handler:Function, weak:Boolean):PopupWrapperBuilder
+    public function onOpened(handler:Function, weak:Boolean = false):PopupWrapperBuilder
     {
         wrapper.addEventListener(PopupEvent.OPENED, handler, false, 0, weak);
 
         return this;
     }
 
-    public function onClosing(handler:Function, weak:Boolean):PopupWrapperBuilder
+    public function onClosing(handler:Function, weak:Boolean = false):PopupWrapperBuilder
     {
         wrapper.addEventListener(PopupEvent.CLOSING, handler, false, 0, weak);
 
         return this;
     }
 
-    public function onClosed(handler:Function, weak:Boolean):PopupWrapperBuilder
+    public function onClosed(handler:Function, weak:Boolean = false):PopupWrapperBuilder
     {
         wrapper.addEventListener(PopupEvent.CLOSED, handler, false, 0, weak);
 

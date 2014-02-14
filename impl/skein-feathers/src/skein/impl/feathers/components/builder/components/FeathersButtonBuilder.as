@@ -37,7 +37,7 @@ public class FeathersButtonBuilder extends FeathersBuilder implements ButtonBuil
 
         this.host = host;
 
-        this._instance = generator ? new generator() : new Button();
+        createInstance(generator);
 
         this.objectNature = new DefaultObjectNature(this.instance);
         this.spriteNature = new FeathersSpriteNature(this.instance);
@@ -53,7 +53,7 @@ public class FeathersButtonBuilder extends FeathersBuilder implements ButtonBuil
     //--------------------------------------------------------------------------
 
     //-------------------------------------
-    //  Variables: Mixins
+    //  Variables: Natures
     //-------------------------------------
 
     private var objectNature:ObjectNature;
@@ -86,6 +86,11 @@ public class FeathersButtonBuilder extends FeathersBuilder implements ButtonBuil
     //  Overridden methods
     //
     //--------------------------------------------------------------------------
+
+    override protected function createInstance(generator:Class = null):void
+    {
+        _instance = generator ? new generator() : new Button()
+    }
 
     //--------------------------------------------------------------------------
     //
