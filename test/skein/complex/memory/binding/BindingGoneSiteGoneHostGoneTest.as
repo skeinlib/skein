@@ -27,7 +27,7 @@ import skein.complex.data.IHost;
 import skein.complex.data.ISite;
 import skein.complex.data.Site;
 import skein.core.skein_internal;
-import skein.utils.WeakReference;
+import skein.core.WeakReference;
 
 use namespace skein_internal;
 

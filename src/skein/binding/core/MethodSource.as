@@ -28,7 +28,14 @@ public class MethodSource extends SourceBase implements Source
 
     override public function getValue():Object
     {
-        var value:* = watcher.getValue(params);
+        var paramValues:Array = [];
+
+        for each (var object:Object in params)
+        {
+            paramValues.push(OperatorBase.getOperandValue(object));
+        }
+
+        var value:* = watcher.getValue(paramValues);
 
         return value;
 

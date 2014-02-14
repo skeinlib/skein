@@ -7,7 +7,7 @@
  */
 package skein.binding.core
 {
-import skein.utils.WeakReference;
+import skein.core.WeakReference;
 
 public class MethodDestination implements Destination
 {

@@ -7,10 +7,16 @@
  */
 package skein.binding.core
 {
+import flash.utils.getTimer;
+
+import mx.utils.StringUtil;
+
+import skein.binding.core.Source;
+
 import skein.core.skein_internal;
-import skein.utils.Reference;
-import skein.utils.StrongReference;
-import skein.utils.WeakReference;
+import skein.core.Reference;
+import skein.core.StrongReference;
+import skein.core.WeakReference;
 
 use namespace skein_internal;
 
@@ -59,7 +65,18 @@ public class Binding
     {
         if (!this.enabled) return;
 
-        this.destination.setValue(this.source.value.getValue());
+        var t:Number = getTimer();
+
+        var value:* = this.source.value.getValue();
+
+        // TODO: next add support for nested binding source, but it could lead a memory leak
+
+        if (value is Source)
+        {
+            Source(value).setCallback(callback);
+        }
+
+        this.destination.setValue(value);
     }
 
     public function enable():void

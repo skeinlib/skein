@@ -9,7 +9,7 @@ package skein.binding.core
 {
 import org.hamcrest.core.throws;
 
-import skein.utils.WeakReference;
+import skein.core.WeakReference;
 
 public class PropertyDestination implements Destination
 {
@@ -47,6 +47,8 @@ public class PropertyDestination implements Destination
         }
         catch(error:Error)
         {
+            trace(error.getStackTrace());
+
             switch (error.errorID)
             {
                 case 1009 :
