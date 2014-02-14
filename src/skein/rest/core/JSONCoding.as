@@ -16,10 +16,20 @@ public class JSONCoding
 
     public static function decode(json:String, callback:Function):void
     {
-        if (json)
-            callback(JSON.parse(json));
-        else
-            callback("");
+        var data:Object;
+
+        try
+        {
+            data = JSON.parse(json);
+        }
+        catch(error:Error)
+        {
+            trace("JSONCoding:", error);
+
+            data = json;
+        }
+
+        callback(data);
     }
 }
 }
