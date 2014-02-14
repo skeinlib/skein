@@ -96,5 +96,7 @@ public interface ListBuilder extends Builder
     function renderer(value:Object):ListBuilder;
 
     function labelField(value:Object):ListBuilder;
+
+    function labelFunction(value:Object):ListBuilder;
 }
 }

@@ -28,7 +28,7 @@ public interface BuilderFactory
 
     function button(generator:Class=null):ButtonBuilder;
 
-    function label():LabelBuilder;
+    function label(generator:Class = null):LabelBuilder;
 
     function input(generator:Class = null):TextInputBuilder;
 
