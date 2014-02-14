@@ -4,12 +4,17 @@ import skein.binding.core.MethodSource;
 import skein.binding.core.Source;
 import skein.locale.ResourceManager;
 
-public function getString(bundle:String, key:String, params:Array = null):Source
+public function getString(bundle:String, key:String, ...rest:Array):Source
 {
-    params ||= [];
+    var params:Array = [bundle, key];
 
-    params.unshift(key);
-    params.unshift(bundle);
+    if (rest && rest.length > 0)
+        params.push(rest);
+
+//    params ||= [];
+//
+//    params.unshift(key);
+//    params.unshift(bundle);
 
     return new MethodSource(ResourceManager.instance, "getString()", params);
 

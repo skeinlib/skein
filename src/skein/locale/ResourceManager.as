@@ -13,6 +13,8 @@ import skein.locale.core.*;
 
 import flash.events.Event;
 
+import skein.utils.StringUtil;
+
 public class ResourceManager extends EventDispatcher
 {
     private static var _instance:ResourceManager;
@@ -35,9 +37,23 @@ public class ResourceManager extends EventDispatcher
     [Bindable(event="change")]
     public function getString(bundle:String, key:String, params:Array=null):String
     {
-        var b:Bundle = findBundle(bundle, key);
+        var bundle:Bundle = findBundle(bundle, key);
 
-        return b ? b.content[key] : null;
+        if (bundle != null)
+        {
+            if (params && params.length > 0)
+            {
+                return StringUtil.substitute(bundle.content[key], params);
+            }
+            else
+            {
+                return bundle.content[key];
+            }
+        }
+        else
+        {
+            return null;
+        }
     }
 
     //--------------------------------------------------------------------------
