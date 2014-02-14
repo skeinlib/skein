@@ -19,15 +19,15 @@ public interface PopupWrapperBuilder
 
     function reuse(value:Object):PopupWrapperBuilder;
 
-    function popup(value):PopupWrapperBuilder;
+    function popup(value:Object):PopupWrapperBuilder;
 
-    function onOpening(handler:Function, weak:Boolean):PopupWrapperBuilder;
+    function onOpening(handler:Function, weak:Boolean = false):PopupWrapperBuilder;
 
-    function onOpened(handler:Function, weak:Boolean):PopupWrapperBuilder;
+    function onOpened(handler:Function, weak:Boolean = false):PopupWrapperBuilder;
 
-    function onClosing(handler:Function, weak:Boolean):PopupWrapperBuilder;
+    function onClosing(handler:Function, weak:Boolean = false):PopupWrapperBuilder;
 
-    function onClosed(handler:Function, weak:Boolean):PopupWrapperBuilder;
+    function onClosed(handler:Function, weak:Boolean = false):PopupWrapperBuilder;
 
     function build():PopupWrapper;
 }

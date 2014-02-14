@@ -19,5 +19,7 @@ public class PopupPosition
 
     public static const BOTTOM:String   = "bottom";
 
+    public static const FILL:String     = "fill";
+
 }
 }

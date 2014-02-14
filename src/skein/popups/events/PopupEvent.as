@@ -21,7 +21,20 @@ public class PopupEvent extends Event
 
     public function PopupEvent(type:String, bubbles:Boolean = false, data:Object = null)
     {
-        super(type, bubbles, data);
+        super(type, bubbles);
+
+        _data = data;
+    }
+
+    private var _data:Object;
+    public function get data():Object
+    {
+        return _data;
+    }
+
+    override public function clone():Event
+    {
+        return new PopupEvent(type, bubbles, data);
     }
 }
 }
