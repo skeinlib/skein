@@ -6,13 +6,13 @@ ActionScript 3.0 fluent API for RESTful services.
 
 ## How To Use
 
-#### Configure 
+#### Configuration
 
     Rest.config()
         .auth("http://example.com/oauth/v2")
         .configure()
         .rest("http://eaxmple.com/rest/api")
-        .accessToken(get(this.tokens, "accessToken"))
-    .configure();
+            .accessToken(get(this.tokens, "accessToken"))
+        .configure();
         
-
+#### Using
