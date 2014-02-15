@@ -37,17 +37,17 @@ public class ResourceManager extends EventDispatcher
     [Bindable(event="change")]
     public function getString(bundle:String, key:String, params:Array=null):String
     {
-        var bundle:Bundle = findBundle(bundle, key);
+        var b:Bundle = findBundle(bundle, key);
 
-        if (bundle != null)
+        if (b != null)
         {
             if (params && params.length > 0)
             {
-                return StringUtil.substitute(bundle.content[key], params);
+                return StringUtil.substitute(b.content[key], params);
             }
             else
             {
-                return bundle.content[key];
+                return b.content[key];
             }
         }
         else
