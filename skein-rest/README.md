@@ -1,12 +1,12 @@
 # skein-rest
 ActionScript 3.0 fluent API for RESTful services.
 
-# Dependencies
+## Dependencies
  * [skein-core](https://github.com/skeinlib/skein/skein-core)
 
-# How To Use
+## How To Use
 
-## Configure 
+#### Configure 
 
     Rest.config()
         .auth("http://example.com/oauth/v2")
