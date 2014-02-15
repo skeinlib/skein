@@ -14,6 +14,7 @@ import flash.events.Event;
 import flash.events.EventDispatcher;
 
 import skein.popups.*;
+import skein.popups.PopupWrapper;
 import skein.popups.enum.PopupPosition;
 import skein.popups.events.PopupEvent;
 

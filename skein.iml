@@ -5,20 +5,41 @@
       <configuration name="skein" pure-as="true" output-type="Library" output-file="skein-1.0.0.swc" output-folder="$MODULE_DIR$/bin">
         <dependencies target-player="11.6">
           <entries>
-            <entry module-name="feathers" build-configuration-name="feathers">
-              <dependency linkage="Merged" />
-            </entry>
-            <entry module-name="starling" build-configuration-name="starling">
-              <dependency linkage="Merged" />
-            </entry>
-            <entry module-name="spicelib-reflect" build-configuration-name="spicelib-reflect">
-              <dependency linkage="Merged" />
-            </entry>
-            <entry module-name="spicelib-util" build-configuration-name="spicelib-util">
-              <dependency linkage="Merged" />
-            </entry>
             <entry library-id="7725ffcd-bdf6-4688-a499-34aac54d2b58">
               <dependency linkage="Merged" />
+            </entry>
+            <entry module-name="skein-binding" build-configuration-name="skein-binding">
+              <dependency linkage="Include" />
+            </entry>
+            <entry module-name="skein-components" build-configuration-name="skein-components">
+              <dependency linkage="Include" />
+            </entry>
+            <entry module-name="skein-async" build-configuration-name="skein-async">
+              <dependency linkage="Include" />
+            </entry>
+            <entry module-name="skein-core" build-configuration-name="skein-core">
+              <dependency linkage="Include" />
+            </entry>
+            <entry module-name="skein-locale" build-configuration-name="skein-locale">
+              <dependency linkage="Include" />
+            </entry>
+            <entry module-name="skein-popups" build-configuration-name="skein-popups">
+              <dependency linkage="Include" />
+            </entry>
+            <entry module-name="skein-rest" build-configuration-name="skein-rest">
+              <dependency linkage="Include" />
+            </entry>
+            <entry module-name="skein-states" build-configuration-name="skein-states">
+              <dependency linkage="Include" />
+            </entry>
+            <entry module-name="skein-tubes" build-configuration-name="skein-tubes">
+              <dependency linkage="Include" />
+            </entry>
+            <entry module-name="skein-utils" build-configuration-name="skein-utils">
+              <dependency linkage="Include" />
+            </entry>
+            <entry module-name="skein-validators" build-configuration-name="skein-validators">
+              <dependency linkage="Include" />
             </entry>
           </entries>
           <sdk name="3.6.0" />
@@ -41,10 +62,6 @@
     </content>
     <orderEntry type="jdk" jdkName="3.6.0" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="starling" exported="" />
-    <orderEntry type="module" module-name="feathers" exported="" />
-    <orderEntry type="module" module-name="spicelib-util" exported="" />
-    <orderEntry type="module" module-name="spicelib-reflect" exported="" />
     <orderEntry type="module-library" exported="">
       <library type="flex">
         <properties id="7725ffcd-bdf6-4688-a499-34aac54d2b58" />
@@ -56,6 +73,17 @@
         <jarDirectory url="file://$MODULE_DIR$/libs" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="skein-binding" exported="" />
+    <orderEntry type="module" module-name="skein-rest" exported="" />
+    <orderEntry type="module" module-name="skein-validators" exported="" />
+    <orderEntry type="module" module-name="skein-states" exported="" />
+    <orderEntry type="module" module-name="skein-async" exported="" />
+    <orderEntry type="module" module-name="skein-components" exported="" />
+    <orderEntry type="module" module-name="skein-utils" exported="" />
+    <orderEntry type="module" module-name="skein-core" exported="" />
+    <orderEntry type="module" module-name="skein-locale" exported="" />
+    <orderEntry type="module" module-name="skein-popups" exported="" />
+    <orderEntry type="module" module-name="skein-tubes" exported="" />
   </component>
 </module>
 
