@@ -27,6 +27,8 @@ public interface RestClient
     function result(handler:Function):RestClient;
     function error(handler:Function):RestClient;
 
+    function header(name:String, handler:Function):RestClient;
+
     function get():void;
     function post(data:Object = null):void;
     function put(data:Object = null):void;

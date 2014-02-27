@@ -16,6 +16,7 @@ import flash.events.SecurityErrorEvent;
 import flash.net.URLLoader;
 import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
+import flash.net.URLRequestHeader;
 import flash.net.URLRequestMethod;
 import flash.net.URLStream;
 import flash.net.URLVariables;
@@ -26,6 +27,7 @@ import skein.rest.core.Config;
 import skein.rest.core.Decoder;
 import skein.rest.core.Encoder;
 import skein.rest.client.RestClient;
+import skein.rest.core.HeaderHandler;
 
 public class DefaultRestClient implements RestClient
 {
@@ -183,6 +185,15 @@ public class DefaultRestClient implements RestClient
         return this;
     }
 
+    private var headerCallbacks:Object = {};
+
+    public function header(name:String, handler:Function):RestClient
+    {
+        headerCallbacks[name] = handler;
+
+        return this;
+    }
+
     public function get():void
     {
         send(URLRequestMethod.GET);
@@ -212,9 +223,12 @@ public class DefaultRestClient implements RestClient
     {
         function resultHandler(event:Event):void
         {
-            loader.removeEventListener(Event.COMPLETE, resultHandler);
-            loader.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
-            loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
+            _loader.addEventListener(Event.COMPLETE, resultHandler);
+            _loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
+            _loader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, responseStatusHandler);
+            _loader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+            _loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+            _loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
 
             if (resultCallback != null)
             {
@@ -224,9 +238,12 @@ public class DefaultRestClient implements RestClient
 
         function errorHandler(event:ErrorEvent):void
         {
-            loader.removeEventListener(Event.COMPLETE, resultHandler);
-            loader.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
-            loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
+            _loader.addEventListener(Event.COMPLETE, resultHandler);
+            _loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
+            _loader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, responseStatusHandler);
+            _loader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+            _loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+            _loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
 
             if (errorCallback != null)
             {
@@ -250,6 +267,20 @@ public class DefaultRestClient implements RestClient
                 statusCallback(event.status);
         }
 
+        function responseStatusHandler(event:HTTPStatusEvent):void
+        {
+            for each (var header:URLRequestHeader in event.responseHeaders)
+            {
+                var callback:Function =
+                    headerCallbacks[header.name] || HeaderHandler.forName(header.name);
+
+                if (callback != null)
+                {
+                    callback.apply(null, [header]);
+                }
+            }
+        }
+
         function progressHandler(event:ProgressEvent):void
         {
             if (progressCallback != null)
@@ -267,6 +298,7 @@ public class DefaultRestClient implements RestClient
             var stream:URLStream = new URLStream();
             stream.addEventListener(Event.COMPLETE, resultHandler);
             stream.addEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
+            stream.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, responseStatusHandler);
             stream.addEventListener(ProgressEvent.PROGRESS, progressHandler);
             stream.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
             stream.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
@@ -277,6 +309,7 @@ public class DefaultRestClient implements RestClient
             var loader:URLLoader = new URLLoader();
             loader.dataFormat = URLLoaderDataFormat.TEXT;
             loader.addEventListener(Event.COMPLETE, resultHandler);
+            loader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, responseStatusHandler)
             loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
             loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
             loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
