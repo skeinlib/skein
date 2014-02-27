@@ -14,6 +14,8 @@ import flash.media.Microphone;
 import flash.media.SoundCodec;
 import flash.media.VideoStreamSettings;
 
+import skein.tubes.enum.CameraPosition;
+
 public class MediaSettingsBase extends EventDispatcher implements MediaSettings
 {
     //--------------------------------------------------------------------------
@@ -47,6 +49,15 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
     public function set isCameraMuted(value:Boolean):void
     {
         _isCameraMuted = value;
+    }
+
+    //--------------------------------------
+    //  isCameraFront
+    //--------------------------------------
+
+    public function get isCameraFront():Boolean
+    {
+        return getCameraPosition() == CameraPosition.FRONT;
     }
 
     //--------------------------------------
@@ -204,6 +215,5 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
     {
 
     }
-
 }
 }

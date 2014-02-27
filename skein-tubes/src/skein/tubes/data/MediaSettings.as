@@ -30,6 +30,8 @@ public interface MediaSettings extends IEventDispatcher
     function setCamera(value:Camera):void;
     function setMicrophone(value:Microphone):void;
 
+    function get isCameraFront():Boolean;
+
     function getCameraPosition():String;
 }
 }
