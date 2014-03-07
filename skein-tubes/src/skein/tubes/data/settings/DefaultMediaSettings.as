@@ -59,7 +59,7 @@ public class DefaultMediaSettings extends MediaSettingsBase
     {
         if (camera)
         {
-            camera.setMode(256, 144, 16, true);
+            camera.setMode(320, 240, 16, true);
             camera.setLoopback(true);
             camera.setKeyFrameInterval(15);
             camera.setQuality(0, 50);
@@ -83,19 +83,24 @@ public class DefaultMediaSettings extends MediaSettingsBase
     {
         if (microphone)
         {
-            if (microphone.codec == SoundCodec.SPEEX)
-            {
-                microphone.codec = SoundCodec.SPEEX;
-                microphone.enableVAD = true;
-                microphone.encodeQuality = 6;
-                microphone.framesPerPacket = 1;
-                microphone.noiseSuppressionLevel = -30; // dB (default -30)
-            }
+            microphone.codec = SoundCodec.PCMU;
+            microphone.setLoopBack(false);
+            microphone.setSilenceLevel(10, 20000);
+            microphone.gain = 60;
 
-            microphone.rate = 8; //kHz (default 8)
-            microphone.setSilenceLevel(0, 2000);
-            microphone.gain = 50.0;
-            microphone.setUseEchoSuppression(true);
+//            if (microphone.codec == SoundCodec.SPEEX)
+//            {
+//                microphone.codec = SoundCodec.SPEEX;
+//                microphone.enableVAD = true;
+//                microphone.encodeQuality = 6;
+//                microphone.framesPerPacket = 1;
+//                microphone.noiseSuppressionLevel = -30; // dB (default -30)
+//            }
+//
+//            microphone.rate = 8; //kHz (default 8)
+//            microphone.setSilenceLevel(0, 2000);
+//            microphone.gain = 50.0;
+//            microphone.setUseEchoSuppression(true);
         }
     }
 }

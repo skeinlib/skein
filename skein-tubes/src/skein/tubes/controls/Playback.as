@@ -87,6 +87,7 @@ public class Playback extends EventDispatcher
 
         dispatchEvent(new Event("streamChanged"));
     }
+
     //--------------------------------------------------------------------------
     //
     //  Methods
@@ -135,6 +136,11 @@ public class Playback extends EventDispatcher
         }
 
         dispatchEvent(new Event(Event.CLOSE));
+    }
+
+    public function streamRefresh():void
+    {
+        dispatchEvent(new Event("streamChanged"));
     }
 }
 }

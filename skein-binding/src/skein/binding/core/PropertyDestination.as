@@ -7,8 +7,6 @@
  */
 package skein.binding.core
 {
-import org.hamcrest.core.throws;
-
 import skein.core.WeakReference;
 
 public class PropertyDestination implements Destination
