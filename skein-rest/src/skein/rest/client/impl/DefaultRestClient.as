@@ -223,12 +223,12 @@ public class DefaultRestClient implements RestClient
     {
         function resultHandler(event:Event):void
         {
-            _loader.addEventListener(Event.COMPLETE, resultHandler);
-            _loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
-            _loader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, responseStatusHandler);
-            _loader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-            _loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
-            _loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
+            _loader.removeEventListener(Event.COMPLETE, resultHandler);
+            _loader.removeEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
+            _loader.removeEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, responseStatusHandler);
+            _loader.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
+            _loader.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+            _loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
 
             if (resultCallback != null)
             {
@@ -238,12 +238,12 @@ public class DefaultRestClient implements RestClient
 
         function errorHandler(event:ErrorEvent):void
         {
-            _loader.addEventListener(Event.COMPLETE, resultHandler);
-            _loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
-            _loader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, responseStatusHandler);
-            _loader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-            _loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
-            _loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
+            _loader.removeEventListener(Event.COMPLETE, resultHandler);
+            _loader.removeEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
+            _loader.removeEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, responseStatusHandler);
+            _loader.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
+            _loader.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+            _loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
 
             if (errorCallback != null)
             {
@@ -368,6 +368,13 @@ public class DefaultRestClient implements RestClient
         if (_decoder)
         {
             _decoder(data, callback);
+        }
+        else if (!data)
+        {
+            if (callback.length == 1)
+                callback(data);
+            else
+                callback();
         }
         else
         {
