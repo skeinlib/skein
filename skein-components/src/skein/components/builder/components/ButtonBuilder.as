@@ -75,6 +75,8 @@ public interface ButtonBuilder extends Builder
 
     function verticalCenter(value:Object):ButtonBuilder;
 
+    function includeInLayout(value:Object):ButtonBuilder;
+
     //-----------------------------------
     //  Methods: Button
     //-----------------------------------

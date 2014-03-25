@@ -244,6 +244,13 @@ public class FeathersGroupBuilder extends FeathersBuilder implements GroupBuilde
         return this;
     }
 
+    public function includeInLayout(value:Object):GroupBuilder
+    {
+        layoutElementMixin.includeInLayout(value);
+
+        return this;
+    }
+
     //-----------------------------------
     //  Methods: Component
     //-----------------------------------

@@ -240,6 +240,13 @@ public class FeathersButtonBuilder extends FeathersBuilder implements ButtonBuil
         return this;
     }
 
+    public function includeInLayout(value:Object):ButtonBuilder
+    {
+        layoutElementNature.includeInLayout(value);
+
+        return this;
+    }
+
     //-----------------------------------
     //  Methods: Component
     //-----------------------------------

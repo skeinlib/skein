@@ -73,6 +73,8 @@ public interface GroupBuilder extends Builder
 
     function verticalCenter(value:Object):GroupBuilder;
 
+    function includeInLayout(value:Object):GroupBuilder;
+
     //-----------------------------------
     //  Methods: ElementContainer
     //-----------------------------------
