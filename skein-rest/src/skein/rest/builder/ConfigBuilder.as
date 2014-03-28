@@ -7,6 +7,12 @@
  */
 package skein.rest.builder
 {
+import skein.core.skein_internal;
+import skein.rest.client.RestClient;
+import skein.rest.core.Config;
+
+use namespace skein_internal;
+
 public class ConfigBuilder
 {
     function ConfigBuilder()
@@ -22,6 +28,13 @@ public class ConfigBuilder
     public function rest(url:String):RestConfigBuilder
     {
         return new RestConfigBuilder(this, url);
+    }
+
+    public function client(implementation:Class):ConfigBuilder
+    {
+        Config.setImplementation(RestClient, implementation);
+
+        return this;
     }
 }
 }

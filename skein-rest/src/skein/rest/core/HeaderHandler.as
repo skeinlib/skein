@@ -23,6 +23,14 @@ public class HeaderHandler
         return handlers.hasOwnProperty(name);
     }
 
+    public static function hasHandlers():Boolean
+    {
+        for (var p:String in handlers)
+            return true;
+
+        return false;
+    }
+
     skein_internal static function register(name:String, handler:Function):void
     {
         handlers[name] = handler;

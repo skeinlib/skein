@@ -23,11 +23,16 @@ import flash.net.URLVariables;
 
 import mx.utils.StringUtil;
 
+import skein.core.skein_internal;
+
 import skein.rest.core.Config;
 import skein.rest.core.Decoder;
 import skein.rest.core.Encoder;
 import skein.rest.client.RestClient;
 import skein.rest.core.HeaderHandler;
+import skein.rest.core.RestClientRegistry;
+
+use namespace skein_internal;
 
 public class DefaultRestClient implements RestClient
 {
@@ -37,11 +42,11 @@ public class DefaultRestClient implements RestClient
     //
     //--------------------------------------------------------------------------
 
-    public function DefaultRestClient(api:String, params:Array)
+    public function DefaultRestClient()
     {
         super();
 
-        _url = Config.sharedInstance().rest + StringUtil.substitute(api, params);
+        trace("DefaultRestClient");
     }
 
     //--------------------------------------------------------------------------
@@ -56,11 +61,20 @@ public class DefaultRestClient implements RestClient
 
     private var request:URLRequest;
 
-    private var responseCode:int;
-
     //
 
     private var removeDefaultHeaders:Boolean = false;
+
+    //--------------------------------------------------------------------------
+    //
+    //  Initialize Methods
+    //
+    //--------------------------------------------------------------------------
+
+    public function init(api:String, params:Array):void
+    {
+        _url = Config.sharedInstance().rest + StringUtil.substitute(api, params);
+    }
 
     //--------------------------------------------------------------------------
     //
@@ -149,7 +163,7 @@ public class DefaultRestClient implements RestClient
         return this;
     }
 
-    private var resultCallback:Function;
+    internal var resultCallback:Function;
 
     public function result(handler:Function):RestClient
     {
@@ -158,7 +172,7 @@ public class DefaultRestClient implements RestClient
         return this;
     }
 
-    private var progressCallback:Function;
+    internal var progressCallback:Function;
 
     public function progress(handler:Function):RestClient
     {
@@ -167,7 +181,7 @@ public class DefaultRestClient implements RestClient
         return this;
     }
 
-    private var statusCallback:Function;
+    internal var statusCallback:Function;
 
     public function status(handler:Function):RestClient
     {
@@ -176,7 +190,7 @@ public class DefaultRestClient implements RestClient
         return this;
     }
 
-    private var errorCallback:Function;
+    internal var errorCallback:Function;
 
     public function error(handler:Function):RestClient
     {
@@ -185,13 +199,21 @@ public class DefaultRestClient implements RestClient
         return this;
     }
 
-    private var headerCallbacks:Object = {};
+    internal var headerCallbacks:Object = {};
 
     public function header(name:String, handler:Function):RestClient
     {
         headerCallbacks[name] = handler;
 
         return this;
+    }
+
+    internal function hasHeaderCallbacks():Boolean
+    {
+        for (var p:String in headerCallbacks)
+            return true;
+
+        return false;
     }
 
     public function get():void
@@ -216,105 +238,19 @@ public class DefaultRestClient implements RestClient
 
     public function download(data:Object = null):void
     {
-        send(URLRequestMethod.GET, data, true);
+        // TODO: Add downloading large files.
     }
 
-    private function send(method:String, data:Object = null, streaming:Boolean = false):void
+    private function send(method:String, data:Object = null):void
     {
-        function resultHandler(event:Event):void
-        {
-            _loader.removeEventListener(Event.COMPLETE, resultHandler);
-            _loader.removeEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
-            _loader.removeEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, responseStatusHandler);
-            _loader.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
-            _loader.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
-            _loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
-
-            if (resultCallback != null)
-            {
-                decodeResult(loader.data, resultCallback);
-            }
-        }
-
-        function errorHandler(event:ErrorEvent):void
-        {
-            _loader.removeEventListener(Event.COMPLETE, resultHandler);
-            _loader.removeEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
-            _loader.removeEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, responseStatusHandler);
-            _loader.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
-            _loader.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
-            _loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
-
-            if (errorCallback != null)
-            {
-                decodeError(loader.data,
-                    function(info:Object):void
-                    {
-                        if (errorCallback.length == 2)
-                            errorCallback(info, responseCode);
-                        else
-                            errorCallback(info);
-                    }
-                );
-            }
-        }
-
-        function statusHandler(event:HTTPStatusEvent):void
-        {
-            responseCode = event.status;
-
-            if (statusCallback != null)
-                statusCallback(event.status);
-        }
-
-        function responseStatusHandler(event:HTTPStatusEvent):void
-        {
-            for each (var header:URLRequestHeader in event.responseHeaders)
-            {
-                var callback:Function =
-                    headerCallbacks[header.name] || HeaderHandler.forName(header.name);
-
-                if (callback != null)
-                {
-                    callback.apply(null, [header]);
-                }
-            }
-        }
-
-        function progressHandler(event:ProgressEvent):void
-        {
-            if (progressCallback != null)
-                progressCallback(event.bytesLoaded, event.bytesTotal);
-        }
-
         var request:URLRequest = new URLRequest(formURL());
         request.method = method;
         request.contentType = _contentType;
 
-        var _loader:Object;
+        loader = loader || new URLLoader();
+        loader.dataFormat = URLLoaderDataFormat.TEXT;
 
-        if (streaming)
-        {
-            var stream:URLStream = new URLStream();
-            stream.addEventListener(Event.COMPLETE, resultHandler);
-            stream.addEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
-            stream.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, responseStatusHandler);
-            stream.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-            stream.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
-            stream.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
-            _loader = stream;
-        }
-        else
-        {
-            var loader:URLLoader = new URLLoader();
-            loader.dataFormat = URLLoaderDataFormat.TEXT;
-            loader.addEventListener(Event.COMPLETE, resultHandler);
-            loader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, responseStatusHandler)
-            loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
-            loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
-            loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
-            _loader = loader;
-        }
+        URLLoaderHandlerFactory.create(this).handle(loader);
 
         if (data != null)
         {
@@ -323,13 +259,13 @@ public class DefaultRestClient implements RestClient
                 {
                     request.data = data;
 
-                    _loader.load(request);
+                    loader.load(request);
                 }
             );
         }
         else
         {
-            _loader.load(request);
+            loader.load(request);
         }
     }
 
@@ -340,9 +276,39 @@ public class DefaultRestClient implements RestClient
 
     //--------------------------------------------------------------------------
     //
-    //
+    //  Internal Methods
     //
     //--------------------------------------------------------------------------
+
+    internal function free():void
+    {
+        if (loader != null)
+        {
+            try
+            {
+                loader.close();
+            }
+            catch(error:Error)
+            {
+                // ignore any error
+            }
+        }
+
+        _headers = null;
+        _params = null;
+        _contentType = "application/json";
+        _accessTokenKey = null;
+        _accessTokenValue = null;
+        _encoder = null;
+        _decoder = null;
+
+        resultCallback = null
+        progressCallback = null;
+        errorCallback = null;
+        headerCallbacks = {};
+
+        RestClientRegistry.free(this);
+    }
 
     private function formURL():String
     {
@@ -363,7 +329,7 @@ public class DefaultRestClient implements RestClient
         }
     }
 
-    private function decodeResult(data:Object, callback:Function):void
+    internal function decodeResult(data:Object, callback:Function):void
     {
         if (_decoder)
         {
@@ -382,7 +348,7 @@ public class DefaultRestClient implements RestClient
         }
     }
 
-    private function decodeError(info:Object, callback:Function):void
+    internal function decodeError(info:Object, callback:Function):void
     {
         Decoder.forType(_contentType)(info, callback);
     }

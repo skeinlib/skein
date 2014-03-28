@@ -9,6 +9,8 @@ package skein.rest.client
 {
 public interface RestClient
 {
+    function init(api:String, params:Array):void;
+
     function addHeader(value:Object):RestClient;
     function headers(value:Array):RestClient;
 

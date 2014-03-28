@@ -9,8 +9,11 @@ package skein.rest.core
 {
 import flash.events.Event;
 import flash.events.EventDispatcher;
+import flash.utils.Dictionary;
 
 import skein.core.skein_internal;
+import skein.rest.client.RestClient;
+import skein.rest.client.impl.DefaultRestClient;
 
 use namespace skein_internal;
 
@@ -34,6 +37,16 @@ public class Config extends EventDispatcher
     skein_internal static function auth(value:String):void
     {
         _auth = value;
+    }
+
+    private static var _implementations:Dictionary = new Dictionary();
+    {
+        _implementations[RestClient] = DefaultRestClient;
+    }
+
+    skein_internal static function setImplementation(contract:Class, implementation:Class):void
+    {
+        _implementations[contract] = implementation;
     }
 
     //--------------------------------------------------------------------------
@@ -123,6 +136,17 @@ public class Config extends EventDispatcher
         if (_accessTokenKey == value) return;
         _accessTokenKey = value;
         dispatchEvent(new Event("accessTokenKeyChanged"));
+    }
+
+    //--------------------------------------------------------------------------
+    //
+    //  Methods
+    //
+    //--------------------------------------------------------------------------
+
+    public function getImplementation(contract:Class):Class
+    {
+        return _implementations[contract];
     }
 }
 }
