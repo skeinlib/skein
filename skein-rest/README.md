@@ -16,18 +16,16 @@ If you pass your acces-token to the `accessToken()` method it will be used for a
         
 ### Usage
 
-Next gets Employee by id:
-
     rest("/employees/{0}", employeeId)
-        .addHeader("Authorization", "basic-auth-string")
-        .contentType("application/xml")
-        .addParam("fullInfo", true)
-        .encoder(employeeEncoder)
-        .result(completeHandler)
-        .error(errorHandler)
+        .addHeader("Authorization", "basic-auth-string") // adds request header
+        .contentType("application/xml") // sets content-type 
+        .addParam("fullInfo", true) // adds URL parameters
+        .decoder(employeeEncoder) // deserialization function
+        .result(resultHandler) // complete handerl
+        .error(errorHandler) // error handler
     .get();
     
-The result URL is `http://exaple.com/rest/api` + `/employees/{employeeId}` + `?fullInfo=true` + `&access_token={acces-token}`
+Note that the result URL for this response will be `http://exaple.com/rest/api` + `/employees/{employeeId}` + `?fullInfo=true` + `&access_token={acces-token}`
 
 #### Request Headers
 
