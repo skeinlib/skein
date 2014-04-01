@@ -4,6 +4,10 @@ ActionScript 3.0 fluent API for RESTful services.
 ## Dependencies
  * [skein-core](https://github.com/skeinlib/skein/skein-core)
 
+### Supported HTTP Methods
+
+Four HTTP methods are supported: `GET`, `POST`, `PUT` and `DELETE` throught corresponded RestClient's metods: `get():void`, `post(data:Object=null):void`, `put(data:Object=null):void` and `del(data:Object=null)`.
+
 ### Configuration
 
     Rest.config()
@@ -13,7 +17,7 @@ ActionScript 3.0 fluent API for RESTful services.
 
 You pass a root URL of the API to the `rest()` function, library stores it so you can omit it for next usage. 
 If you pass your acces-token to the `accessToken()` method it will be used for all requests, but you can specify other for concrete request.
-        
+
 ### Usage
 
     rest("/employees/{0}", employeeId)
