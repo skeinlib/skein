@@ -1,5 +1,5 @@
 # skein-rest
-ActionScript 3.0 fluent API for RESTful services.
+Rest Client for ActionScript 3.0 with fluent interface. In fact this library is a wrapper for standard `URLLoader`.
 
 ## Dependencies
  * [skein-core](https://github.com/skeinlib/skein/skein-core)
