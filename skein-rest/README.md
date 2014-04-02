@@ -29,7 +29,9 @@ If you pass your acces-token to the `accessToken()` method it will be used for a
         .error(errorHandler) // error handler
     .get();
     
-Note that the result URL for this response will be `http://exaple.com/rest/api` + `/employees/{employeeId}` + `?fullInfo=true` + `&access_token={acces-token}`
+Note that the result URL for this response will be:
+
+`http://exaple.com/rest/api` + `/employees/{employeeId}` + `?` + `fullInfo=true` + `&` + `access_token={acces-token}`
 
 #### Request Headers
 
