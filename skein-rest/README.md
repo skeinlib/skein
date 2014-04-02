@@ -43,7 +43,7 @@ The request headers could be specified for concrete request through ``RestClient
 
 The `RestClient.contentType(value:String)` method allows to specify content-type header for concrete request. 
 
-*Defaults:* RestClient uses `application/json` as default value for all requests.
+**Defaults:** RestClient uses `application/json` as default value for all requests.
     
 #### URL Params
 
@@ -95,4 +95,4 @@ You can define a handler for response header:
 
 The `xNoticeHandler` will be called everytime when `RestClient` recevies `X-Notice` header in response. The handler's signature is `xNoticeHandler(header:URLRequestHeader):void;`.
 
-*Note:* This feature available only for AIR al long as [HTTP_RESPONSE_STATUS](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/events/HTTPStatusEvent.html#HTTP_RESPONSE_STATUS) available only for AIR.
+**Note:** This feature available only for AIR al long as [HTTP_RESPONSE_STATUS](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/events/HTTPStatusEvent.html#HTTP_RESPONSE_STATUS) available only for AIR.
