@@ -1,31 +1,23 @@
 /**
  * Created with IntelliJ IDEA.
  * User: mobitile
- * Date: 7/18/13
- * Time: 1:42 PM
+ * Date: 4/1/14
+ * Time: 12:17 PM
  * To change this template use File | Settings | File Templates.
  */
 package skein.validators.validators
 {
 import skein.validators.data.ValidationResult;
 
-public class EmailValidator extends BasicValidator
+public class EqualValidator extends BasicValidator
 {
-    //--------------------------------------------------------------------------
-    //
-    //  Class constants                                                            [_A-Za-z0-9-\\+]
-    //
-    //--------------------------------------------------------------------------
-
-    private static const EMAIL_REGEXP:RegExp = /^[a-z][\w.-\\+]+@\w[\w.-]+\.[\w.-]*[a-z][a-z]$/i;
-
     //--------------------------------------------------------------------------
     //
     //  Constructor
     //
     //--------------------------------------------------------------------------
 
-    public function EmailValidator()
+    public function EqualValidator()
     {
         super();
     }
@@ -36,16 +28,36 @@ public class EmailValidator extends BasicValidator
     //
     //--------------------------------------------------------------------------
 
-    private var _incorrectEmailError:String = "Wrong email address.";
+    //----------------------------------------
+    //  mismatchError
+    //----------------------------------------
 
-    public function get incorrectEmailError():String
+    private var _mismatchError:String = "The entered value is mismatched with expected.";
+
+    public function get mismatchError():String
     {
-        return _incorrectEmailError;
+        return _mismatchError;
     }
 
-    public function set incorrectEmailError(value:String):void
+    public function set mismatchError(value:String):void
     {
-        _incorrectEmailError = value;
+        _mismatchError = value;
+    }
+
+    //----------------------------------------
+    //  expectedValue
+    //----------------------------------------
+
+    private var _expectedValue:Object;
+
+    public function get expectedValue():Object
+    {
+        return _expectedValue;
+    }
+
+    public function set expectedValue(value:Object):void
+    {
+        _expectedValue = value;
     }
 
     //--------------------------------------------------------------------------
@@ -61,7 +73,7 @@ public class EmailValidator extends BasicValidator
         if (results.length > 0)
             return results;
         else
-            return validateEmail(value);
+            return validateEquals(value);
     }
 
     //--------------------------------------------------------------------------
@@ -70,16 +82,14 @@ public class EmailValidator extends BasicValidator
     //
     //--------------------------------------------------------------------------
 
-    private function validateEmail(value:Object):Array
+    private function validateEquals(value:Object):Array
     {
         var results:Array = [];
 
         if (required)
         {
-            if (!EMAIL_REGEXP.test(String(value)))
-            {
-                results.push(new ValidationResult(true, incorrectEmailError))
-            }
+            if (value != _expectedValue)
+                results.push(new ValidationResult(true, mismatchError))
         }
 
         return results;

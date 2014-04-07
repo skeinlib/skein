@@ -31,7 +31,7 @@ public class FeathersComponentNature implements ComponentMixin
 
     public function styleName(value:Object):void
     {
-        PropertySetter.set(this.instance, "name", value);
+        PropertySetter.set(this.instance, "styleName", value);
     }
 }
 }

@@ -59,8 +59,6 @@ public class DefaultRestClient implements RestClient
 
     private var loader:URLLoader;
 
-    private var request:URLRequest;
-
     //
 
     private var removeDefaultHeaders:Boolean = false;
@@ -246,6 +244,9 @@ public class DefaultRestClient implements RestClient
         var request:URLRequest = new URLRequest(formURL());
         request.method = method;
         request.contentType = _contentType;
+
+        if (_headers != null)
+            request.requestHeaders = request.requestHeaders.concat(_headers);
 
         loader = loader || new URLLoader();
         loader.dataFormat = URLLoaderDataFormat.TEXT;

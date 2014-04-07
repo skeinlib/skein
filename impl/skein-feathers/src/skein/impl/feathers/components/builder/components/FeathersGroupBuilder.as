@@ -298,7 +298,7 @@ public class FeathersGroupBuilder extends FeathersBuilder implements GroupBuilde
 
     public function layout(value:Object):GroupBuilder
     {
-//        PropertySetter.set(this.instance, "layout", value);
+        PropertySetter.set(this.instance, "layout", value);
 
         // what if layout has been changed after set it's properties?
 
