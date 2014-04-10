@@ -209,8 +209,8 @@ public class Tube extends EventDispatcher
 
     private function broadcast_closeHandler(event:Event):void
     {
-        var broadcast:Broadcast = event.target as Broadcast;
-        broadcast.removeEventListener(Event.CLOSE, broadcast_closeHandler);
+        _broadcast.removeEventListener(Event.CLOSE, broadcast_closeHandler);
+        _broadcast = null;
 
         closeIfNeed();
     }

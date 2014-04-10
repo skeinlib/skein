@@ -7,11 +7,14 @@
  */
 package skein.binding.core
 {
+import skein.core.Reference;
+import skein.core.WeakReference;
+
 public class PropertySource extends SourceBase
 {
     public function PropertySource(host:Object, property:String)
     {
-        super();
+        super(host);
 
         this.watcher = Watcher.watch(host, property, this.handler);
     }
@@ -25,7 +28,7 @@ public class PropertySource extends SourceBase
 
     override public function dispose():void
     {
-        this.watcher.reset(null);
+        watcher.unwatch();
     }
 }
 }

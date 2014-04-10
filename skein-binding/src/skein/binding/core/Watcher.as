@@ -14,16 +14,13 @@ import org.spicefactory.lib.reflect.Metadata;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Property;
 
+import skein.core.NullReference;
+
+import skein.core.Reference;
+import skein.core.WeakReference;
+
 public class Watcher
 {
-    //--------------------------------------------------------------------------
-    //
-    //  Class constants
-    //
-    //--------------------------------------------------------------------------
-
-    private static const CHANGE:String = "change";
-
     //--------------------------------------------------------------------------
     //
     //  Class functions
@@ -55,15 +52,13 @@ public class Watcher
     {
         super();
 
-        this.name = access is String ? access as String : access.name;
-        this.getter = access is String ? null : access.getter;
-        this.next = next;
+        this.setName(access);
+
+        this.setGetter(access);
 
         this.callback = callback;
 
-        this.events = new <String>[];
-
-        this.reset(host);
+        this.next = next;
     }
 
     //--------------------------------------------------------------------------
@@ -72,18 +67,15 @@ public class Watcher
     //
     //--------------------------------------------------------------------------
 
-    private var host:Object;
-
+    private var host:Reference = new NullReference();
 
     private var getter:Function;
 
+    private var propertyName:String;
 
-    private var name:String;
+    private var methodName:String;
 
-
-
-
-    private var events:Vector.<String>;
+    private var events:Vector.<String> = new <String>[];
 
     private var callback:Function;
 
@@ -112,34 +104,32 @@ public class Watcher
             this.next.setHandler(callback);
     }
 
-    //-------------------------------------
-    //  Methods: Public API
-    //-------------------------------------
-
-    //-------------------------------------
-    //  Methods:
-    //-------------------------------------
-
     public function unwatch():void
     {
         this.reset(null);
     }
 
-    public function reset(host:Object):void
+    //-------------------------------------
+    //  Methods: Watcher
+    //-------------------------------------
+
+    internal function reset(newHost:Object):void
     {
-        if (this.host)
+        var host:Object = this.getHost();
+
+        if (host)
         {
             while (this.events.length > 0)
             {
-                this.host.removeEventListener(this.events.shift(), handler);
+                host.removeEventListener(this.events.shift(), handler);
             }
         }
 
-        this.host = host;
+        this.setHost(newHost);
 
-        if (this.host)
+        if (host)
         {
-            if (!this.host.hasOwnProperty("removeEventListener"))
+            if (!host.hasOwnProperty("removeEventListener"))
             {
                 throw new Error("Target should be an EventDispatcher instance.");
             }
@@ -148,13 +138,13 @@ public class Watcher
 
             for (var i:int = 0, n:int = this.events.length; i < n; i++)
             {
-                if (this.host.addEventListener.length == 5)
+                if (host.addEventListener.length == 5)
                 {
-                    this.host.addEventListener(this.events[i], handler, false, 0, false);
+                    host.addEventListener(this.events[i], handler, false, 0, false);
                 }
                 else
                 {
-                    this.host.addEventListener(this.events[i], handler);
+                    host.addEventListener(this.events[i], handler);
                 }
             }
         }
@@ -163,48 +153,104 @@ public class Watcher
             this.next.reset(this.getHostPropertyValue());
     }
 
+    private function getHost():Object
+    {
+        return this.host.value;
+    }
+
+    private function setHost(value:Object):void
+    {
+        this.host = value ? new WeakReference(value) : new NullReference();
+    }
+
+    private function getHostPropertyValue(params:Array = null):Object
+    {
+        var host:Object = this.getHost();
+
+        if (host == null)
+            return null;
+
+        if (getter != null)
+            return getter(host);
+
+        if (this.methodName != null)
+        {
+            var f:Function = host[this.methodName] as Function;
+
+            return f.apply(host, params);
+        }
+
+        return host[this.propertyName];
+    }
+
     //------------------------------------
     //  Methods: Internal
     //------------------------------------
 
+    private function setName(access:Object):void
+    {
+        var name:String = access is String ? access as String : access.name;
+
+        if (name.indexOf("()") != -1)
+        {
+            this.methodName = name.substring(0, name.indexOf("()"));
+        }
+        else
+        {
+            this.propertyName = name;
+        }
+    }
+
+    private function setGetter(access:Object):void
+    {
+        this.getter = access is String ? null : access.getter;
+    }
+
     private function getEvents(host:Object):Vector.<String>
     {
-        var result:Vector.<String> = new <String>[];
+        var result:Vector.<String>;
 
         var info:ClassInfo = ClassInfo.forInstance(host);
 
-        var property:Property = info.getProperty(this.name);
-
-        result = getEventsFormProperty(info.getProperty(name)) ||
-                 getEventsFormMethod(info.getMethod(name.substring(0, name.indexOf("()"))));
-
-        if (result == null)
+        if (this.propertyName != null)
         {
-            throw new ReferenceError("Property " + name + " not found on " + info.simpleName);
+            var property:Property = info.getProperty(this.propertyName);
+
+            if (property == null)
+            {
+                throw new ReferenceError("Property " + this.propertyName + " not found on class " + info.simpleName);
+            }
+
+            result = getEventsFormProperty(property);
+
+            if (result.length == 0)
+            {
+                trace("[Binding] Warning: Unable to find binding events for property '" + this.propertyName + "' on class '" + info.simpleName + "'");
+            }
         }
 
-//        //TODO: Throw warning if property not found.
-//
-//        var map:Object = {};
-//
-//        for each (var bind:Metadata in property.getMetadata("Bind", true))
-//        {
-//            result.push(bind.getArgument("event"));
-//        }
-//
-//        for each (var bind:Metadata in property.getMetadata("Bindable", true))
-//        {
-//            result.push(bind.getDefaultArgument() || bind.getArgument("event"));
-//        }
+        if (this.methodName != null)
+        {
+            var method:Method = info.getMethod(this.methodName);
+
+            if (method == null)
+            {
+                throw new ReferenceError("Method " + this.methodName + " not found on class " + info.simpleName);
+            }
+
+            result = getEventsFormMethod(method);
+
+            if (result.length == 0)
+            {
+                trace("[Binding] Warning: Unable to find binding events for method '" + this.methodName + "' on class '" + info.simpleName + "'");
+            }
+        }
 
         return result;
     }
 
     private function getEventsFormProperty(property:Property):Vector.<String>
     {
-        if (property == null)
-            return null;
-
         var result:Vector.<String> = new <String>[];
 
         for each (var bind:Metadata in property.getMetadata("Bind", true))
@@ -222,9 +268,6 @@ public class Watcher
 
     private function getEventsFormMethod(method:Method):Vector.<String>
     {
-        if (method == null)
-            return null;
-
         var result:Vector.<String> = new <String>[];
 
         for each (var bind:Metadata in method.getMetadata("Bind", true))
@@ -238,26 +281,6 @@ public class Watcher
         }
 
         return result;
-    }
-
-    private function getHostPropertyValue(params:Array = null):Object
-    {
-        if (!host)
-            return null;
-
-//        return getter != null ? getter(host) : host[name];
-
-        if (getter != null)
-            return getter(host);
-
-        if (name.indexOf("()") != -1)
-        {
-            var f:Function = host[name.substring(0, name.indexOf("()"))];
-
-            return f.apply(host, params);
-        }
-
-        return host[name];
     }
 
     //--------------------------------------------------------------------------

@@ -18,7 +18,7 @@ import skein.core.skein_internal;
 import skein.tubes.core.Config;
 import skein.tubes.core.ShareReader;
 
-public class Share extends EventDispatcher
+public class Share extends EventDispatcher      // Quota
 {
     //--------------------------------------------------------------------------
     //

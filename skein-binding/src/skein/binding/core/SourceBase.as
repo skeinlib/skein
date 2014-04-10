@@ -7,11 +7,20 @@
  */
 package skein.binding.core
 {
+import skein.core.NullReference;
+import skein.core.Reference;
+import skein.core.WeakReference;
+
 public class SourceBase implements Source
 {
-    public function SourceBase()
+    public function SourceBase(host:Object)
     {
+        super();
+
+        this.host = host ? new WeakReference(host) : new NullReference();
     }
+
+    protected var host:Reference;
 
     protected var callback:Function;
 
@@ -27,13 +36,20 @@ public class SourceBase implements Source
 
     protected function handler():void
     {
-        if (this.callback)
+        if (this.host.value != null)
         {
-            switch (this.callback.length)
+            if (this.callback)
             {
-                case 0 : this.callback(); break;
-                case 1 : this.callback(getValue()); break;
+                switch (this.callback.length)
+                {
+                    case 0 : this.callback(); break;
+                    case 1 : this.callback(getValue()); break;
+                }
             }
+        }
+        else
+        {
+            this.dispose();
         }
     }
 

@@ -7,13 +7,13 @@
  */
 package skein.binding.core
 {
-public class MethodSource extends SourceBase implements Source
+
+public class MethodSource extends SourceBase
 {
     public function MethodSource(host:Object, getter:String, params:Array=null)
     {
-        super();
+        super(host);
 
-        this.host = host;
         this.getter = getter;
         this.params = params;
 
@@ -22,7 +22,7 @@ public class MethodSource extends SourceBase implements Source
 
     private var watcher:Watcher;
 
-    private var host:Object;
+
     private var getter:String;
     private var params:Array;
 
@@ -35,20 +35,12 @@ public class MethodSource extends SourceBase implements Source
             paramValues.push(OperatorBase.getOperandValue(object));
         }
 
-        var value:* = watcher.getValue(paramValues);
-
-        return value;
-
-        var f:Function = host[getter];
-
-        return f.apply(host, params);
-
-//        return this.host[this.getter]();
+        return watcher.getValue(paramValues);
     }
 
     override public function dispose():void
     {
-        this.watcher.reset(null);
+        this.watcher.unwatch();
     }
 }
 }

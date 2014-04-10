@@ -30,16 +30,5 @@ public class BindingContext
 
         return binding;
     }
-
-//    public function bind(site:Object, property:String, source:Source):Binding
-//    {
-//        var binding:Binding = new Binding(site, property, source);
-//
-//        BindingGlobals.installBinding(binding, site);
-//
-////        ComponentsGlobals.putBinding(holder, site, property, binding);
-//
-//        return binding;
-//    }
 }
 }

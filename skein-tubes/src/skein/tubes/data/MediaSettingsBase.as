@@ -126,6 +126,7 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
         if (value == _camera) return;
 
         _camera = value;
+
         applyCameraSettings(_camera);
 
         dispatchEvent(new Event(Event.CHANGE));
@@ -152,9 +153,10 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
 
     public function setMicrophone(value:Microphone):void
     {
-        if (value == _microphone)return;
+        if (value == _microphone) return;
 
         _microphone = value;
+
         applyMicrophoneSettings(_microphone);
 
         dispatchEvent(new Event(Event.CHANGE));

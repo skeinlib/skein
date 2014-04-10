@@ -7,6 +7,7 @@
  */
 package skein.binding.core
 {
+import skein.core.Reference;
 import skein.core.WeakReference;
 
 public class PropertyDestination implements Destination
@@ -19,13 +20,8 @@ public class PropertyDestination implements Destination
         this.property = property;
     }
 
-    private var site:Object;
+    private var site:Reference;
     private var property:String;
-
-    public function setSite(value:Object):void
-    {
-        this.site = value;
-    }
 
     public function getSite():Object
     {
@@ -41,15 +37,17 @@ public class PropertyDestination implements Destination
     {
         try
         {
-            this.site.value[this.property] = value;
+            getSite()[this.property] = value;
         }
         catch(error:Error)
         {
-            trace(error.getStackTrace());
+//            trace(error.getStackTrace());
 
             switch (error.errorID)
             {
                 case 1009 :
+                case 1010 :
+                case 1055 :
                         // ignore
                     break;
 
