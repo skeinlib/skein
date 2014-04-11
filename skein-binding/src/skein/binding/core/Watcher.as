@@ -125,7 +125,7 @@ public class Watcher
             }
         }
 
-        this.setHost(newHost);
+        host = this.setHost(newHost);
 
         if (host)
         {
@@ -158,9 +158,11 @@ public class Watcher
         return this.host.value;
     }
 
-    private function setHost(value:Object):void
+    private function setHost(value:Object):Object
     {
         this.host = value ? new WeakReference(value) : new NullReference();
+
+        return value;
     }
 
     private function getHostPropertyValue(params:Array = null):Object
