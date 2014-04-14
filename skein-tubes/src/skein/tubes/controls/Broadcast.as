@@ -10,6 +10,7 @@ package skein.tubes.controls
 import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.media.Camera;
+import flash.media.SoundMixer;
 import flash.net.NetStream;
 
 import skein.core.skein_internal;
@@ -34,7 +35,7 @@ public class Broadcast extends EventDispatcher
         _name = name;
 
         this.settings = settings || Config.sharedInstance().settings;
-        this.settings.addEventListener(Event.CHANGE, settings_changeHandler)
+        this.settings.addEventListener(Event.CHANGE, settings_changeHandler);
 
         if (autoPublish)
             publish();
@@ -107,6 +108,24 @@ public class Broadcast extends EventDispatcher
         return settings ? settings.camera : null;
     }
 
+    //-------------------------------------
+    //  muted
+    //-------------------------------------
+
+    public function get muted():Boolean
+    {
+        return settings.isCameraMuted || settings.isMicrophoneMuted;
+    }
+
+    //-------------------------------------
+    //  active
+    //-------------------------------------
+
+    public function get active():Boolean
+    {
+        return !settings.isCameraMuted || !settings.isMicrophoneMuted;
+    }
+
     //--------------------------------------------------------------------------
     //
     //  Methods
@@ -162,6 +181,18 @@ public class Broadcast extends EventDispatcher
         }
 
         dispatchEvent(new Event(Event.CLOSE));
+    }
+
+    public function mute():void
+    {
+        muteCamera();
+        muteMicrophone();
+    }
+
+    public function unmute():void
+    {
+        unmuteCamera();
+        unmuteMicrophone();
     }
 
     //--------------------------------------

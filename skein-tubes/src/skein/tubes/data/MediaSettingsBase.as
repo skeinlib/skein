@@ -12,6 +12,7 @@ import flash.events.EventDispatcher;
 import flash.media.Camera;
 import flash.media.Microphone;
 import flash.media.SoundCodec;
+import flash.media.SoundMixer;
 import flash.media.VideoStreamSettings;
 
 import skein.tubes.enum.CameraPosition;
@@ -170,9 +171,37 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
     //
     //--------------------------------------------------------------------------
 
+    //--------------------------------------
+    //  Methods: camera
+    //--------------------------------------
+
     public function getCameraPosition():String
     {
         return _camera ? _camera.position : null;
+    }
+
+    //--------------------------------------
+    //  Methods: speaker
+    //--------------------------------------
+
+    public function setAudioMode(mode:String):void
+    {
+        SoundMixer.audioPlaybackMode = mode;
+    }
+
+    public function toggleAudio():void
+    {
+        SoundMixer.useSpeakerphoneForVoice = !SoundMixer.useSpeakerphoneForVoice;
+    }
+
+    public function useHeadset():void
+    {
+        SoundMixer.useSpeakerphoneForVoice = false;
+    }
+
+    public function useSpeaker():void
+    {
+        SoundMixer.useSpeakerphoneForVoice = true;
     }
 
     //--------------------------------------------------------------------------
@@ -184,6 +213,7 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
     //--------------------------------------
     //  Abstract methods: video
     //--------------------------------------
+
 
     protected function createDefaultVideo():VideoStreamSettings
     {
