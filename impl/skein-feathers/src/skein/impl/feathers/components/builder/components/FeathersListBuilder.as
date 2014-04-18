@@ -223,6 +223,13 @@ public class FeathersListBuilder extends FeathersBuilder implements ListBuilder
         return this;
     }
 
+    public function includeInLayout(value:Object):ListBuilder
+    {
+        layoutElementMixin.includeInLayout(value);
+
+        return this;
+    }
+
     //-----------------------------------
     //  Methods: Component
     //-----------------------------------

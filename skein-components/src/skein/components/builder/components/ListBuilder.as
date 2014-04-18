@@ -78,6 +78,8 @@ public interface ListBuilder extends Builder
     function horizontalCenter(value:Object):ListBuilder;
 
     function verticalCenter(value:Object):ListBuilder;
+
+    function includeInLayout(value:Object):ListBuilder;
     
     //-------------------------------------
     //  Methods: List
