@@ -79,6 +79,8 @@ public interface LabelBuilder extends Builder
 
     function verticalCenter(value:Object):LabelBuilder;
 
+    function includeInLayout(value:Object):LabelBuilder;
+
     //-----------------------------------
     //  Methods: Label
     //-----------------------------------

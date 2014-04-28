@@ -29,6 +29,10 @@ public interface SpriteMixin
 
     function height(value:Object):void;
 
+    function maxWidth(value:Object):void;
+
+    function maxHeight(value:Object):void;
+
     function visible(value:Object):void;
 
     function alpha(value:Object):void;
@@ -48,7 +52,6 @@ public interface SpriteMixin
     //-----------------------------------
     //  Methods: Sprite
     //-----------------------------------
-
 
 }
 }

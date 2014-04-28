@@ -124,6 +124,20 @@ public class FeathersListBuilder extends FeathersBuilder implements ListBuilder
         return this;
     }
 
+    public function maxWidth(value:Object):ListBuilder
+    {
+        spriteMixin.maxWidth(value);
+
+        return this;
+    }
+
+    public function maxHeight(value:Object):ListBuilder
+    {
+        spriteMixin.maxHeight(value);
+
+        return this;
+    }
+
     public function rotation(value:Object, axis:String = null):ListBuilder
     {
         spriteMixin.rotation(value, axis);

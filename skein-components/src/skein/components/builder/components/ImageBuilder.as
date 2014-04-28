@@ -73,6 +73,8 @@ public interface ImageBuilder extends Builder
 
     function verticalCenter(value:Object):ImageBuilder;
 
+    function includeInLayout(value:Object):ImageBuilder;
+
     //-----------------------------------
     //  Methods: Image
     //-----------------------------------

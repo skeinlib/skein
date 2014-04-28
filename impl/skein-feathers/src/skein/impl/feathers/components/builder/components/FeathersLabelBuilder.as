@@ -224,6 +224,13 @@ public class FeathersLabelBuilder extends FeathersBuilder implements LabelBuilde
         return this;
     }
 
+    public function includeInLayout(value:Object):LabelBuilder
+    {
+        layoutElementMixin.includeInLayout(value);
+
+        return this;
+    }
+
     //-----------------------------------
     //  Methods: Component
     //-----------------------------------

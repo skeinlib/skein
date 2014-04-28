@@ -71,7 +71,14 @@ public class DefaultRestClient implements RestClient
 
     public function init(api:String, params:Array):void
     {
-        _url = Config.sharedInstance().rest + StringUtil.substitute(api, params);
+        if (api.indexOf("http") == 0)
+        {
+            _url = StringUtil.substitute(api, params);
+        }
+        else
+        {
+            _url = Config.sharedInstance().rest + StringUtil.substitute(api, params);
+        }
     }
 
     //--------------------------------------------------------------------------
@@ -79,6 +86,10 @@ public class DefaultRestClient implements RestClient
     //  Methods
     //
     //--------------------------------------------------------------------------
+
+    //------------------------------------
+    //  headers
+    //------------------------------------
 
     private var _headers:Array;
 
@@ -99,6 +110,10 @@ public class DefaultRestClient implements RestClient
 
         return this;
     }
+
+    //------------------------------------
+    //  params
+    //------------------------------------
 
     private var _params:Object;
 
@@ -123,6 +138,10 @@ public class DefaultRestClient implements RestClient
         return this;
     }
 
+    //------------------------------------
+    //  contentType
+    //------------------------------------
+
     private var _contentType:String = "application/json";
 
     public function contentType(value:String):RestClient
@@ -132,6 +151,12 @@ public class DefaultRestClient implements RestClient
         return this;
     }
 
+    //------------------------------------
+    //  accessToken
+    //------------------------------------
+
+    private var accessTokenSpecified:Boolean = false;
+
     private var _accessTokenKey:String;
     private var _accessTokenValue:String;
 
@@ -140,8 +165,14 @@ public class DefaultRestClient implements RestClient
         _accessTokenValue = value;
         _accessTokenKey = key;
 
+        accessTokenSpecified = true;
+
         return this;
     }
+
+    //------------------------------------
+    //  encoder
+    //------------------------------------
 
     private var _encoder:Function;
 
@@ -154,12 +185,20 @@ public class DefaultRestClient implements RestClient
 
     private var _decoder:Function;
 
+    //------------------------------------
+    //  decoder
+    //------------------------------------
+
     public function decoder(value:Function):RestClient
     {
         _decoder = value;
 
         return this;
     }
+
+    //------------------------------------
+    //  result
+    //------------------------------------
 
     internal var resultCallback:Function;
 
@@ -170,6 +209,10 @@ public class DefaultRestClient implements RestClient
         return this;
     }
 
+    //------------------------------------
+    //  progress
+    //------------------------------------
+
     internal var progressCallback:Function;
 
     public function progress(handler:Function):RestClient
@@ -178,6 +221,10 @@ public class DefaultRestClient implements RestClient
 
         return this;
     }
+
+    //------------------------------------
+    //  status
+    //------------------------------------
 
     internal var statusCallback:Function;
 
@@ -188,6 +235,10 @@ public class DefaultRestClient implements RestClient
         return this;
     }
 
+    //------------------------------------
+    //  error
+    //------------------------------------
+
     internal var errorCallback:Function;
 
     public function error(handler:Function):RestClient
@@ -196,6 +247,10 @@ public class DefaultRestClient implements RestClient
 
         return this;
     }
+
+    //------------------------------------
+    //  header
+    //------------------------------------
 
     internal var headerCallbacks:Object = {};
 
@@ -213,6 +268,10 @@ public class DefaultRestClient implements RestClient
 
         return false;
     }
+
+    //------------------------------------
+    //  http
+    //------------------------------------
 
     public function get():void
     {
@@ -300,6 +359,7 @@ public class DefaultRestClient implements RestClient
         _contentType = "application/json";
         _accessTokenKey = null;
         _accessTokenValue = null;
+        accessTokenSpecified = false;
         _encoder = null;
         _decoder = null;
 
@@ -356,9 +416,16 @@ public class DefaultRestClient implements RestClient
 
     private function encodeParams():String
     {
-        if (_accessTokenValue)
+        if (accessTokenSpecified)
         {
-            addParam(_accessTokenKey, _accessTokenValue);
+            if (_accessTokenValue)
+            {
+                addParam(_accessTokenKey, _accessTokenValue);
+            }
+            else
+            {
+                // ignore default token
+            }
         }
         else if (Config.sharedInstance().accessToken)
         {

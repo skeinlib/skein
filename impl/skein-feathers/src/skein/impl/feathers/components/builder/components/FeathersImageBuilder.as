@@ -218,6 +218,13 @@ public class FeathersImageBuilder extends FeathersBuilder implements ImageBuilde
         return this;
     }
 
+    public function includeInLayout(value:Object):ImageBuilder
+    {
+        layoutElementNature.includeInLayout(value);
+
+        return this;
+    }
+
     //-----------------------------------
     //  Methods: Component
     //-----------------------------------

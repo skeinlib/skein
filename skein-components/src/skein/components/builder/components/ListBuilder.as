@@ -43,6 +43,10 @@ public interface ListBuilder extends Builder
 
     function height(value:Object):ListBuilder;
 
+    function maxWidth(value:Object):ListBuilder;
+
+    function maxHeight(value:Object):ListBuilder;
+
     function visible(value:Object):ListBuilder;
 
     function alpha(value:Object):ListBuilder;

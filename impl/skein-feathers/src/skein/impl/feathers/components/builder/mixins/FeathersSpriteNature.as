@@ -49,6 +49,16 @@ public class FeathersSpriteNature implements SpriteMixin
         PropertySetter.set(this.instance, "height", value);
     }
 
+    public function maxWidth(value:Object):void
+    {
+        PropertySetter.set(this.instance, "maxWidth", value);
+    }
+
+    public function maxHeight(value:Object):void
+    {
+        PropertySetter.set(this.instance, "maxHeight", value);
+    }
+
     public function visible(value:Object):void
     {
         PropertySetter.set(this.instance, "visible", value);
