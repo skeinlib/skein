@@ -119,6 +119,20 @@ public class FeathersImageBuilder extends FeathersBuilder implements ImageBuilde
         return this;
     }
 
+    public function maxWidth(value:Object):ImageBuilder
+    {
+        spriteNature.maxWidth(value);
+
+        return this;
+    }
+
+    public function maxHeight(value:Object):ImageBuilder
+    {
+        spriteNature.maxHeight(value);
+
+        return this;
+    }
+
     public function rotation(value:Object, axis:String = null):ImageBuilder
     {
         spriteNature.rotation(value, axis);

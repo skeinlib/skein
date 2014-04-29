@@ -37,6 +37,10 @@ public interface ImageBuilder extends Builder
 
     function height(value:Object):ImageBuilder;
 
+    function maxWidth(value:Object):ImageBuilder;
+
+    function maxHeight(value:Object):ImageBuilder;
+
     function visible(value:Object):ImageBuilder;
 
     function alpha(value:Object):ImageBuilder;
