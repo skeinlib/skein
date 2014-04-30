@@ -18,6 +18,12 @@ public interface NumericStepperBuilder extends Builder
     //--------------------------------------------------------------------------
 
     //-----------------------------------
+    //  Methods: Object
+    //-----------------------------------
+
+    function set(property:String, value:Object):NumericStepperBuilder;
+
+    //-----------------------------------
     //  Methods: EventDispatcher
     //-----------------------------------
 

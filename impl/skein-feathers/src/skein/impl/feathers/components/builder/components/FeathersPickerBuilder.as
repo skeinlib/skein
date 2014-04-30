@@ -13,7 +13,9 @@ import skein.components.builder.components.PickerBuilder;
 import skein.components.builder.mixins.ComponentMixin;
 import skein.components.builder.mixins.EventDispatcherMixin;
 import skein.components.builder.mixins.LayoutElementMixin;
+import skein.components.builder.mixins.ObjectNature;
 import skein.components.builder.mixins.SpriteMixin;
+import skein.components.builder.mixins.impl.DefaultObjectNature;
 import skein.core.PropertySetter;
 import skein.impl.feathers.components.builder.FeathersBuilder;
 import skein.impl.feathers.components.builder.mixins.FeathersComponentNature;
@@ -36,6 +38,7 @@ public class FeathersPickerBuilder extends FeathersBuilder implements PickerBuil
         this.host = host;
         this._instance = generator ? new generator() : new PickerList();
 
+        this.objectNature = new DefaultObjectNature(this.instance);
         this.spriteMixin = new FeathersSpriteNature(this.instance);
         this.componentMixin = new FeathersComponentNature(this.instance);
         this.layoutElementMixin = new FeathersLayoutElementNature(this.instance);
@@ -49,8 +52,10 @@ public class FeathersPickerBuilder extends FeathersBuilder implements PickerBuil
     //--------------------------------------------------------------------------
 
     //-------------------------------------
-    //  Variables: Mixins
+    //  Variables: Natures
     //-------------------------------------
+
+    private var objectNature:ObjectNature;
 
     private var spriteMixin:SpriteMixin;
 
@@ -151,6 +156,17 @@ public class FeathersPickerBuilder extends FeathersBuilder implements PickerBuil
     public function mask(value:Object):PickerBuilder
     {
         spriteMixin.mask(value);
+
+        return this;
+    }
+
+    //-----------------------------------
+    //  Methods: Object
+    //-----------------------------------
+
+    public function set(property:String, value:Object):PickerBuilder
+    {
+        objectNature.set(property, value);
 
         return this;
     }

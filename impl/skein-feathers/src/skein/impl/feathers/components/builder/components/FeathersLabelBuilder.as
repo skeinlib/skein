@@ -166,7 +166,6 @@ public class FeathersLabelBuilder extends FeathersBuilder implements LabelBuilde
         return this;
     }
 
-
     //-----------------------------------
     //  Methods: EventDispatcher
     //-----------------------------------

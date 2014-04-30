@@ -13,7 +13,9 @@ import skein.components.builder.components.NumericStepperBuilder;
 import skein.components.builder.mixins.ComponentMixin;
 import skein.components.builder.mixins.EventDispatcherMixin;
 import skein.components.builder.mixins.LayoutElementMixin;
+import skein.components.builder.mixins.ObjectNature;
 import skein.components.builder.mixins.SpriteMixin;
+import skein.components.builder.mixins.impl.DefaultObjectNature;
 import skein.core.PropertySetter;
 import skein.impl.feathers.components.builder.FeathersBuilder;
 import skein.impl.feathers.components.builder.mixins.FeathersComponentNature;
@@ -36,6 +38,7 @@ public class FeathersNumericStepperBuilder extends FeathersBuilder implements Nu
         this.host = host;
         this._instance = new NumericStepper();
 
+        this.objectNature = new DefaultObjectNature(this.instance);
         this.spriteMixin = new FeathersSpriteNature(this.instance);
         this.componentMixin = new FeathersComponentNature(this.instance);
         this.layoutElementMixin = new FeathersLayoutElementNature(this.instance);
@@ -49,8 +52,10 @@ public class FeathersNumericStepperBuilder extends FeathersBuilder implements Nu
     //--------------------------------------------------------------------------
 
     //-------------------------------------
-    //  Variables: Mixins
+    //  Variables: Natures
     //-------------------------------------
+
+    private var objectNature:ObjectNature;
 
     private var spriteMixin:SpriteMixin;
 
@@ -151,6 +156,17 @@ public class FeathersNumericStepperBuilder extends FeathersBuilder implements Nu
     public function mask(value:Object):NumericStepperBuilder
     {
         spriteMixin.mask(value);
+
+        return this;
+    }
+
+    //-----------------------------------
+    //  Methods: Object
+    //-----------------------------------
+
+    public function set(property:String, value:Object):NumericStepperBuilder
+    {
+        objectNature.set(property, value);
 
         return this;
     }

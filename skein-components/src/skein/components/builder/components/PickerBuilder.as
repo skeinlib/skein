@@ -18,6 +18,12 @@ public interface PickerBuilder extends Builder
     //--------------------------------------------------------------------------
 
     //-----------------------------------
+    //  Methods: Object
+    //-----------------------------------
+
+    function set(property:String, value:Object):PickerBuilder;
+
+    //-----------------------------------
     //  Methods: EventDispatcher
     //-----------------------------------
 
