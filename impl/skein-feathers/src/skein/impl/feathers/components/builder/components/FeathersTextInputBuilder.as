@@ -306,6 +306,13 @@ public class FeathersTextInputBuilder extends FeathersBuilder implements TextInp
         return this;
     }
 
+    public function maxChars(value:Object):TextInputBuilder
+    {
+        PropertySetter.set(this.instance, "maxChars", value);
+
+        return this;
+    }
+
     public function softKeyboardType(value:Object):TextInputBuilder
     {
         PropertySetter.set(this.instance.textEditorProperties, "softKeyboardType", value);
@@ -313,9 +320,9 @@ public class FeathersTextInputBuilder extends FeathersBuilder implements TextInp
         return this;
     }
 
-    public function maxChars(value:Object):TextInputBuilder
+    public function autoCapitalize(value:Object):TextInputBuilder
     {
-        PropertySetter.set(this.instance, "maxChars", value);
+        PropertySetter.set(this.instance.textEditorProperties, "autoCapitalize", value);
 
         return this;
     }

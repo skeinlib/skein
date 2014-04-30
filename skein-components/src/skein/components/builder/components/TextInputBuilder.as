@@ -100,5 +100,7 @@ public interface TextInputBuilder extends Builder
     function maxChars(value:Object):TextInputBuilder;
 
     function softKeyboardType(value:Object):TextInputBuilder;
+
+    function autoCapitalize(value:Object):TextInputBuilder;
 }
 }
