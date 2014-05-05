@@ -15,6 +15,8 @@ import flash.events.Event;
 
 import skein.utils.StringUtil;
 
+[Event(name="change", type="flash.events.Event")]
+
 public class ResourceManager extends EventDispatcher
 {
     private static var _instance:ResourceManager;
@@ -33,6 +35,8 @@ public class ResourceManager extends EventDispatcher
     }
 
     private var bundleMap:Object = {};
+
+    private var availableLocales:Array = [];
 
     [Bindable(event="change")]
     public function getString(bundle:String, key:String, params:Array=null):String
@@ -68,12 +72,45 @@ public class ResourceManager extends EventDispatcher
 
     //--------------------------------------------------------------------------
     //
+    //  Properties
+    //
+    //--------------------------------------------------------------------------
+
+    private var _defaultLocale:String;
+
+    public function get defaultLocale():String
+    {
+        return _defaultLocale;
+    }
+
+    public function set defaultLocale(value:String):void
+    {
+        if (value == _defaultLocale) return;
+
+        _defaultLocale = value;
+
+        if (locales == null)
+        {
+            locales = [_defaultLocale];
+        }
+    }
+
+    //--------------------------------------------------------------------------
+    //
     //  Methods
     //
     //--------------------------------------------------------------------------
 
+    public function getLocale():String
+    {
+        return locales && locales.length > 0 ? locales[0] : null;
+    }
+
     public function setLocale(locale:String):void
     {
+        if (locale == null)
+            locale = _defaultLocale;
+
         setLocales([locale]);
     }
 
@@ -88,6 +125,12 @@ public class ResourceManager extends EventDispatcher
         locales = chain;
 
         dispatchEvent(new Event(Event.CHANGE));
+    }
+
+    [Bindable(event="change")]
+    public function getAvailableLocales():Array
+    {
+        return availableLocales;
     }
 
     public function addSource(source:Source):void
@@ -119,7 +162,12 @@ public class ResourceManager extends EventDispatcher
             {
                 var b:Bundle = bundles[i];
 
-                bundleMap[b.locale] ||= {};
+                if (!bundleMap.hasOwnProperty(b.locale))
+                {
+                    bundleMap[b.locale] = {};
+
+                    availableLocales.push(b.locale);
+                }
 
                 bundleMap[b.locale][b.name] = b;
             }
