@@ -88,11 +88,6 @@ public class ResourceManager extends EventDispatcher
         if (value == _defaultLocale) return;
 
         _defaultLocale = value;
-
-        if (locales == null)
-        {
-            locales = [_defaultLocale];
-        }
     }
 
     //--------------------------------------------------------------------------
@@ -110,6 +105,8 @@ public class ResourceManager extends EventDispatcher
     {
         if (locale == null)
             locale = _defaultLocale;
+
+        if (locale == getLocale()) return;
 
         setLocales([locale]);
     }
