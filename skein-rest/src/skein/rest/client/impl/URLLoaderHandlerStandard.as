@@ -15,18 +15,15 @@ import flash.events.ProgressEvent;
 import flash.events.SecurityErrorEvent;
 import flash.net.URLLoader;
 
-public class URLLoaderHandlerStandard implements URLLoaderHandler
+import skein.core.skein_internal;
+import skein.rest.client.impl.URLLoaderHandlerAbstract;
+
+public class URLLoaderHandlerStandard extends URLLoaderHandlerAbstract implements URLLoaderHandler
 {
     public function URLLoaderHandlerStandard(client:DefaultRestClient)
     {
-        super();
-
-        this.client = client;
+        super(client);
     }
-
-    private var client:DefaultRestClient;
-
-    private var responseCode:int;
 
     public function handle(loader:URLLoader):void
     {
@@ -38,24 +35,7 @@ public class URLLoaderHandlerStandard implements URLLoaderHandler
             loader.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
             loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
 
-            if (client.resultCallback != null)
-            {
-                client.decodeResult(loader.data,
-                    function(data:Object):void
-                    {
-                        if (client.resultCallback.length == 2)
-                            client.resultCallback(data, responseCode);
-                        else
-                            client.resultCallback(data);
-
-                        client.free();
-                    }
-                );
-            }
-            else
-            {
-                client.free();
-            }
+            result(loader.data);
         }
 
         function errorHandler(event:ErrorEvent):void
@@ -66,38 +46,17 @@ public class URLLoaderHandlerStandard implements URLLoaderHandler
             loader.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
             loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
 
-            if (client.errorCallback != null)
-            {
-                client.decodeError(loader.data,
-                    function(info:Object):void
-                    {
-                        if (client.errorCallback.length == 2)
-                            client.errorCallback(info, responseCode);
-                        else
-                            client.errorCallback(info);
-
-                        client.free();
-                    }
-                );
-            }
-            else
-            {
-                client.free();
-            }
+            error(loader.data);
         }
 
         function statusHandler(event:HTTPStatusEvent):void
         {
-            responseCode = event.status;
-
-            if (client.statusCallback != null)
-                client.statusCallback(event.status);
+            status(event.status);
         }
 
         function progressHandler(event:ProgressEvent):void
         {
-            if (client.progressCallback != null)
-                client.progressCallback(event.bytesLoaded, event.bytesTotal);
+            progress(event.bytesLoaded, event.bytesTotal);
         }
 
         loader.addEventListener(Event.COMPLETE, resultHandler);

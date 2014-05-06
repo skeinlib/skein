@@ -16,20 +16,16 @@ import flash.events.SecurityErrorEvent;
 import flash.net.URLLoader;
 import flash.net.URLRequestHeader;
 
+import skein.rest.client.impl.URLLoaderHandlerAbstract;
+
 import skein.rest.core.HeaderHandler;
 
-public class URLLoaderHandlerExtended implements URLLoaderHandler
+public class URLLoaderHandlerExtended extends URLLoaderHandlerAbstract implements URLLoaderHandler
 {
     public function URLLoaderHandlerExtended(client:DefaultRestClient)
     {
-        super();
-
-        this.client = client;
+        super(client);
     }
-
-    private var client:DefaultRestClient;
-
-    private var responseCode:int;
 
     public function handle(loader:URLLoader):void
     {
@@ -44,45 +40,11 @@ public class URLLoaderHandlerExtended implements URLLoaderHandler
 
             if (responseCode >= 200 && responseCode < 300) // result
             {
-                if (client.resultCallback != null)
-                {
-                    client.decodeResult(loader.data,
-                        function(data:Object):void
-                        {
-                            if (client.resultCallback.length == 2)
-                                client.resultCallback(data, responseCode);
-                            else
-                                client.resultCallback(data);
-
-                            client.free();
-                        }
-                    );
-                }
-                else
-                {
-                    client.free();
-                }
+                result(loader.data);
             }
             else // error
             {
-                if (client.errorCallback != null)
-                {
-                    client.decodeError(loader.data,
-                        function(info:Object):void
-                        {
-                            if (client.errorCallback.length == 2)
-                                client.errorCallback(info, responseCode);
-                            else
-                                client.errorCallback(info);
-
-                            client.free();
-                        }
-                    );
-                }
-                else
-                {
-                    client.free();
-                }
+                error(loader.data)
             }
         }
 
@@ -95,32 +57,12 @@ public class URLLoaderHandlerExtended implements URLLoaderHandler
             loader.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
             loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
 
-            if (client.errorCallback != null)
-            {
-                client.decodeError(loader.data,
-                    function(info:Object):void
-                    {
-                        if (client.errorCallback.length == 2)
-                            client.errorCallback(info, responseCode);
-                        else
-                            client.errorCallback(info);
-
-                        client.free();
-                    }
-                );
-            }
-            else
-            {
-                client.free();
-            }
+            error(loader.data);
         }
 
         function statusHandler(event:HTTPStatusEvent):void
         {
-            responseCode = event.status;
-
-            if (client.statusCallback != null)
-                client.statusCallback(event.status);
+            status(event.status);
         }
 
         function responseStatusHandler(event:HTTPStatusEvent):void
@@ -139,8 +81,7 @@ public class URLLoaderHandlerExtended implements URLLoaderHandler
 
         function progressHandler(event:ProgressEvent):void
         {
-            if (client.progressCallback != null)
-                client.progressCallback(event.bytesLoaded, event.bytesTotal);
+            progress(event.bytesLoaded, event.bytesTotal);
         }
 
         loader.addEventListener(Event.COMPLETE, resultHandler);

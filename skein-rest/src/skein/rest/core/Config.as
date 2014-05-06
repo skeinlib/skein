@@ -49,6 +49,13 @@ public class Config extends EventDispatcher
         _implementations[contract] = implementation;
     }
 
+    private static var _errorHook:Function;
+
+    skein_internal static function setErrorHook(hook:Function):void
+    {
+        _errorHook = hook;
+    }
+
     //--------------------------------------------------------------------------
     //
     //  Shared Instance
@@ -98,6 +105,15 @@ public class Config extends EventDispatcher
     public function get rest():String
     {
         return _rest;
+    }
+
+    //-----------------------------------
+    //  errorHook
+    //-----------------------------------
+
+    public function get errorHook():Function
+    {
+        return _errorHook;
     }
 
     //-----------------------------------

@@ -59,6 +59,8 @@ public class DefaultRestClient implements RestClient
 
     private var loader:URLLoader;
 
+    private var request:URLRequest;
+
     //
 
     private var removeDefaultHeaders:Boolean = false;
@@ -197,6 +199,19 @@ public class DefaultRestClient implements RestClient
     }
 
     //------------------------------------
+    //  errorHook
+    //------------------------------------
+
+    internal var errorInterceptor:Function = Config.sharedInstance().errorHook;
+
+    public function errorHook(hook:Function):RestClient
+    {
+        errorInterceptor = hook;
+
+        return this;
+    }
+
+    //------------------------------------
     //  result
     //------------------------------------
 
@@ -300,7 +315,7 @@ public class DefaultRestClient implements RestClient
 
     private function send(method:String, data:Object = null):void
     {
-        var request:URLRequest = new URLRequest(formURL());
+        request = new URLRequest(formURL());
         request.method = method;
         request.contentType = _contentType;
 
@@ -325,6 +340,16 @@ public class DefaultRestClient implements RestClient
         }
         else
         {
+            loader.load(request);
+        }
+    }
+
+    skein_internal function retry():void
+    {
+        if (loader != null && request != null)
+        {
+            request.url = formURL();
+
             loader.load(request);
         }
     }
@@ -362,6 +387,8 @@ public class DefaultRestClient implements RestClient
         accessTokenSpecified = false;
         _encoder = null;
         _decoder = null;
+
+        errorInterceptor = Config.sharedInstance().errorHook;
 
         resultCallback = null
         progressCallback = null;

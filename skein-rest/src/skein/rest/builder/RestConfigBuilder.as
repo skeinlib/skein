@@ -42,6 +42,13 @@ public class RestConfigBuilder
         return this;
     }
 
+    public function errorHook(hook:Function):RestConfigBuilder
+    {
+        Config.setErrorHook(hook);
+
+        return this;
+    }
+
     public function header(name:String, handler:Function):RestConfigBuilder
     {
         HeaderHandler.register(name, handler);
