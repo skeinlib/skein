@@ -35,7 +35,10 @@ public interface RestClient
     function post(data:Object = null):void;
     function put(data:Object = null):void;
     function del(data:Object = null):void;
-    function download(data:Object = null):void;
+
+    function download(to:Object):void;
+
+    function upload(from:Object):void;
 
     function url():String;
 }

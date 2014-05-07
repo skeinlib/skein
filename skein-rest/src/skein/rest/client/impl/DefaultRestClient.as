@@ -7,29 +7,20 @@
  */
 package skein.rest.client.impl
 {
-import flash.events.ErrorEvent;
-import flash.events.Event;
-import flash.events.HTTPStatusEvent;
-import flash.events.IOErrorEvent;
-import flash.events.ProgressEvent;
-import flash.events.SecurityErrorEvent;
 import flash.net.URLLoader;
 import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
-import flash.net.URLRequestHeader;
 import flash.net.URLRequestMethod;
-import flash.net.URLStream;
 import flash.net.URLVariables;
 
 import mx.utils.StringUtil;
 
 import skein.core.skein_internal;
-
+import skein.rest.client.RestClient;
+import skein.rest.client.extras.Downloader;
 import skein.rest.core.Config;
 import skein.rest.core.Decoder;
 import skein.rest.core.Encoder;
-import skein.rest.client.RestClient;
-import skein.rest.core.HeaderHandler;
 import skein.rest.core.RestClientRegistry;
 
 use namespace skein_internal;
@@ -308,7 +299,32 @@ public class DefaultRestClient implements RestClient
         send(URLRequestMethod.DELETE, data);
     }
 
-    public function download(data:Object = null):void
+    protected var downloader:Downloader;
+
+    public function download(to:Object):void
+    {
+        var callback:Function = function(result:*=undefined):void
+        {
+            if (result is Error)
+            {
+                if (errorCallback != null)
+                    errorCallback(result);
+            }
+            else
+            {
+                if (resultCallback != null)
+                    resultCallback(result);
+            }
+
+            free();
+        }
+
+        downloader = downloader || new Downloader();
+
+        downloader.download(url(), to, callback);
+    }
+
+    public function upload(to:Object):void
     {
         // TODO: Add downloading large files.
     }
@@ -372,6 +388,18 @@ public class DefaultRestClient implements RestClient
             try
             {
                 loader.close();
+            }
+            catch(error:Error)
+            {
+                // ignore any error
+            }
+        }
+
+        if (downloader != null)
+        {
+            try
+            {
+                downloader.close();
             }
             catch(error:Error)
             {
