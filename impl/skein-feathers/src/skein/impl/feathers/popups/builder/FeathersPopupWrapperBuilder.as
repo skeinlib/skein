@@ -45,6 +45,13 @@ public class FeathersPopupWrapperBuilder implements PopupWrapperBuilder
         return this;
     }
 
+    public function center(value:Object):PopupWrapperBuilder
+    {
+        PropertySetter.set(wrapper, "center", value);
+
+        return this;
+    }
+
     public function reuse(value:Object):PopupWrapperBuilder
     {
         PropertySetter.set(wrapper, "reuse", value);

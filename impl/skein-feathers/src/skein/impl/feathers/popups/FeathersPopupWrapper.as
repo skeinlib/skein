@@ -211,6 +211,24 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
 
     //------------------------------------------------------------------------
     //
+    //	Properties: feathers
+    //
+    //------------------------------------------------------------------------
+
+    private var _overlayFactory:Function;
+
+    public function get overlayFactory():Function
+    {
+        return _overlayFactory;
+    }
+
+    public function set overlayFactory(value:Function):void
+    {
+        _overlayFactory = value;
+    }
+
+    //------------------------------------------------------------------------
+    //
     //	Methods
     //
     //------------------------------------------------------------------------
@@ -224,7 +242,7 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
 
         dispatchPopupEvent(PopupEvent.OPENING);
 
-        PopUpManager.addPopUp(this.child, this.modal, this.center);
+        PopUpManager.addPopUp(this.child, this.modal, this.center, _overlayFactory);
 
         this.layoutPopup();
 

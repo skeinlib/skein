@@ -17,6 +17,8 @@ public interface PopupWrapperBuilder
 
     function position(value:Object):PopupWrapperBuilder;
 
+    function center(value:Object):PopupWrapperBuilder;
+
     function reuse(value:Object):PopupWrapperBuilder;
 
     function popup(value:Object):PopupWrapperBuilder;
