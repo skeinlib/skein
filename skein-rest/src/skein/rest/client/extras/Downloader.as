@@ -10,7 +10,7 @@ package skein.rest.client.extras
 import flash.events.EventDispatcher;
 
 import skein.rest.client.extras.download.DownloadFactory;
-import skein.rest.client.extras.download.DownloadReceiver;
+import skein.rest.client.extras.download.DownloadReader;
 import skein.rest.client.extras.download.DownloadWriter;
 
 public class Downloader extends EventDispatcher
@@ -34,7 +34,7 @@ public class Downloader extends EventDispatcher
 
     private var writer:DownloadWriter;
 
-    private var receiver:DownloadReceiver;
+    private var receiver:DownloadReader;
 
     private var callback:Function;
 

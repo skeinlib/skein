@@ -130,6 +130,7 @@ public class FileStreamDownloadWriter implements DownloadWriter
     {
         if (stream != null)
         {
+            stream.close();
             stream.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
             stream.removeEventListener(OutputProgressEvent.OUTPUT_PROGRESS, outputProgressHandler);
 

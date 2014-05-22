@@ -326,7 +326,7 @@ public class DefaultRestClient implements RestClient
 
     public function upload(to:Object):void
     {
-        // TODO: Add downloading large files.
+        // TODO: Add uploading large files.
     }
 
     private function send(method:String, data:Object = null):void
@@ -441,7 +441,7 @@ public class DefaultRestClient implements RestClient
         }
         else
         {
-            Encoder.forType(_contentType)(data, callback);
+            Encoder.forType(request.contentType)(data, callback);
         }
     }
 

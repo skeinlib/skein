@@ -7,19 +7,23 @@
  */
 package skein.rest.core
 {
+import skein.rest.core.coding.JSONCoding;
+import skein.rest.core.coding.WWWFormCoding;
+
 public class Decoder
 {
     public static function forType(contentType:String):Function
     {
-        if (contentType == "application/json")
-            return JSONCoding.decode;
-        else
-            return unknown;
-    }
+        switch (contentType)
+        {
+            case "application/json" :
+                return JSONCoding.decode;
+                break;
 
-    private static function unknown(data:Object, callback:Function):void
-    {
-        callback(data);
+            default :
+                return WWWFormCoding.decode;
+                break;
+        }
     }
 }
 }

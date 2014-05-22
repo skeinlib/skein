@@ -8,7 +8,7 @@
 package skein.rest.client.extras.download
 {
 import skein.rest.client.impl.extras.download.FileStreamDownloadWriter;
-import skein.rest.client.impl.extras.download.URLStreamDownloadReceiver;
+import skein.rest.client.impl.extras.download.URLStreamDownloadReader;
 
 public class DownloadFactory
 {
@@ -22,9 +22,9 @@ public class DownloadFactory
         return null;
     }
 
-    public static function getReceiver(from:Object):DownloadReceiver
+    public static function getReceiver(from:Object):DownloadReader
     {
-        return new URLStreamDownloadReceiver();
+        return new URLStreamDownloadReader();
     }
 }
 }
