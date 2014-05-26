@@ -11,9 +11,9 @@ import skein.core.skein_internal;
 import skein.rest.core.Config;
 
 use namespace skein_internal;
-public class URLLoaderHandlerAbstract
+public class HandlerAbstract
 {
-    public function URLLoaderHandlerAbstract(client:DefaultRestClient)
+    public function HandlerAbstract(client:DefaultRestClient)
     {
         super();
 
