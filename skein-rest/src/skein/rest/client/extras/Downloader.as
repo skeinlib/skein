@@ -36,10 +36,36 @@ public class Downloader extends EventDispatcher
 
     private var receiver:DownloadReader;
 
-    private var callback:Function;
-
     private var isWriterComplete:Boolean = false;
     private var isReceiverComplete:Boolean = false;
+
+    //--------------------------------------------------------------------------
+    //
+    //  Callbacks
+    //
+    //--------------------------------------------------------------------------
+
+    //------------------------------------
+    //  errorCallback
+    //------------------------------------
+
+    protected var _errorCallback:Function;
+
+    public function errorCallback(callback:Function):void
+    {
+        _errorCallback = callback;
+    }
+
+    //------------------------------------
+    //  completeCallback
+    //------------------------------------
+
+    protected var _completeCallback:Function;
+
+    public function completeCallback(callback:Function):void
+    {
+        _completeCallback = callback;
+    }
 
     //--------------------------------------------------------------------------
     //
@@ -47,7 +73,7 @@ public class Downloader extends EventDispatcher
     //
     //--------------------------------------------------------------------------
 
-    public function download(from:Object, to:Object, callback:Function):void
+    public function download(from:Object, to:Object):void
     {
         writer = DownloadFactory.getWriter(to);
         writer.errorCallback(writerErrorCallback);
@@ -59,8 +85,6 @@ public class Downloader extends EventDispatcher
         receiver.completeCallback(receiverCompleteCallback);
         receiver.errorCallback(receiverErrorCallback);
         receiver.start(from);
-
-        this.callback = callback;
     }
 
     protected function complete():void
@@ -69,7 +93,7 @@ public class Downloader extends EventDispatcher
         {
             close();
 
-            callback();
+            _completeCallback();
         }
     }
 
@@ -77,7 +101,7 @@ public class Downloader extends EventDispatcher
     {
         close();
 
-        callback(error);
+        _errorCallback(error);
     }
 
     public function close():void
@@ -99,12 +123,12 @@ public class Downloader extends EventDispatcher
 
     //--------------------------------------------------------------------------
     //
-    //  Callbacks
+    //  Handlers
     //
     //--------------------------------------------------------------------------
 
     //-------------------------------------
-    //  Callbacks: writer
+    //  Handlers: writer
     //-------------------------------------
 
     private function writerErrorCallback(error:Error):void
@@ -120,7 +144,7 @@ public class Downloader extends EventDispatcher
     }
 
     //-------------------------------------
-    //  Callbacks: receiver
+    //  Handlers: receiver
     //-------------------------------------
 
     private function receiverProgressCallback():void

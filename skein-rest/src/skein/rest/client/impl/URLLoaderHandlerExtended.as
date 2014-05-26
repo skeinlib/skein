@@ -16,11 +16,11 @@ import flash.events.SecurityErrorEvent;
 import flash.net.URLLoader;
 import flash.net.URLRequestHeader;
 
-import skein.rest.client.impl.URLLoaderHandlerAbstract;
+import skein.rest.client.impl.HandlerAbstract;
 
 import skein.rest.core.HeaderHandler;
 
-public class URLLoaderHandlerExtended extends URLLoaderHandlerAbstract implements URLLoaderHandler
+public class URLLoaderHandlerExtended extends HandlerAbstract implements URLLoaderHandler
 {
     public function URLLoaderHandlerExtended(client:DefaultRestClient)
     {
@@ -67,6 +67,8 @@ public class URLLoaderHandlerExtended extends URLLoaderHandlerAbstract implement
 
         function responseStatusHandler(event:HTTPStatusEvent):void
         {
+            headers(event.responseHeaders);
+
             for each (var header:URLRequestHeader in event.responseHeaders)
             {
                 var callback:Function =

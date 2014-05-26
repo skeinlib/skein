@@ -17,6 +17,9 @@ public interface RestClient
     function addParam(key:String, value:Object, defaultValue:Object=null):RestClient;
     function params(value:Object):RestClient;
 
+    function addField(key:String, value:Object, defaultValue:Object=null):RestClient;
+    function fields(value:Object):RestClient;
+
     function accessToken(value:String, key:String = "access_token"):RestClient;
 
     function contentType(value:String):RestClient;

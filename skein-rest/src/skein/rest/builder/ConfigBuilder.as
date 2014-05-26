@@ -36,5 +36,12 @@ public class ConfigBuilder
 
         return this;
     }
+
+    public function setImplementation(contract:Class, implementation:Class):ConfigBuilder
+    {
+        Config.setImplementation(contract, implementation);
+
+        return this;
+    }
 }
 }

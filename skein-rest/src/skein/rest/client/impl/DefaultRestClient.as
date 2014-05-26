@@ -12,12 +12,18 @@ import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 import flash.net.URLRequestMethod;
 import flash.net.URLVariables;
+import flash.utils.ByteArray;
 
 import mx.utils.StringUtil;
 
 import skein.core.skein_internal;
 import skein.rest.client.RestClient;
 import skein.rest.client.extras.Downloader;
+import skein.rest.client.extras.Uploader;
+import skein.rest.client.extras.upload.UploadWriter;
+import skein.rest.client.extras.upload.UploadFactory;
+import skein.rest.client.impl.extras.DownloaderHandler;
+import skein.rest.client.impl.extras.UploaderHandler;
 import skein.rest.core.Config;
 import skein.rest.core.Decoder;
 import skein.rest.core.Encoder;
@@ -48,9 +54,17 @@ public class DefaultRestClient implements RestClient
 
     private var _url:String;
 
-    private var loader:URLLoader;
+    protected var loader:URLLoader;
 
-    private var request:URLRequest;
+    protected var request:URLRequest;
+
+    protected var uploader:Uploader;
+
+    protected var downloader:Downloader;
+
+    private var downloadTo:Object;
+
+    private var uploadFrom:Object;
 
     //
 
@@ -132,6 +146,33 @@ public class DefaultRestClient implements RestClient
     }
 
     //------------------------------------
+    //  fields
+    //------------------------------------
+
+    private var _fields:Object;
+
+    public function addField(key:String, value:Object, defaultValue:Object = null):RestClient
+    {
+        value = value || defaultValue;
+
+        if (value != null)
+        {
+            _fields ||= {};
+
+            _fields[key] = String(value);
+        }
+
+        return this;
+    }
+
+    public function fields(value:Object):RestClient
+    {
+        _fields = value;
+
+        return this;
+    }
+
+    //------------------------------------
     //  contentType
     //------------------------------------
 
@@ -142,6 +183,34 @@ public class DefaultRestClient implements RestClient
         _contentType = value;
 
         return this;
+    }
+
+    private function getRequestContentType(data:Object = null):String
+    {
+        if (_contentType != null)
+        {
+            return _contentType;
+        }
+        else if (data is ByteArray)
+        {
+            return "application/octet-stream";
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private var _responseContentType:String = "application/json";
+
+    skein_internal function setResponseContentType(value:String):void
+    {
+        _responseContentType = value;
+    }
+
+    private function getResponseContentType():String
+    {
+        return _responseContentType;
     }
 
     //------------------------------------
@@ -299,34 +368,26 @@ public class DefaultRestClient implements RestClient
         send(URLRequestMethod.DELETE, data);
     }
 
-    protected var downloader:Downloader;
-
     public function download(to:Object):void
     {
-        var callback:Function = function(result:*=undefined):void
-        {
-            if (result is Error)
-            {
-                if (errorCallback != null)
-                    errorCallback(result);
-            }
-            else
-            {
-                if (resultCallback != null)
-                    resultCallback(result);
-            }
-
-            free();
-        }
+        downloadTo = to;
 
         downloader = downloader || new Downloader();
 
-        downloader.download(url(), to, callback);
+        new DownloaderHandler(this).handle(downloader);
+
+        downloader.download(formURL(), downloadTo);
     }
 
-    public function upload(to:Object):void
+    public function upload(from:Object):void
     {
-        // TODO: Add uploading large files.
+        uploadFrom = from;
+
+        uploader = uploader || new Uploader();
+
+        new UploaderHandler(this).handle(uploader);
+
+        uploader.upload(uploadFrom, formURL(), getRequestContentType(uploadFrom), _fields);
     }
 
     private function send(method:String, data:Object = null):void
@@ -368,6 +429,14 @@ public class DefaultRestClient implements RestClient
 
             loader.load(request);
         }
+        else if (downloader != null && downloadTo != null)
+        {
+            downloader.download(formURL(), downloadTo);
+        }
+        else if (uploader != null && uploadFrom != null)
+        {
+            uploader.upload(uploadFrom, formURL(), getRequestContentType(uploadFrom), _fields);
+        }
     }
 
     public function url():String
@@ -400,6 +469,7 @@ public class DefaultRestClient implements RestClient
             try
             {
                 downloader.close();
+                downloader = null;
             }
             catch(error:Error)
             {
@@ -407,9 +477,28 @@ public class DefaultRestClient implements RestClient
             }
         }
 
+        if (uploader != null)
+        {
+            try
+            {
+                uploader.close();
+                uploader = null;
+            }
+            catch(error:Error)
+            {
+                // ignore any error
+            }
+        }
+
+        request = null;
+        downloadTo = null;
+        uploadFrom = null;
+
         _headers = null;
         _params = null;
+        _fields = null;
         _contentType = "application/json";
+        _responseContentType = null;
         _accessTokenKey = null;
         _accessTokenValue = null;
         accessTokenSpecified = false;
@@ -441,7 +530,7 @@ public class DefaultRestClient implements RestClient
         }
         else
         {
-            Encoder.forType(request.contentType)(data, callback);
+            Encoder.forType(getRequestContentType(data))(data, callback);
         }
     }
 
@@ -460,13 +549,13 @@ public class DefaultRestClient implements RestClient
         }
         else
         {
-            Decoder.forType(_contentType)(data, callback);
+            Decoder.forType(getResponseContentType())(data, callback);
         }
     }
 
     internal function decodeError(info:Object, callback:Function):void
     {
-        Decoder.forType(_contentType)(info, callback);
+        Decoder.forType(getResponseContentType())(info, callback);
     }
 
     private function encodeParams():String

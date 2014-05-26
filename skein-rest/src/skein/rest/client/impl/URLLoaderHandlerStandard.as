@@ -16,9 +16,9 @@ import flash.events.SecurityErrorEvent;
 import flash.net.URLLoader;
 
 import skein.core.skein_internal;
-import skein.rest.client.impl.URLLoaderHandlerAbstract;
+import skein.rest.client.impl.HandlerAbstract;
 
-public class URLLoaderHandlerStandard extends URLLoaderHandlerAbstract implements URLLoaderHandler
+public class URLLoaderHandlerStandard extends HandlerAbstract implements URLLoaderHandler
 {
     public function URLLoaderHandlerStandard(client:DefaultRestClient)
     {

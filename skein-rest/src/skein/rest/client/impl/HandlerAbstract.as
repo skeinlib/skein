@@ -7,13 +7,15 @@
  */
 package skein.rest.client.impl
 {
+import flash.net.URLRequestHeader;
+
 import skein.core.skein_internal;
 import skein.rest.core.Config;
 
 use namespace skein_internal;
-public class URLLoaderHandlerAbstract
+public class HandlerAbstract
 {
-    public function URLLoaderHandlerAbstract(client:DefaultRestClient)
+    public function HandlerAbstract(client:DefaultRestClient)
     {
         super();
 
@@ -26,12 +28,25 @@ public class URLLoaderHandlerAbstract
 
     protected var attempts:uint;
 
-    protected function status(status:int):void
+    protected function status(code:int):void
     {
-        responseCode = status;
+        responseCode = code;
 
         if (client.statusCallback != null)
-            client.statusCallback(status);
+            client.statusCallback(code);
+    }
+
+    protected function headers(headers:Array):void
+    {
+        for each (var header:URLRequestHeader in headers)
+        {
+            switch (header.name.toLowerCase())
+            {
+                case "content-type" :
+                    client.setResponseContentType(header.value);
+                    break;
+            }
+        }
     }
 
     protected function progress(loaded:Number, total:Number):void
@@ -49,8 +64,10 @@ public class URLLoaderHandlerAbstract
                 {
                     if (client.resultCallback.length == 2)
                         client.resultCallback(data, responseCode);
-                    else
+                    else if (client.resultCallback.length == 1)
                         client.resultCallback(data);
+                    else
+                        client.resultCallback();
 
                     client.free();
                 }

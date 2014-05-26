@@ -21,7 +21,7 @@ public class FileStreamDownloadWriter implements DownloadWriter
 {
     //--------------------------------------------------------------------------
     //
-    //  Class functions
+    //  Class const
     //
     //--------------------------------------------------------------------------
 
