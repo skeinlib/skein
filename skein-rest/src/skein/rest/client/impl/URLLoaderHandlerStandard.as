@@ -20,50 +20,85 @@ import skein.rest.client.impl.HandlerAbstract;
 
 public class URLLoaderHandlerStandard extends HandlerAbstract implements URLLoaderHandler
 {
+    //--------------------------------------------------------------------------
+    //
+    //  Constructor
+    //
+    //--------------------------------------------------------------------------
+
     public function URLLoaderHandlerStandard(client:DefaultRestClient)
     {
         super(client);
     }
 
+    //--------------------------------------------------------------------------
+    //
+    //  Variables
+    //
+    //--------------------------------------------------------------------------
+
+    private var _loader:URLLoader;
+
+    //--------------------------------------------------------------------------
+    //
+    //  Methods
+    //
+    //--------------------------------------------------------------------------
+
     public function handle(loader:URLLoader):void
     {
-        function resultHandler(event:Event):void
-        {
-            loader.removeEventListener(Event.COMPLETE, resultHandler);
-            loader.removeEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
-            loader.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
-            loader.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
-            loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
+        _loader = loader;
 
-            result(loader.data);
-        }
+        _loader.addEventListener(Event.COMPLETE, resultHandler);
+        _loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
+        _loader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+        _loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+        _loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
+    }
 
-        function errorHandler(event:ErrorEvent):void
-        {
-            loader.removeEventListener(Event.COMPLETE, resultHandler);
-            loader.removeEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
-            loader.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
-            loader.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
-            loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
+    //--------------------------------------------------------------------------
+    //
+    //  Overridden Methods
+    //
+    //--------------------------------------------------------------------------
 
-            error(loader.data);
-        }
+    override protected function dispose():void
+    {
+        super.dispose();
 
-        function statusHandler(event:HTTPStatusEvent):void
-        {
-            status(event.status);
-        }
+        _loader.removeEventListener(Event.COMPLETE, resultHandler);
+        _loader.removeEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
+        _loader.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
+        _loader.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+        _loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
 
-        function progressHandler(event:ProgressEvent):void
-        {
-            progress(event.bytesLoaded, event.bytesTotal);
-        }
+        _loader = null;
+    }
 
-        loader.addEventListener(Event.COMPLETE, resultHandler);
-        loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
-        loader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-        loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
-        loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
+    //--------------------------------------------------------------------------
+    //
+    //  Handlers
+    //
+    //--------------------------------------------------------------------------
+
+    private function resultHandler(event:Event):void
+    {
+        result(_loader.data);
+    }
+
+    function errorHandler(event:ErrorEvent):void
+    {
+        error(_loader.data);
+    }
+
+    function statusHandler(event:HTTPStatusEvent):void
+    {
+        status(event.status);
+    }
+
+    function progressHandler(event:ProgressEvent):void
+    {
+        progress(event.bytesLoaded, event.bytesTotal);
     }
 }
 }

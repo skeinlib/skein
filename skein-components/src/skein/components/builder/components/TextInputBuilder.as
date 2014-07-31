@@ -93,6 +93,8 @@ public interface TextInputBuilder extends Builder
 
     function multiline(value:Object):TextInputBuilder;
 
+    function wordWrap(value:Object):TextInputBuilder;
+
     function displayAsPassword(value:Object):TextInputBuilder;
 
     function textAlign(value:Object):TextInputBuilder;

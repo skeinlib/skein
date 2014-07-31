@@ -17,6 +17,7 @@ import skein.popups.*;
 import skein.popups.PopupWrapper;
 import skein.popups.enum.PopupPosition;
 import skein.popups.events.PopupEvent;
+import skein.utils.PropertyProxy;
 
 import starling.core.Starling;
 import starling.display.DisplayObject;
@@ -45,32 +46,32 @@ import starling.display.Stage;
 
 public class FeathersPopupWrapper extends EventDispatcher implements PopupWrapper
 {
-    //------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     //
     //	Constructor
     //
-    //------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     public function FeathersPopupWrapper()
     {
         super();
     }
 
-    //------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     //
     //	Variables
     //
-    //------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     private var child:DisplayObject;
 
     private var popupData:Object;
 
-    //------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     //
     //	Properties
     //
-    //------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     //----------------------------------
     //	modal
@@ -90,7 +91,7 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
 
         _modal = value;
 
-        this.dispatchEvent(new Event("modalChanged"));
+        dispatchEvent(new Event("modalChanged"));
     }
 
     //----------------------------------
@@ -109,14 +110,14 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
     {
         if (value == _center) return;
 
-        if (this.position != PopupPosition.FREE)
+        if (_position != PopupPosition.FREE)
         {
             return;
         }
 
         _center = value;
 
-        this.dispatchEvent(new Event("centerChanged"));
+        dispatchEvent(new Event("centerChanged"));
     }
 
     //----------------------------------
@@ -137,7 +138,7 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
 
         _reuse = value;
 
-        this.dispatchEvent(new Event("reuseChanged"));
+        dispatchEvent(new Event("reuseChanged"));
     }
 
     //----------------------------------
@@ -158,7 +159,7 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
 
         _position = value;
 
-        this.dispatchEvent(new Event("positionChanged"));
+        dispatchEvent(new Event("positionChanged"));
     }
 
     //----------------------------------
@@ -188,7 +189,7 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
             closePopup();
         }
 
-        this.dispatchEvent(new Event("openChanged"));
+        dispatchEvent(new Event("openChanged"));
     }
 
     //----------------------------------
@@ -209,11 +210,64 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
         _popup = value;
     }
 
-    //------------------------------------------------------------------------
+    //----------------------------------
+    //	popupProperties
+    //----------------------------------
+
+    protected var _popupProperties:PropertyProxy;
+
+    public function get popupProperties():Object
+    {
+        if (!_popupProperties)
+        {
+            _popupProperties = new PropertyProxy(popupPropertiesChangeCallback);
+        }
+
+        return _popupProperties;
+    }
+
+    public function set popupProperties(value:Object):void
+    {
+        if (_popupProperties == value)
+        {
+            return;
+        }
+
+        if (!value)
+        {
+            value = new PropertyProxy();
+        }
+
+        if (!(value is PropertyProxy))
+        {
+            const newValue:PropertyProxy = new PropertyProxy();
+
+            for(var propertyName:String in value)
+            {
+                newValue[propertyName] = value[propertyName];
+            }
+
+            value = newValue;
+        }
+
+        if (_popupProperties)
+        {
+            _popupProperties.removeOnChangeCallback(popupPropertiesChangeCallback);
+        }
+
+        _popupProperties = PropertyProxy(value);
+
+        if (_popupProperties)
+        {
+            _popupProperties.addOnChangeCallback(popupPropertiesChangeCallback);
+        }
+    }
+
+    //--------------------------------------------------------------------------
     //
     //	Properties: feathers
     //
-    //------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     private var _overlayFactory:Function;
 
@@ -227,39 +281,43 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
         _overlayFactory = value;
     }
 
-    //------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     //
     //	Methods
     //
-    //------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     private function openPopup():void
     {
         if (child == null || !reuse)
+        {
             child = getPopup();
+
+            refreshPopupProperties();
+        }
 
         child.addEventListener(Event.CLOSE, child_closeHandler);
 
         dispatchPopupEvent(PopupEvent.OPENING);
 
-        PopUpManager.addPopUp(this.child, this.modal, this.center, _overlayFactory);
+        PopUpManager.addPopUp(child, _modal, _center, _overlayFactory);
 
-        this.layoutPopup();
+        layoutPopup();
 
         dispatchPopupEvent(PopupEvent.OPENED);
     }
 
     private function closePopup():void
     {
-        if (!this.child) return;
+        if (!child) return;
 
-        this.child.removeEventListener("close", child_closeHandler);
+        child.removeEventListener("close", child_closeHandler);
 
-        this.dispatchPopupEvent(PopupEvent.CLOSING);
+        dispatchPopupEvent(PopupEvent.CLOSING);
 
-        PopUpManager.removePopUp(this.child, !this.reuse);
+        PopUpManager.removePopUp(child, !reuse);
 
-        this.dispatchPopupEvent(PopupEvent.CLOSED, popupData);
+        dispatchPopupEvent(PopupEvent.CLOSED, popupData);
 
         popupData = null;
     }
@@ -286,50 +344,78 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
 
     private function layoutPopup():void
     {
-        if (this.position == PopupPosition.FREE)
+        if (_position == PopupPosition.FREE)
             return;
 
         var stage:Stage = Starling.current.stage;
 
-        switch (this.position)
+        switch (_position)
         {
             case PopupPosition.LEFT :
-                    this.child.x = 0
-                    this.child.y = 0;
-                    this.child.height = stage.height;
+                    child.x = 0
+                    child.y = 0;
+                    child.height = stage.height;
                 break;
 
             case PopupPosition.TOP :
-                    this.child.x = 0
-                    this.child.y = 0;
-                    this.child.width = stage.width;
+                    child.x = 0
+                    child.y = 0;
+                    child.width = stage.width;
                 break;
 
             case PopupPosition.RIGHT :
-                    this.child.x = stage.width - this.child.width;
-                    this.child.y = 0;
-                    this.child.height = stage.height;
+                    child.x = stage.width - child.width;
+                    child.y = 0;
+                    child.height = stage.height;
                 break;
 
             case PopupPosition.BOTTOM :
-                    this.child.x = 0
-                    this.child.y = stage.height - this.child.height;
-                    this.child.width = stage.width;
+                    child.x = 0
+                    child.y = stage.height - child.height;
+                    child.width = stage.width;
                 break;
 
             case PopupPosition.FILL :
-                    this.child.x = 0
-                    this.child.y = 0;
-                    this.child.width = stage.width;
-                    this.child.height = stage.height;
+                    child.x = 0
+                    child.y = 0;
+                    child.width = stage.width;
+                    child.height = stage.height;
                 break;
         }
     }
 
     private function dispatchPopupEvent(type:String, withData:Object=null):void
     {
-        this.dispatchEvent(new PopupEvent(type, false, withData));
+        dispatchEvent(new PopupEvent(type, false, withData));
     }
+
+    //------------------------------------------------------------------------
+    //
+    //	Callbacks
+    //
+    //------------------------------------------------------------------------
+
+    protected function popupPropertiesChangeCallback(proxy:PropertyProxy, name:String):void
+    {
+        refreshPopupProperties();
+    }
+
+    private function refreshPopupProperties():void
+    {
+        if (child != null)
+        {
+            for (var name:String in _popupProperties)
+            {
+                if (child.hasOwnProperty(name))
+                {
+                    var value:Object = _popupProperties[name];
+
+                    child[name] = value;
+                }
+            }
+        }
+    }
+
 
     //------------------------------------------------------------------------
     //
@@ -344,7 +430,7 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
             popupData = event.data;
         }
 
-        this.open = false;
+        open = false;
     }
 }
 }

@@ -92,5 +92,7 @@ public interface LabelBuilder extends Builder
     function wordWrap(value:Object):LabelBuilder;
 
     function lineBreak(value:Object):LabelBuilder;
+
+    function isHTML(value:Object):LabelBuilder;
 }
 }

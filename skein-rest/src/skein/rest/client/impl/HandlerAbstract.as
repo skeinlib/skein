@@ -28,6 +28,11 @@ public class HandlerAbstract
 
     protected var attempts:uint;
 
+    protected function dispose():void
+    {
+        client.free()
+    }
+
     protected function status(code:int):void
     {
         responseCode = code;
@@ -69,13 +74,13 @@ public class HandlerAbstract
                     else
                         client.resultCallback();
 
-                    client.free();
+                    dispose();
                 }
             );
         }
         else
         {
-            client.free();
+            dispose();
         }
     }
 
@@ -137,7 +142,7 @@ public class HandlerAbstract
         else
            client.errorCallback(info);
 
-        client.free();
+        dispose();
     }
 }
 }

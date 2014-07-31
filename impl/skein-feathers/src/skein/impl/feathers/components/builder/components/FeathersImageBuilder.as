@@ -29,12 +29,13 @@ public class FeathersImageBuilder extends FeathersBuilder implements ImageBuilde
     //
     //--------------------------------------------------------------------------
 
-    public function FeathersImageBuilder(host:Object)
+    public function FeathersImageBuilder(host:Object, generator:Class = null)
     {
         super();
 
         this.host = host;
-        createInstance();
+
+        createInstance(generator);
 
         this.spriteNature = new FeathersSpriteNature(this.instance);
         this.componentNature = new FeathersComponentNature(this.instance);
@@ -83,9 +84,8 @@ public class FeathersImageBuilder extends FeathersBuilder implements ImageBuilde
 
     override protected function createInstance(generator:Class = null):void
     {
-        this._instance =  new ImageLoader();
+        this._instance = generator ? new generator() : new ImageLoader();
     }
-
 
     //------------------------------------
     //  Methods: Sprite

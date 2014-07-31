@@ -46,7 +46,7 @@ public interface BuilderFactory
 
     function hgroup(generator:Class = null):HGroupBuilder;
 
-    function image():ImageBuilder;
+    function image(generator:Class = null):ImageBuilder;
 
     function stepper():NumericStepperBuilder;
 

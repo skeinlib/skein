@@ -15,60 +15,96 @@ import skein.rest.client.impl.HandlerAbstract;
 
 public class UploaderHandler extends HandlerAbstract
 {
+    //--------------------------------------------------------------------------
+    //
+    //  Constructor
+    //
+    //--------------------------------------------------------------------------
+
     public function UploaderHandler(client:DefaultRestClient)
     {
         super(client);
     }
 
+    //--------------------------------------------------------------------------
+    //
+    //  Variables
+    //
+    //--------------------------------------------------------------------------
+
+    private var _uploader:Uploader;
+
+    //--------------------------------------------------------------------------
+    //
+    //  Methods
+    //
+    //--------------------------------------------------------------------------
+
     public function handle(uploader:Uploader):void
     {
-        function statusHandler(info:Object):void
+        _uploader = uploader;
+
+        _uploader.completeCallback(completeHandler);
+        _uploader.responseCallback(responseHandler);
+        _uploader.statusCallback(statusHandler);
+        _uploader.errorCallback(errorHandler);
+    }
+
+    //--------------------------------------------------------------------------
+    //
+    //  Overridden Methods
+    //
+    //--------------------------------------------------------------------------
+
+    override protected function dispose():void
+    {
+        super.dispose();
+
+        _uploader.completeCallback(null);
+        _uploader.statusCallback(null);
+        _uploader.responseCallback(null);
+        _uploader.errorCallback(null);
+
+        _uploader = null;
+    }
+
+    //--------------------------------------------------------------------------
+    //
+    //  Handlers
+    //
+    //--------------------------------------------------------------------------
+
+    private function statusHandler(info:Object):void
+    {
+        if (info is HTTPStatusEvent)
         {
-            if (info is HTTPStatusEvent)
-            {
-                status(HTTPStatusEvent(info).status);
-            }
+            status(HTTPStatusEvent(info).status);
         }
+    }
 
-        function responseHandler(info:Object):void
+    private function responseHandler(info:Object):void
+    {
+        if (info is HTTPStatusEvent)
         {
-            if (info is HTTPStatusEvent)
-            {
-                headers(HTTPStatusEvent(info).responseHeaders);
-            }
+            headers(HTTPStatusEvent(info).responseHeaders);
         }
+    }
 
-        function completeHandler(data:Object=null):void
+    private function completeHandler(data:Object=null):void
+    {
+        if (responseCode >= 200 && responseCode < 300) // result
         {
-            uploader.completeCallback(null);
-            uploader.statusCallback(null);
-            uploader.responseCallback(null);
-            uploader.errorCallback(null);
-
-            if (responseCode >= 200 && responseCode < 300) // result
-            {
-                result(data);
-            }
-            else // error
-            {
-                error(data)
-            }
+            result(data);
         }
-
-        function errorHandler(info:Object=null):void
+        else // error
         {
-            uploader.completeCallback(null);
-            uploader.statusCallback(null);
-            uploader.responseCallback(null);
-            uploader.errorCallback(null);
-
-            error(info);
+            error(data)
         }
+    }
 
-        uploader.completeCallback(completeHandler);
-        uploader.responseCallback(responseHandler);
-        uploader.statusCallback(statusHandler);
-        uploader.errorCallback(errorHandler);
+    private function errorHandler(info:Object=null):void
+    {
+        error(info);
     }
 }
 }

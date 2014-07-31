@@ -10,6 +10,7 @@ package skein.rest.client.impl
 import flash.net.URLLoader;
 import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
+import flash.net.URLRequestHeader;
 import flash.net.URLRequestMethod;
 import flash.net.URLVariables;
 import flash.utils.ByteArray;
@@ -395,6 +396,8 @@ public class DefaultRestClient implements RestClient
         request = new URLRequest(formURL());
         request.method = method;
         request.contentType = _contentType;
+
+        request.requestHeaders = [new URLRequestHeader("Referer", "http://beta.mobitile.com")];
 
         if (_headers != null)
             request.requestHeaders = request.requestHeaders.concat(_headers);

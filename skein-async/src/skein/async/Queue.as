@@ -111,10 +111,13 @@ public class Queue extends EventDispatcher
         }
     }
 
-    public function start():void
+    public function start(immediate:Boolean = true):void
     {
         enterFrameDispatcher = new Sprite();
         enterFrameDispatcher.addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+
+        if (immediate)
+            frame();
     }
 
     public function stop():void
@@ -130,9 +133,40 @@ public class Queue extends EventDispatcher
     //  Methods: Public API
     //-------------------------------------
 
+    protected function frame():void
+    {
+        if (busy) return;
+
+        if (ready)
+        {
+            ready = false;
+
+            frameCurrentThread = 0;
+
+            frameStartTime = getTimer();
+
+            tick();
+        }
+        else
+        {
+            ready = true;
+        }
+    }
+
     protected function tick():void
     {
         if (busy) return;
+
+        busy = true;
+
+        if (tasks.length == 0)
+        {
+            stop();
+
+            dispatchEvent(new Event(Event.COMPLETE));
+
+            return;
+        }
 
         var task:Object = tasks.shift();
 
@@ -204,22 +238,7 @@ public class Queue extends EventDispatcher
 
     private function enterFrameHandler(event:Event):void
     {
-        if (busy) return;
-
-        if (ready)
-        {
-            ready = false;
-
-            frameCurrentThread = 0;
-
-            frameStartTime = getTimer();
-
-            tick();
-        }
-        else
-        {
-            ready = true;
-        }
+        frame();
     }
 }
 }

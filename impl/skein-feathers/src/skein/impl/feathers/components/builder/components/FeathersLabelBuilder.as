@@ -284,5 +284,12 @@ public class FeathersLabelBuilder extends FeathersBuilder implements LabelBuilde
     {
         return this;
     }
+
+    public function isHTML(value:Object):LabelBuilder
+    {
+        PropertySetter.set(this.instance.textRendererProperties, "isHTML", value);
+
+        return this;
+    }
 }
 }

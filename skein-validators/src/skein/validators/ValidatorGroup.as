@@ -31,7 +31,7 @@ public class ValidatorGroup extends EventDispatcher
     //
     //--------------------------------------------------------------------------
 
-    private var validators:Array = [];
+    public var validators:Array = [];
 
     private var invalid:Array = [];
 
