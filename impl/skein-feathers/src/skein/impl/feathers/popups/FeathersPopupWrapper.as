@@ -7,6 +7,7 @@
  */
 package skein.impl.feathers.popups
 {
+import feathers.core.IValidating;
 import feathers.core.PopUpManager;
 
 import flash.events.Event;
@@ -22,6 +23,7 @@ import skein.utils.PropertyProxy;
 import starling.core.Starling;
 import starling.display.DisplayObject;
 import starling.display.Stage;
+import starling.events.ResizeEvent;
 
 /**
  * Dispatched after the popup has been created but just before it is added to
@@ -296,7 +298,9 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
             refreshPopupProperties();
         }
 
-        child.addEventListener(Event.CLOSE, child_closeHandler);
+        child.addEventListener("close", child_closeHandler);
+
+        PopUpManager.root.stage.addEventListener(ResizeEvent.RESIZE, stage_resizeHandler);
 
         dispatchPopupEvent(PopupEvent.OPENING);
 
@@ -313,9 +317,14 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
 
         child.removeEventListener("close", child_closeHandler);
 
+        PopUpManager.root.stage.removeEventListener(ResizeEvent.RESIZE, stage_resizeHandler);
+
         dispatchPopupEvent(PopupEvent.CLOSING);
 
-        PopUpManager.removePopUp(child, !reuse);
+        if (PopUpManager.isPopUp(child))
+        {
+            PopUpManager.removePopUp(child, !reuse);
+        }
 
         dispatchPopupEvent(PopupEvent.CLOSED, popupData);
 
@@ -354,32 +363,45 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
             case PopupPosition.LEFT :
                     child.x = 0
                     child.y = 0;
-                    child.height = stage.height;
+                    child.height = stage.stageHeight;
                 break;
 
             case PopupPosition.TOP :
                     child.x = 0
                     child.y = 0;
-                    child.width = stage.width;
+                    child.width = stage.stageWidth;
                 break;
 
             case PopupPosition.RIGHT :
-                    child.x = stage.width - child.width;
                     child.y = 0;
-                    child.height = stage.height;
+                    child.height = stage.stageHeight;
+
+                    if (child is IValidating)
+                        IValidating(child).validate();
+
+                    child.x = stage.stageWidth - child.width;
                 break;
 
             case PopupPosition.BOTTOM :
                     child.x = 0
-                    child.y = stage.height - child.height;
-                    child.width = stage.width;
+                    child.width = stage.stageWidth;
+
+                    if (child.hasOwnProperty("maxHeight"))
+                    {
+                        child["maxHeight"] = stage.stageHeight;
+                    }
+
+                    if (child is IValidating)
+                        IValidating(child).validate();
+
+                    child.y = stage.stageHeight - child.height;
                 break;
 
             case PopupPosition.FILL :
                     child.x = 0
                     child.y = 0;
-                    child.width = stage.width;
-                    child.height = stage.height;
+                    child.width = stage.stageWidth;
+                    child.height = stage.stageHeight;
                 break;
         }
     }
@@ -416,12 +438,15 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
         }
     }
 
-
     //------------------------------------------------------------------------
     //
     //	Handlers
     //
     //------------------------------------------------------------------------
+
+    //-------------------------------------
+    //  Handlers: child
+    //-------------------------------------
 
     private function child_closeHandler(event:Object):void
     {
@@ -431,6 +456,15 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
         }
 
         open = false;
+    }
+
+    //-------------------------------------
+    //  Handlers: stage
+    //-------------------------------------
+
+    private function stage_resizeHandler(event:ResizeEvent):void
+    {
+        layoutPopup();
     }
 }
 }

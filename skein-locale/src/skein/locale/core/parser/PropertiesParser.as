@@ -7,11 +7,11 @@
  */
 package skein.locale.core.parser
 {
-import mx.utils.StringUtil;
-
 import skein.locale.core.Bundle;
 import skein.locale.core.Parser;
 import skein.locale.core.RawData;
+import skein.utils.StringUtil;
+import skein.utils.StringUtil;
 
 public class PropertiesParser implements Parser
 {
@@ -24,7 +24,7 @@ public class PropertiesParser implements Parser
     public function known(data:Object):Boolean
     {
         var result:Boolean =
-                data is RawData && PATTERN.test(String(RawData(data).content));
+            data is RawData && PATTERN.test(String(RawData(data).content));
 
         return result;
     }
@@ -39,9 +39,11 @@ public class PropertiesParser implements Parser
 
         for each (var line:String in src.split("\n"))
         {
-            var array:Array = line.split("=");
+            var assignmentIndex:int = line.indexOf("=");
 
-            o[StringUtil.trim(array[0])] = StringUtil.trim(array[1]);
+            var key:String = StringUtil.trim(line.substring(0, assignmentIndex));
+
+            o[key] = line.substring(assignmentIndex + 1);
         }
 
         var bundle:Bundle = new Bundle(raw.locale, raw.bundle, o);
