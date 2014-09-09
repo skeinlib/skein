@@ -106,7 +106,7 @@ public class HandlerAbstract
         }
         else
         {
-            client.free();
+            dispose();
         }
     }
 

@@ -501,7 +501,7 @@ public class DefaultRestClient implements RestClient
         _params = null;
         _fields = null;
         _contentType = "application/json";
-        _responseContentType = null;
+        _responseContentType = "application/json";
         _accessTokenKey = null;
         _accessTokenValue = null;
         accessTokenSpecified = false;
