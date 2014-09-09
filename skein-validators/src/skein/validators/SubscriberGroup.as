@@ -7,9 +7,7 @@
  */
 package skein.validators
 {
-import skein.binding.bind;
-import skein.binding.get;
-import skein.binding.setter;
+import skein.validators.events.SubscriberEvent;
 import skein.validators.events.ValidationEvent;
 
 public class SubscriberGroup
@@ -30,51 +28,54 @@ public class SubscriberGroup
     {
         for each (var subscriber:Subscriber in subscribers)
         {
-            bind(setter(this, "listenerChange"), get(subscriber, "listener"));
-            bind(setter(this, "validatorChange"), get(subscriber, "validator"));
+            subscriber.addEventListener(SubscriberEvent.LISTENER_CHANGE, subscriber_listenerChangeHandler);
+            subscriber.addEventListener(SubscriberEvent.VALIDATOR_CHANGE, subscriber_validatorChangeHandler);
+//
+//            bind(setter(this, "listenerChange"), get(subscriber, "listener"));
+//            bind(setter(this, "validatorChange"), get(subscriber, "validator"));
         }
     }
 
-    private var listenerCount:uint;
-
-    public function listenerChange(listener:Object):void
-    {
-        if (listener != null)
-        {
-            listenerCount++;
-        }
-
-        if (listenerCount == subscribers.length && validatorCount == subscribers.length)
-        {
-            initSubscribers();
-        }
-    }
-
-    private var validatorCount:uint;
-
-    public function validatorChange(validator:Validator):void
-    {
-        if (validator != null)
-        {
-            validatorCount++;
-        }
-
-        if (validatorCount == subscribers.length && listenerCount == subscribers.length)
-        {
-            initSubscribers();
-        }
-    }
-
-    private function initSubscribers():void
-    {
-        for each (var subscriber:Subscriber in subscribers)
-        {
-            if (subscriber.listener != null)
-            {
-                registerValidationEvents(subscriber.validator);
-            }
-        }
-    }
+//    private var listenerCount:uint;
+//
+//    public function listenerChange(listener:Object):void
+//    {
+//        if (listener != null)
+//        {
+//            listenerCount++;
+//        }
+//
+//        if (listenerCount == subscribers.length && validatorCount == subscribers.length)
+//        {
+//            initSubscribers();
+//        }
+//    }
+//
+//    private var validatorCount:uint;
+//
+//    public function validatorChange(validator:Validator):void
+//    {
+//        if (validator != null)
+//        {
+//            validatorCount++;
+//        }
+//
+//        if (validatorCount == subscribers.length && listenerCount == subscribers.length)
+//        {
+//            initSubscribers();
+//        }
+//    }
+//
+//    private function initSubscribers():void
+//    {
+//        for each (var subscriber:Subscriber in subscribers)
+//        {
+//            if (subscriber.listener != null)
+//            {
+//                registerValidationEvents(subscriber.validator);
+//            }
+//        }
+//    }
 
     private function getSubscriberByValidator(validator:Validator):Subscriber
     {
@@ -98,17 +99,22 @@ public class SubscriberGroup
         return null;
     }
 
+//    private function subscribeControl(listener:Object):void
+//    {
+//
+//    }
+//
+//    private function registerValidationEvents(validator:Validator):void
+//    {
+//        validator.addEventListener(ValidationEvent.VALID, validationResultHandler);
+//        validator.addEventListener(ValidationEvent.INVALID, validationResultHandler);
+//    }
 
-    private function subscribeControl(listener:Object):void
-    {
-
-    }
-
-    private function registerValidationEvents(validator:Validator):void
-    {
-        validator.addEventListener(ValidationEvent.VALID, validationResultHandler);
-        validator.addEventListener(ValidationEvent.INVALID, validationResultHandler);
-    }
+    //--------------------------------------------------------------------------
+    //
+    //  Handlers
+    //
+    //--------------------------------------------------------------------------
 
     private function validationResultHandler(event:ValidationEvent):void
     {
@@ -118,17 +124,37 @@ public class SubscriberGroup
 
         if (event.type == ValidationEvent.VALID)
         {
-            if (listener.hasOwnProperty("errorString"))
+            if (listener != null && listener.hasOwnProperty("errorString"))
             {
                 listener.errorString = null;
             }
         }
         else // if (event.type == ValidationEvent.INVALID)
         {
-            if (listener.hasOwnProperty("errorString"))
+            if (listener != null && listener.hasOwnProperty("errorString"))
             {
                 listener.errorString = event.results[0].errorMessage;
             }
+        }
+    }
+
+    private function subscriber_listenerChangeHandler(event:SubscriberEvent):void
+    {
+
+    }
+
+    private function subscriber_validatorChangeHandler(event:SubscriberEvent):void
+    {
+        if (event.oldValue is Validator)
+        {
+            Validator(event.oldValue).removeEventListener(ValidationEvent.VALID, validationResultHandler);
+            Validator(event.oldValue).removeEventListener(ValidationEvent.INVALID, validationResultHandler);
+        }
+
+        if (event.newValue)
+        {
+            Validator(event.newValue).addEventListener(ValidationEvent.VALID, validationResultHandler);
+            Validator(event.newValue).addEventListener(ValidationEvent.INVALID, validationResultHandler);
         }
     }
 }

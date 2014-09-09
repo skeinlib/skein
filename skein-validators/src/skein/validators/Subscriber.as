@@ -10,6 +10,10 @@ package skein.validators
 import flash.events.Event;
 import flash.events.EventDispatcher;
 
+import skein.validators.events.SubscriberEvent;
+
+[Event(name="listenerChange", type="skein.validators.events.SubscriberEvent")]
+[Event(name="validatorChange", type="skein.validators.events.SubscriberEvent")]
 public class Subscriber extends EventDispatcher
 {
     //--------------------------------------------------------------------------
@@ -35,7 +39,7 @@ public class Subscriber extends EventDispatcher
 
     private var _validator:Validator;
 
-    [Bindable(event="validatorChanged")]
+    [Bindable(event="validatorChange")]
     public function get validator():Validator
     {
         return _validator;
@@ -45,9 +49,11 @@ public class Subscriber extends EventDispatcher
     {
         if (_validator == value) return;
 
+        var oldValue:Object = _validator;
+
         _validator = value;
 
-        dispatchEvent(new Event("validatorChanged"));
+        dispatchEvent(new SubscriberEvent(SubscriberEvent.VALIDATOR_CHANGE, oldValue, _validator));
     }
 
     //--------------------------------------
@@ -66,9 +72,11 @@ public class Subscriber extends EventDispatcher
     {
         if (_listener == value) return;
 
+        var oldValue:Object = _listener;
+
         _listener = value;
 
-        dispatchEvent(new Event("listenerChanged"));
+        dispatchEvent(new SubscriberEvent(SubscriberEvent.LISTENER_CHANGE, oldValue, _listener));
     }
 }
 }
