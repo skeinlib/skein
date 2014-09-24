@@ -10,24 +10,28 @@ Four HTTP methods are supported: `GET`, `POST`, `PUT` and `DELETE` throught corr
 
 ### Configuration
 
-    Rest.config()
-        .rest("http://eaxmple.com/rest/api")
-            .accessToken("access-token")
-        .configure();
+```as3
+Rest.config()
+    .rest("http://eaxmple.com/rest/api")
+        .accessToken("access-token")
+    .configure();
+```
 
 You pass a root URL of the API to the `rest()` function, library stores it so you can omit it for next usage. 
 If you pass your acces-token to the `accessToken()` method it will be used for all requests, but you can specify other for concrete request.
 
 ### Usage
 
-    rest("/employees/{0}", employeeId)
-        .addHeader("Authorization", "basic-auth-string") // adds request header
-        .contentType("application/xml") // sets content-type 
-        .addParam("fullInfo", true) // adds URL parameters
-        .decoder(employeeEncoder) // deserialization function
-        .result(resultHandler) // complete handerl
-        .error(errorHandler) // error handler
-    .get();
+```as3
+rest("/employees/{0}", employeeId)
+    .addHeader("Authorization", "basic-auth-string") // adds request header
+    .contentType("application/xml") // sets content-type 
+    .addParam("fullInfo", true) // adds URL parameters
+    .decoder(employeeEncoder) // deserialization function
+    .result(resultHandler) // complete handerl
+    .error(errorHandler) // error handler
+.get();
+```
     
 Note that the result URL for this response will be:
 
@@ -37,9 +41,11 @@ Note that the result URL for this response will be:
 
 The request headers could be specified for concrete request through ``RestClient.addHeader(name:String, value:Object)` method:
 
-    rest("/employees/{0}", employeeId)
-        .addHeader("Authorization", "basic-auth")
-    .get();
+```as3
+rest("/employees/{0}", employeeId)
+    .addHeader("Authorization", "basic-auth")
+.get();
+```
 
 #### ContentType
 
@@ -51,17 +57,21 @@ The `RestClient.contentType(value:String)` method allows to specify content-type
 
 The URL parameters coul be added like this:
 
-    rest("/employees/{0}, employeeId)
-        .addParam("fullInfo", true)
-    .get();
+```as3
+rest("/employees/{0}, employeeId)
+    .addParam("fullInfo", true)
+.get();
+```
 
 This produces next URL `http://example.com/rest/api/employees/{employeeId}?fullInfo=true`
 
 Uou can override default (specified during configuration) acces-token:
     
-    rest("/employees/{0}, employeeId)
-        .accessToken("some-other-token", "accessToken")
-    .get()
+```as3
+rest("/employees/{0}, employeeId)
+    .accessToken("some-other-token", "accessToken")
+.get()
+```
 
 Note that `accessToken(value:String, key:String="access_token"):void` defines value as first param, when `addParam(key:String, value:Object):void` define it as second. It makes possible to specify accessToken shorter, if parameter name is default value `access_token`.
 
@@ -69,21 +79,25 @@ Note that `accessToken(value:String, key:String="access_token"):void` defines va
 
 As you can pass and receive data throug this library, you need a way to serialize/deserialie your data. By default skein-rest serialize/deserialize objects to/from JSON using it's own JSON encoder/decoder. But you can override this, for example here we pass custom encoder/decoder:
 
-    rest("/employees)
-        .encoder(employeeEncoder)
-        .decoder(employeeDecoder)
-    .post(new Employee());
+```as3
+rest("/employees)
+    .encoder(employeeEncoder)
+    .decoder(employeeDecoder)
+.post(new Employee());
+```
     
 #### Handlers
 
 The next four handlers are suported: 
 
-    rest("/employees/{0}", employeeId)
-        .result(completeHandler)
-        .error(errorHandler)
-        .progress(progressHandler)
-        .staus(statusHandler)
-    .get();
+```as3
+rest("/employees/{0}", employeeId)
+    .result(completeHandler)
+    .error(errorHandler)
+    .progress(progressHandler)
+    .staus(statusHandler)
+.get();
+```
 
 The result handler's signature is `resultHandler(data:Object, code:int):void`. Similarly error handler's singature is `errorHandler(error:Error, code:int):void`. The second argument for both these handlers is *optional*, it means you can define your handler with one argument only. The status handler's signature is `statusHandler(code:int):void` the `code` for all of these handlers is response code received from server. The last progress hander's signature is `progressHandler(bytesLoaded:Number, bytesTotal:Number):void`
 
@@ -91,9 +105,11 @@ The result handler's signature is `resultHandler(data:Object, code:int):void`. S
 
 You can define a handler for response header:
 
-    rest("/employees/{0}", employeeId)
-        .header("X-Notice", xNoticeHandler)
-    .get();
+```as3
+rest("/employees/{0}", employeeId)
+    .header("X-Notice", xNoticeHandler)
+.get();
+```
 
 The `xNoticeHandler` will be called everytime when `RestClient` recevies `X-Notice` header in response. The handler's signature is `xNoticeHandler(header:URLRequestHeader):void;`.
 
