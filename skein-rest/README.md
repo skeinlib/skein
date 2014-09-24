@@ -22,18 +22,20 @@ If you pass your acces-token to the `accessToken()` method it will be used for a
 
 ### Usage
 
+Next gets Employee by id:
+
 ```as3
 rest("/employees/{0}", employeeId)
-    .addHeader("Authorization", "basic-auth-string") // adds request header
-    .contentType("application/xml") // sets content-type 
-    .addParam("fullInfo", true) // adds URL parameters
-    .decoder(employeeEncoder) // deserialization function
-    .result(resultHandler) // complete handerl
-    .error(errorHandler) // error handler
+    .addHeader("Authorization", "basic-auth-string") // add request header
+    .contentType("application/xml") // set request content-type 
+    .addParam("fullInfo", true) // add URL parameters
+    .decoder(employeeEncoder) // function that parses recevied data 
+    .result(resultHandler) // function called after parsing is complete and takes parsed object
+    .error(errorHandler) // handles error
 .get();
 ```
     
-Note that the result URL for this response will be:
+The result URL for this request will be like this:
 
 `http://exaple.com/rest/api` + `/employees/{employeeId}` + `?` + `fullInfo=true` + `&` + `access_token={acces-token}`
 
