@@ -59,6 +59,8 @@ public class FileStreamDownloadWriter implements DownloadWriter
     //
     //--------------------------------------------------------------------------
 
+    private var destination:Object;
+
     private var stream:Object;
 
     private var busy:Boolean = true;
@@ -115,7 +117,9 @@ public class FileStreamDownloadWriter implements DownloadWriter
 
             try
             {
-                stream.openAsync(to, FileMode.WRITE);
+                destination = to;
+
+                stream.openAsync(destination, FileMode.WRITE);
 
                 busy = false;
             }
@@ -135,6 +139,8 @@ public class FileStreamDownloadWriter implements DownloadWriter
             stream.removeEventListener(OutputProgressEvent.OUTPUT_PROGRESS, outputProgressHandler);
 
             stream = null;
+
+            destination = null;
         }
 
         busy = true;
@@ -171,7 +177,7 @@ public class FileStreamDownloadWriter implements DownloadWriter
             }
             else if (isLastPortionReceived)
             {
-                _completeCallback();
+                _completeCallback(destination);
             }
         }
 

@@ -36,9 +36,6 @@ public class Downloader extends EventDispatcher
 
     private var receiver:DownloadReader;
 
-    private var isWriterComplete:Boolean = false;
-    private var isReceiverComplete:Boolean = false;
-
     //--------------------------------------------------------------------------
     //
     //  Callbacks
@@ -87,14 +84,11 @@ public class Downloader extends EventDispatcher
         receiver.start(from);
     }
 
-    protected function complete():void
+    protected function complete(data:Object):void
     {
-        if (isWriterComplete && isReceiverComplete)
-        {
-            close();
+        close();
 
-            _completeCallback();
-        }
+        _completeCallback(data);
     }
 
     protected function error(error:Error):void
@@ -117,8 +111,6 @@ public class Downloader extends EventDispatcher
             receiver.close();
             receiver = null;
         }
-
-        isWriterComplete = isReceiverComplete = false;
     }
 
     //--------------------------------------------------------------------------
@@ -136,11 +128,9 @@ public class Downloader extends EventDispatcher
         this.error(error);
     }
 
-    private function writerCompleteCallback():void
+    private function writerCompleteCallback(data:Object):void
     {
-        isWriterComplete = true;
-
-        this.complete();
+        this.complete(data);
     }
 
     //-------------------------------------
@@ -155,10 +145,6 @@ public class Downloader extends EventDispatcher
     private function receiverCompleteCallback():void
     {
         writer.write(receiver.getBytes(), true);
-
-        isReceiverComplete = true;
-
-        this.complete();
     }
 
     private function receiverErrorCallback(error:Error):void
