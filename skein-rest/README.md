@@ -58,7 +58,7 @@ The `RestClient.contentType(value:String)` method allows to specify content-type
 The URL parameters coul be added like this:
 
 ```as3
-rest("/employees/{0}, employeeId)
+rest("/employees/{0}", employeeId)
     .addParam("fullInfo", true)
 .get();
 ```
@@ -68,7 +68,7 @@ This produces next URL `http://example.com/rest/api/employees/{employeeId}?fullI
 Uou can override default (specified during configuration) acces-token:
     
 ```as3
-rest("/employees/{0}, employeeId)
+rest("/employees/{0}", employeeId)
     .accessToken("some-other-token", "accessToken")
 .get()
 ```
@@ -80,7 +80,7 @@ Note that `accessToken(value:String, key:String="access_token"):void` defines va
 As you can pass and receive data throug this library, you need a way to serialize/deserialie your data. By default skein-rest serialize/deserialize objects to/from JSON using it's own JSON encoder/decoder. But you can override this, for example here we pass custom encoder/decoder:
 
 ```as3
-rest("/employees)
+rest("/employees")
     .encoder(employeeEncoder)
     .decoder(employeeDecoder)
 .post(new Employee());
