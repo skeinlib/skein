@@ -9,7 +9,7 @@ package skein.utils
 {
 public class ArrayUtil
 {
-    public static function compare(array1:Array, array2:Array):Boolean
+    public static function equal(array1:Array, array2:Array):Boolean
     {
         if (array1 == null && array2 == null) return true;
 

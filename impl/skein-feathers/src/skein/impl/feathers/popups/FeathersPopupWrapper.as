@@ -271,6 +271,10 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
     //
     //--------------------------------------------------------------------------
 
+    //------------------------------------
+    //  overlayFactory
+    //------------------------------------
+
     private var _overlayFactory:Function;
 
     public function get overlayFactory():Function
