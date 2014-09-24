@@ -29,4 +29,4 @@ Form Validation library.
 
 skein-tubes
 ----
-Easy API for RTMPFP classes.
+Easy API for RTMFP classes.
