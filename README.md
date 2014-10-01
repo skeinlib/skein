@@ -33,7 +33,7 @@ The goal is **reduce code** for view layout, support **data binding** for view c
 b.label().id("firstNameLabel")
     .styleName("settings-group-name-label")
 .addTo();
-b.input(TextInputExt).id("firstNameInput")
+b.input().id("firstNameInput")
     .height(35)
     .text(get(this, "model.user.firstName"))
     .softKeyboardType(SoftKeyboardType.DEFAULT)
