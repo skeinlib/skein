@@ -5,12 +5,6 @@ Skein is a set of libraries that help to build large application for projects wh
 
 Skein in difference from Flex is not a framework, it is just a set of libraries that are independed of each other and could be attached to project separately.
 
-
-
-Unlike Flex, 
-
-A set of libraries that helps to Flex Developer to develol non-Flex probjects.
-
 skein-rest
 ----
 REST client library 
