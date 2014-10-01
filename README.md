@@ -41,6 +41,7 @@ b.input().id("firstNameInput")
     .on(Event.CHANGE, firstNameInput_changeHandler)
 .addTo();
 ```
+
 skein-binding
 ----
 Data Binding library
@@ -52,7 +53,21 @@ UI Localization library
 
 skein-popups
 ----
-Working with popups
+Provides fluent interface for creating popups. 
+
+The goal is **reduce code** for working with popups.
+
+```as3
+attachPopup =
+    Popups.newWrapper()
+        .popup(AttachPopup)
+        .modal(true).center(true).reuse(false)
+        .position(PopupPosition.FILL)
+        .onClosed(attachPopup_closedHandler)
+    .build();
+...
+attachPopup.open = true;
+```
 
 skein-validators
 ----
