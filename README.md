@@ -3,11 +3,25 @@ skein
 
 Skein is a set of libraries that help to build large application for projects where Flex could not be used. Originaly it  developed for use in mobile projects based on Starling framework with Feathers components.
 
-Skein in difference from Flex is not a framework, it is just a set of libraries that are independed of each other and could be attached to project separately.
+Skein, in difference from Flex, is not a framework it is just a set of libraries that are independed of each other and could be attached to project separately.
 
 skein-rest
 ----
-REST client library 
+
+Library for communication with Server through HTTP. It called _rest_-client because it is assumed to use it mostly for RESTful  API calls.
+
+The goal is **reduce code** for client-server communication, **easy customization**, working **out of the box** for standard settings (HTTP+JSON).
+
+```as3
+rest("/employees/{0}", employeeId)
+    .addHeader("Authorization", "basic-auth-string") 
+    .contentType("application/xml") 
+    .addParam("fullInfo", true)
+    .decoder(employeeEncoder) 
+    .result(resultHandler) 
+    .error(errorHandler) 
+.get();
+```
 
 skein-components
 ----
