@@ -71,9 +71,32 @@ attachPopup.open = true;
 
 skein-validators
 ----
-Form Validation library.
+This is a light-weight version of Cairngorms's validation library w/o dependecy on Flex.
 
 The goal is **easy validation** for forms.
+
+```as3
+var usernameValidator:EmailValidator = new EmailValidator();
+usernameValidator.source = usernameInput;
+usernameValidator.property = "text";
+validators.addValidator(usernameValidator);
+
+var passwordValidator:PasswordValidator = new PasswordValidator();
+passwordValidator.source = passwordInput;
+passwordValidator.property = "text";
+validators.addValidator(passwordValidator);
+
+Validators.newSubscriberGroup()
+    .addSubscriber()
+        .listener(usernameInput)
+        .validator(usernameValidator)
+    .build()
+    .addSubscriber()
+        .listener(usernameInput)
+        .validator(usernameValidator)
+    .build()
+.build();
+```
 
 skein-tubes
 ----
