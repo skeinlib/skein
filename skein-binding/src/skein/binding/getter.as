@@ -3,8 +3,8 @@ package skein.binding
 import skein.binding.core.MethodSource;
 import skein.binding.core.PropertyDestination;
 
-public function getter(site:Object, method:String):MethodSource
+public function getter(site:Object, method:String, params:Array = null):MethodSource
 {
-    return new MethodSource(site, method);
+    return new MethodSource(site, method, params);
 }
 }

@@ -20,14 +20,18 @@ public class OrOperator extends OperatorBase
 
     override public function getValue():Object
     {
-        for each (var operand:Object in operands)
+        var value:Object = null;
+
+        for (var i:uint = 0, n:uint = operands ? operands.length : 0; i < n; i++)
         {
-            var value:Object = OperatorBase.getOperandValue(operand);
+            var operand:Object = operands[i];
+
+            value = OperatorBase.getOperandValue(operand);
 
             if (value) return value;
         }
 
-        return false;
+        return value;
     }
 }
 }
