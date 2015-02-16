@@ -13,8 +13,23 @@ public class PropertySetter
 {
     public static function set(site:Object, property:String, value:Object):void
     {
-        var SourceClass:Class = getDefinitionByName("skein.binding.core::Source") as Class;
-        var BindingContextClass:Class = getDefinitionByName("skein.binding.core::BindingContext") as Class;
+        var SourceClass:Class;
+        var BindingContextClass:Class;
+
+        try
+        {
+            SourceClass = getDefinitionByName("skein.binding.core::Source") as Class;
+            BindingContextClass = getDefinitionByName("skein.binding.core::BindingContext") as Class;
+        }
+        catch (error:ReferenceError)
+        {
+            // No public definition exists with the specified name.
+            // It's ok
+        }
+        catch (error:Error)
+        {
+            // It's strange, but ignore they too
+        }
 
         if (SourceClass && BindingContextClass && value is SourceClass)
         {
