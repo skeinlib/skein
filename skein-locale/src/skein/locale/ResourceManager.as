@@ -175,8 +175,13 @@ public class ResourceManager extends EventDispatcher
 
     private function findBundle(name:String, resource:String):Bundle
     {
-        for each (var locale:String in locales)
+        var locales:Array = this.locales || [];
+        locales.push(_defaultLocale);
+
+        for (var i:uint = 0, n:uint = locales ? locales.length : 0; i < n; i++)
         {
+            var locale:String = locales[i];
+
             var bundles:Object = bundleMap[locale];
 
             if (bundles == null)

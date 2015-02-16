@@ -1,28 +1,21 @@
 /**
- * Created with IntelliJ IDEA.
- * User: mobitile
- * Date: 7/26/13
- * Time: 2:45 PM
- * To change this template use File | Settings | File Templates.
+ * Created by mobitile on 11/3/14.
  */
 package skein.locale.core.source
 {
 import flash.events.Event;
 import flash.events.EventDispatcher;
-import flash.net.URLLoader;
-import flash.net.URLLoader;
-import flash.net.URLRequest;
 
 import skein.locale.core.RawData;
 
 import skein.locale.core.Source;
+import skein.locale.core.SourceLoader;
+import skein.locale.core.loader.SourceLoaderFileStream;
 import skein.locale.core.loader.SourceLoaderURLLoader;
 
-[Event(name="complete", type="flash.events.Event")]
-
-public class ExternalSource extends EventDispatcher implements Source
+public class FileSource extends EventDispatcher implements Source
 {
-    public function ExternalSource(locale:String, bundle:String, path:String=null)
+    public function FileSource(locale:String, bundle:String, path:String=null)
     {
         super();
 
@@ -50,26 +43,34 @@ public class ExternalSource extends EventDispatcher implements Source
 
     public function load():void
     {
-        var loader:SourceLoaderURLLoader = new SourceLoaderURLLoader();
+        var loader:SourceLoader;
+
+        if (SourceLoaderFileStream.isSupported())
+        {
+            loader = new SourceLoaderFileStream();
+        }
+        else
+        {
+            loader = new  SourceLoaderURLLoader();
+        }
 
         loader.addCompleteCallback(function(data:Object):void
         {
             _data = new RawData(locale, bundle, data);
 
-            dispatchEvent(new Event(Event.COMPLETE));
-
             loader.dispose();
+
+            dispatchEvent(new Event(Event.COMPLETE));
         });
 
-        loader.addErrorCallback(function(error:Error):void
+        loader.addErrorCallback(function():void
         {
             loader.dispose();
         });
 
-        var url:String = path || "/locale/" + locale + "/" + bundle + ".properties";
+        var url:String = path || "locale/" + locale + "/" + bundle + ".properties";
 
         loader.load(url);
     }
-
 }
 }
