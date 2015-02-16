@@ -75,7 +75,7 @@ public class ValidatorGroup extends EventDispatcher
     //
     //--------------------------------------------------------------------------
 
-    protected function addValidator(validator:Object):void
+    public function addValidator(validator:Object):void
     {
         if (validator != null)
         {
@@ -93,6 +93,16 @@ public class ValidatorGroup extends EventDispatcher
         }
 
         return isValid;
+    }
+
+    public function reset():void
+    {
+        invalid.length = 0;
+
+        for each (var validator:Validator in validators)
+        {
+            validator.dispatchEvent(new ValidationEvent(ValidationEvent.VALID));
+        }
     }
 
     private function doValidate(silentValidation:Boolean):void

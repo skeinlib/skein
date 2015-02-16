@@ -11,13 +11,35 @@ import skein.validators.data.ValidationResult;
 
 public class PasswordValidator extends BasicValidator
 {
+    //--------------------------------------------------------------------------
+    //
+    //  Class constants
+    //
+    //--------------------------------------------------------------------------
+
 //    private static const PASSWORD_REGEXP:RegExp = /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})/;
     private static const PASSWORD_REGEXP:RegExp = /(?!^[0-9]*$)(?!^[a-zA-Z!@#$%^&amp;*()_+=<&gt;?]*$)^([a-zA-Z!@#$%^&amp;*()_+=<&gt;?0-9]{6,15})$/;
+
+    //--------------------------------------------------------------------------
+    //
+    //  Constructor
+    //
+    //--------------------------------------------------------------------------
 
     public function PasswordValidator()
     {
         super();
     }
+
+    //--------------------------------------------------------------------------
+    //
+    //  Properties
+    //
+    //--------------------------------------------------------------------------
+
+    //-------------------------------------
+    //  passwordToWeakError
+    //-------------------------------------
 
     private var _passwordToWeakError:String = "Password is too weak.";
 
@@ -31,6 +53,12 @@ public class PasswordValidator extends BasicValidator
         _passwordToWeakError = value;
     }
 
+    //--------------------------------------------------------------------------
+    //
+    //  Overridden methods
+    //
+    //--------------------------------------------------------------------------
+
     override protected function doValidation(value:Object):Array
     {
         var result:Array = super.doValidation(value);
@@ -40,6 +68,12 @@ public class PasswordValidator extends BasicValidator
         else
             return validatePassword(value);
     }
+
+    //--------------------------------------------------------------------------
+    //
+    //  Methods
+    //
+    //--------------------------------------------------------------------------
 
     private function validatePassword(value:Object):Array
     {
