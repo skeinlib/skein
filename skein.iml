@@ -3,7 +3,7 @@
   <component name="FlexBuildConfigurationManager" active="skein">
     <configurations>
       <configuration name="skein" pure-as="true" output-type="Library" output-file="skein-1.0.0.swc" output-folder="$MODULE_DIR$/bin">
-        <dependencies target-player="15.0">
+        <dependencies target-player="17.0">
           <entries>
             <entry library-id="7725ffcd-bdf6-4688-a499-34aac54d2b58">
               <dependency linkage="Merged" />
@@ -42,7 +42,7 @@
               <dependency linkage="Include" />
             </entry>
           </entries>
-          <sdk name="15.0.0.249" />
+          <sdk name="17.0.0.105" />
         </dependencies>
         <compiler-options>
           <option name="additionalOptions" value="-advanced-telemetry=true" />
@@ -60,7 +60,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
     </content>
-    <orderEntry type="jdk" jdkName="15.0.0.249" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="jdk" jdkName="17.0.0.105" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library" exported="">
       <library type="flex">
@@ -86,4 +86,3 @@
     <orderEntry type="module" module-name="skein-tubes" exported="" />
   </component>
 </module>
-
