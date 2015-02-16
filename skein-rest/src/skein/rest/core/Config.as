@@ -25,13 +25,6 @@ public class Config extends EventDispatcher
     //
     //--------------------------------------------------------------------------
 
-    private static var _rest:String;
-
-    skein_internal static function rest(value:String):void
-    {
-        _rest = value;
-    }
-
     private static var _auth:String;
 
     skein_internal static function auth(value:String):void
@@ -102,9 +95,16 @@ public class Config extends EventDispatcher
     //  rest
     //-----------------------------------
 
+    private var _rest:String;
+
     public function get rest():String
     {
         return _rest;
+    }
+
+    public function set rest(value:String):void
+    {
+        _rest = value;
     }
 
     //-----------------------------------

@@ -25,7 +25,7 @@ public class ConfigBuilder
         return new AuthConfigBuilder(this, url);
     }
 
-    public function rest(url:String):RestConfigBuilder
+    public function rest(url:String = null):RestConfigBuilder
     {
         return new RestConfigBuilder(this, url);
     }

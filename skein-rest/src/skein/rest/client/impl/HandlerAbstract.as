@@ -11,6 +11,7 @@ import flash.net.URLRequestHeader;
 
 import skein.core.skein_internal;
 import skein.rest.core.Config;
+import skein.rest.errors.DataProcessingError;
 
 use namespace skein_internal;
 public class HandlerAbstract
@@ -62,47 +63,66 @@ public class HandlerAbstract
 
     protected function result(data:Object):void
     {
-        if (client.resultCallback != null)
+        // indicates if result callback was called before an exception occurred
+        var wasHandlerCalledBeforeError:Boolean = false;
+
+        try
         {
             client.decodeResult(data,
-                function(data:Object):void
+                function(value:Object):void
                 {
-                    if (client.resultCallback.length == 2)
-                        client.resultCallback(data, responseCode);
-                    else if (client.resultCallback.length == 1)
-                        client.resultCallback(data);
-                    else
-                        client.resultCallback();
+                    wasHandlerCalledBeforeError = true;
 
-                    dispose();
-                }
-            );
+                    if (value is Error)
+                    {
+                        handleError(value);
+                    }
+                    else
+                    {
+                        handleResult(value);
+                    }
+                });
         }
-        else
+        catch (error:Error)
         {
-            dispose();
+            // ignore the result already handled
+            if (!wasHandlerCalledBeforeError)
+            {
+                trace(error);
+                handleError(new DataProcessingError("An incorrect or invalid data was received."));
+            }
         }
+    }
+
+    protected function handleResult(value:Object):void
+    {
+        if (client.resultCallback != null)
+        {
+            if (client.resultCallback.length == 2)
+                client.resultCallback(value, responseCode);
+            else if (client.resultCallback.length == 1)
+                client.resultCallback(value);
+            else
+                client.resultCallback();
+        }
+
+        dispose();
     }
 
     protected function error(data:Object):void
     {
+        client.decodeError(data, handleError);
+    }
+
+    protected function handleError(info:Object):void
+    {
         if (client.errorInterceptor != null)
         {
-            client.decodeError(data,
-                function(info:Object):void
-                {
-                    interceptError(info);
-                }
-            );
+            interceptError(info);
         }
         else if (client.errorCallback != null)
         {
-            client.decodeError(data,
-                function(info:Object):void
-                {
-                    proceedError(info);
-                }
-            );
+            proceedError(info);
         }
         else
         {
@@ -115,12 +135,12 @@ public class HandlerAbstract
         var proceedErrorCallback:Function = function():void
         {
             proceedError(info);
-        }
+        };
 
         var retryRequestCallback:Function = function():void
         {
             retryRequest();
-        }
+        };
 
         if (client.errorInterceptor.length == 2)
             client.errorInterceptor(info, responseCode)(attempts, proceedErrorCallback, retryRequestCallback);

@@ -16,17 +16,23 @@ use namespace skein_internal;
 
 public class RestConfigBuilder
 {
-    public function RestConfigBuilder(config:ConfigBuilder, url:String)
+    public function RestConfigBuilder(config:ConfigBuilder, url:String = null)
     {
         super();
 
         this.config = config;
-        this.url = url;
+
+        PropertySetter.set(Config.sharedInstance(), "rest", url);
     }
 
     private var config:ConfigBuilder;
 
-    private var url:String;
+    public function url(value:Object):RestConfigBuilder
+    {
+        PropertySetter.set(Config.sharedInstance(), "rest", value);
+
+        return this;
+    }
 
     public function accessTokenKey(value:String):RestConfigBuilder
     {
@@ -58,8 +64,6 @@ public class RestConfigBuilder
 
     public function configure():ConfigBuilder
     {
-        Config.rest(url);
-
         return config;
     }
 }
