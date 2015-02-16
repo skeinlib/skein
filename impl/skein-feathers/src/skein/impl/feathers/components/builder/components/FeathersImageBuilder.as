@@ -175,6 +175,17 @@ public class FeathersImageBuilder extends FeathersBuilder implements ImageBuilde
         return this;
     }
 
+    //------------------------------------
+    //  Methods: Object
+    //------------------------------------
+
+    public function set(property:String, value:Object):ImageBuilder
+    {
+        PropertySetter.set(instance, property, value);
+
+        return this;
+    }
+
     //-----------------------------------
     //  Methods: EventDispatcher
     //-----------------------------------

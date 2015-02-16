@@ -18,6 +18,12 @@ public interface ImageBuilder extends Builder
     //--------------------------------------------------------------------------
 
     //-----------------------------------
+    //  Methods: Object
+    //-----------------------------------
+
+    function set(property:String, value:Object):ImageBuilder;
+
+    //-----------------------------------
     //  Methods: EventDispatcher
     //-----------------------------------
 
