@@ -28,7 +28,7 @@ public class ArrayUtil
         return true;
     }
 
-    public static function same(array1:Array, array2:Array):Boolean
+    public static function same(array1:Array, array2:Array, comparator:Function=null):Boolean
     {
         if (array1 == null && array2 == null) return true;
 
@@ -40,10 +40,41 @@ public class ArrayUtil
         {
             var value1:Object = array1[i];
 
-            if (array2.indexOf(value1) == -1) return false;
+            var found:Boolean;
+
+            if (comparator == null)
+            {
+                found = array2.indexOf(value1) != -1;
+            }
+            else
+            {
+                found = array2.some(function(value2:*, index:int, array:Array):Boolean
+                {
+                    return comparator(value1, value2);
+                });
+            }
+
+            if (!found) return false;
         }
 
         return true;
+    }
+
+    public static function copy(array:Array):Array
+    {
+        if (array == null)
+            return null;
+
+        var result:Array = [];
+
+        for (var i:uint = 0, n:uint = array.length; i < n; i++)
+        {
+            var item:Object = array[i];
+
+            result.push(ObjectUtil.copy(item));
+        }
+
+        return result;
     }
 }
 }
