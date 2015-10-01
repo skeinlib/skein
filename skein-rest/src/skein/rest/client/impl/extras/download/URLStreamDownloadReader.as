@@ -105,6 +105,7 @@ public class URLStreamDownloadReader implements DownloadReader
     {
         if (stream != null)
         {
+            stream.close();
             stream.removeEventListener(Event.OPEN, openHandler);
             stream.removeEventListener(Event.COMPLETE, completeHandler);
             stream.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);

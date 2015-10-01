@@ -7,16 +7,16 @@
  */
 package skein.rest.client.extras.download
 {
-import skein.rest.client.impl.extras.download.FileStreamDownloadWriter;
+import skein.rest.client.impl.extras.download.FileStreamAsyncDownloadWriter;
 import skein.rest.client.impl.extras.download.URLStreamDownloadReader;
 
 public class DownloadFactory
 {
     public static function getWriter(to:Object):DownloadWriter
     {
-        if (FileStreamDownloadWriter.isSupported())
+        if (FileStreamAsyncDownloadWriter.isSupported())
         {
-            return new FileStreamDownloadWriter();
+            return new FileStreamAsyncDownloadWriter();
         }
 
         return null;

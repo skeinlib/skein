@@ -17,7 +17,7 @@ import flash.utils.getDefinitionByName;
 
 import skein.rest.client.extras.download.DownloadWriter;
 
-public class FileStreamDownloadWriter implements DownloadWriter
+public class FileStreamSyncDownloadWriter implements DownloadWriter
 {
     //--------------------------------------------------------------------------
     //
@@ -48,7 +48,7 @@ public class FileStreamDownloadWriter implements DownloadWriter
     //
     //--------------------------------------------------------------------------
 
-    public function FileStreamDownloadWriter()
+    public function FileStreamSyncDownloadWriter()
     {
         super();
     }
@@ -59,15 +59,9 @@ public class FileStreamDownloadWriter implements DownloadWriter
     //
     //--------------------------------------------------------------------------
 
-    private var destination:Object;
+    private var file:Object;
 
     private var stream:Object;
-
-    private var busy:Boolean = true;
-
-    private var buffer:Vector.<ByteArray> = new <ByteArray>[];
-
-    private var isLastPortionReceived:Boolean = false;
 
     //--------------------------------------------------------------------------
     //
@@ -113,15 +107,12 @@ public class FileStreamDownloadWriter implements DownloadWriter
         {
             stream = new FileStream();
             stream.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
-            stream.addEventListener(OutputProgressEvent.OUTPUT_PROGRESS, outputProgressHandler);
 
             try
             {
-                destination = to;
+                file = to;
 
-                stream.openAsync(destination, FileMode.WRITE);
-
-                busy = false;
+                stream.open(file, FileMode.WRITE);
             }
             catch (error:Error)
             {
@@ -136,51 +127,28 @@ public class FileStreamDownloadWriter implements DownloadWriter
         {
             stream.close();
             stream.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
-            stream.removeEventListener(OutputProgressEvent.OUTPUT_PROGRESS, outputProgressHandler);
 
             stream = null;
 
-            destination = null;
+            file = null;
         }
-
-        busy = true;
-        buffer = new <ByteArray>[];
-        isLastPortionReceived = false;
     }
 
     public function write(bytes:ByteArray, last:Boolean = false):void
     {
-        isLastPortionReceived ||= last;
-
-        if (bytes.length > 0)
-            buffer.push(bytes);
-
-        flush();
-    }
-
-    protected function flush():void
-    {
-        if (!busy)
+        try
         {
-            if (buffer.length > 0)
-            {
-                busy = true;
+            stream.writeBytes(bytes);
 
-                try
-                {
-                    stream.writeBytes(buffer.pop());
-                }
-                catch (error:Error)
-                {
-                    _errorCallback(error);
-                }
-            }
-            else if (isLastPortionReceived)
+            if (last)
             {
-                _completeCallback(destination);
+                _completeCallback(file);
             }
         }
-
+        catch (error:Error)
+        {
+            _errorCallback(error);
+        }
     }
 
     //--------------------------------------------------------------------------
@@ -192,13 +160,6 @@ public class FileStreamDownloadWriter implements DownloadWriter
     private function errorHandler(event:IOErrorEvent):void
     {
         _errorCallback(new IOError(event.text, event.errorID));
-    }
-
-    private function outputProgressHandler(event:OutputProgressEvent):void
-    {
-        busy = false;
-
-        flush();
     }
 }
 }
