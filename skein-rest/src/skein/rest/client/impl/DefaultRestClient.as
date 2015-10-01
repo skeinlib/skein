@@ -7,6 +7,9 @@
  */
 package skein.rest.client.impl
 {
+import flash.events.Event;
+import flash.events.HTTPStatusEvent;
+import flash.events.TimerEvent;
 import flash.net.URLLoader;
 import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
@@ -14,6 +17,7 @@ import flash.net.URLRequestHeader;
 import flash.net.URLRequestMethod;
 import flash.net.URLVariables;
 import flash.utils.ByteArray;
+import flash.utils.Timer;
 
 import mx.utils.StringUtil;
 
@@ -21,8 +25,6 @@ import skein.core.skein_internal;
 import skein.rest.client.RestClient;
 import skein.rest.client.extras.Downloader;
 import skein.rest.client.extras.Uploader;
-import skein.rest.client.extras.upload.UploadWriter;
-import skein.rest.client.extras.upload.UploadFactory;
 import skein.rest.client.impl.extras.DownloaderHandler;
 import skein.rest.client.impl.extras.UploaderHandler;
 import skein.rest.core.Config;
@@ -346,6 +348,23 @@ public class DefaultRestClient implements RestClient
     }
 
     //------------------------------------
+    //  stub
+    //------------------------------------
+
+    internal var stubDelay:uint;
+
+    internal var stubValue:Object;
+
+    public function stub(value:Object, delay:uint = 0):RestClient
+    {
+        stubValue = value;
+
+        stubDelay = delay;
+
+        return this;
+    }
+
+    //------------------------------------
     //  http
     //------------------------------------
 
@@ -366,7 +385,17 @@ public class DefaultRestClient implements RestClient
 
     public function del(data:Object = null):void
     {
-        send(URLRequestMethod.DELETE, data);
+        if (Config.sharedInstance().fixKnownIssues)
+        {
+            // fixes issue with empty BODY for DELETE method on Android platform
+
+            addHeader(new URLRequestHeader("X-HTTP-Method-Override", "DELETE"));
+            send(URLRequestMethod.POST, data);
+        }
+        else
+        {
+            send(URLRequestMethod.DELETE, data);
+        }
     }
 
     public function download(to:Object):void
@@ -397,8 +426,6 @@ public class DefaultRestClient implements RestClient
         request.method = method;
         request.contentType = _contentType;
 
-        request.requestHeaders = [new URLRequestHeader("Referer", "http://beta.mobitile.com")];
-
         if (_headers != null)
             request.requestHeaders = request.requestHeaders.concat(_headers);
 
@@ -414,13 +441,51 @@ public class DefaultRestClient implements RestClient
                 {
                     request.data = data;
 
-                    loader.load(request);
+                    load();
                 }
             );
         }
         else
         {
+            load();
+        }
+    }
+
+    private function load():void
+    {
+        if (stubValue != null)
+        {
+            var receiveStubData:Function = function():void
+            {
+                loader.data = stubValue is Function ? (stubValue as Function).apply() : stubValue;
+
+                loader.dispatchEvent(new HTTPStatusEvent(HTTPStatusEvent.HTTP_STATUS, false, false, 200));
+                loader.dispatchEvent(new Event(Event.COMPLETE));
+            };
+
+            if (stubDelay > 0)
+            {
+                var timer:Timer = new Timer(stubDelay, 1);
+                timer.addEventListener(TimerEvent.TIMER_COMPLETE,
+                    function(event:TimerEvent):void
+                    {
+                        timer.removeEventListener(TimerEvent.TIMER_COMPLETE, arguments.callee);
+
+                        receiveStubData();
+                    });
+
+                timer.start();
+            }
+            else
+            {
+                receiveStubData();
+            }
+        }
+        else
+        {
             loader.load(request);
+
+//            trace("[skein] DefaultRestClient:", request.method + ":" + request.url, "DATA:" + request.data);
         }
     }
 
@@ -510,10 +575,13 @@ public class DefaultRestClient implements RestClient
 
         errorInterceptor = Config.sharedInstance().errorHook;
 
-        resultCallback = null
+        resultCallback = null;
         progressCallback = null;
         errorCallback = null;
         headerCallbacks = {};
+
+        stubValue = null;
+        stubDelay = 0;
 
         RestClientRegistry.free(this);
     }

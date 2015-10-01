@@ -117,6 +117,22 @@ public class Config extends EventDispatcher
     }
 
     //-----------------------------------
+    //  fixKnownIssue
+    //-----------------------------------
+
+    private var _fixKnownIssues:Boolean;
+
+    public function get fixKnownIssues():Boolean
+    {
+        return _fixKnownIssues;
+    }
+
+    skein_internal function setFixKnownIssues(value:Boolean):void
+    {
+        _fixKnownIssues = value;
+    }
+
+    //-----------------------------------
     //  accessToken
     //-----------------------------------
 

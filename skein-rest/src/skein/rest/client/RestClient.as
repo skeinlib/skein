@@ -36,6 +36,8 @@ public interface RestClient
 
     function header(name:String, handler:Function):RestClient;
 
+    function stub(value:Object, delay:uint = 0):RestClient;
+
     function get():void;
     function post(data:Object = null):void;
     function put(data:Object = null):void;
