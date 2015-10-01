@@ -32,13 +32,13 @@ public interface BuilderFactory
 
     function input(generator:Class = null):TextInputBuilder;
 
-    function textArea():TextAreaBuilder;
+    function textArea(generator:Class = null):TextAreaBuilder;
 
     function text(generator:Class = null):TextBuilder;
 
     function list(generator:Class=null):ListBuilder;
 
-    function check():CheckBoxBuilder;
+    function check(generator:Class=null):CheckBoxBuilder;
 
     function group(generator:Class = null):GroupBuilder;
 

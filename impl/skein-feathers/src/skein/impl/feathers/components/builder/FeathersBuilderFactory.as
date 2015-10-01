@@ -68,9 +68,9 @@ public class FeathersBuilderFactory implements BuilderFactory
         return new FeathersTextInputBuilder(host, generator);
     }
 
-    public function textArea():TextAreaBuilder
+    public function textArea(generator:Class = null):TextAreaBuilder
     {
-        return new FeathersTextAreaBuilder(host);
+        return new FeathersTextAreaBuilder(host, generator);
     }
 
     public function vgroup(generator:Class = null):VGroupBuilder
@@ -83,9 +83,9 @@ public class FeathersBuilderFactory implements BuilderFactory
         return new FeathersHGroupBuilder(host, generator);
     }
 
-    public function check():CheckBoxBuilder
+    public function check(generator:Class=null):CheckBoxBuilder
     {
-        return new FeathersCheckBoxBuilder(host);
+        return new FeathersCheckBoxBuilder(host, generator);
     }
 
     public function list(generator:Class = null):ListBuilder

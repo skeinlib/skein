@@ -78,5 +78,15 @@ public interface TextAreaBuilder extends Builder
     //-----------------------------------
     
     function text(value:Object):TextAreaBuilder;
+
+    function restrict(value:Object):TextAreaBuilder;
+
+    function editable(value:Object):TextAreaBuilder;
+
+    function maxChars(value:Object):TextAreaBuilder;
+
+    function softKeyboardType(value:Object):TextAreaBuilder;
+
+    function autoCapitalize(value:Object):TextAreaBuilder;
 }
 }

@@ -13,9 +13,9 @@ import skein.components.builder.components.CheckBoxBuilder;
 
 public class FeathersCheckBoxBuilder extends FeathersButtonBuilder implements CheckBoxBuilder
 {
-    public function FeathersCheckBoxBuilder(host:Object)
+    public function FeathersCheckBoxBuilder(host:Object, generator:Class=null)
     {
-        super(host);
+        super(host, generator);
     }
 
     //--------------------------------------------------------------------------
@@ -26,7 +26,7 @@ public class FeathersCheckBoxBuilder extends FeathersButtonBuilder implements Ch
 
     override protected function createInstance(generator:Class = null):void
     {
-        this._instance = new Check();
+        this._instance = generator ? new generator() : new Check();
     }
 }
 }

@@ -79,6 +79,8 @@ public interface TextInputBuilder extends Builder
 
     function verticalCenter(value:Object):TextInputBuilder;
 
+    function includeInLayout(value:Object):TextInputBuilder;
+
     //-----------------------------------
     //  Methods: TextInputBuilder
     //-----------------------------------

@@ -225,6 +225,13 @@ public class FeathersTextInputBuilder extends FeathersBuilder implements TextInp
         return this;
     }
 
+    public function includeInLayout(value:Object):TextInputBuilder
+    {
+        layoutElementMixin.includeInLayout(value);
+
+        return this;
+    }
+
     //-----------------------------------
     //  Methods: Component
     //-----------------------------------

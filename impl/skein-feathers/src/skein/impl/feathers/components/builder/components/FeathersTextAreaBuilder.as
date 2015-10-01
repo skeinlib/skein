@@ -29,12 +29,12 @@ public class FeathersTextAreaBuilder extends FeathersBuilder implements TextArea
     //
     //--------------------------------------------------------------------------
 
-    public function FeathersTextAreaBuilder(host:Object)
+    public function FeathersTextAreaBuilder(host:Object, generator:Class=null)
     {
         super();
 
         this.host = host;
-        createInstance();
+        createInstance(generator);
 
         this.spriteMixin = new FeathersSpriteNature(this.instance);
         this.componentMixin = new FeathersComponentNature(this.instance);
@@ -249,12 +249,48 @@ public class FeathersTextAreaBuilder extends FeathersBuilder implements TextArea
     }
 
     //-----------------------------------
-    //  Methods: Button
+    //  Methods: TextArea
     //-----------------------------------
 
     public function text(value:Object):TextAreaBuilder
     {
         PropertySetter.set(this.instance, "text", value);
+
+        return this;
+    }
+
+    public function restrict(value:Object):TextAreaBuilder
+    {
+        PropertySetter.set(this.instance.textEditorProperties, "restrict", value);
+
+        return this;
+    }
+
+
+    public function editable(value:Object):TextAreaBuilder
+    {
+        PropertySetter.set(this.instance, "isEditable", value);
+
+        return this;
+    }
+
+    public function maxChars(value:Object):TextAreaBuilder
+    {
+        PropertySetter.set(this.instance, "maxChars", value);
+
+        return this;
+    }
+
+    public function softKeyboardType(value:Object):TextAreaBuilder
+    {
+        PropertySetter.set(this.instance.textEditorProperties, "softKeyboardType", value);
+
+        return this;
+    }
+
+    public function autoCapitalize(value:Object):TextAreaBuilder
+    {
+        PropertySetter.set(this.instance.textEditorProperties, "autoCapitalize", value);
 
         return this;
     }
