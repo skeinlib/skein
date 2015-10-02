@@ -22,6 +22,7 @@ import flash.utils.Timer;
 import mx.utils.StringUtil;
 
 import skein.core.skein_internal;
+import skein.rest.cache.CacheClient;
 import skein.rest.client.RestClient;
 import skein.rest.client.extras.Downloader;
 import skein.rest.client.extras.Uploader;
@@ -375,6 +376,19 @@ public class DefaultRestClient implements RestClient
     }
 
     //------------------------------------
+    //  cache
+    //------------------------------------
+
+    internal var _cache:CacheClient;
+
+    public function cache(value:CacheClient):RestClient
+    {
+        _cache = value;
+
+        return this;
+    }
+
+    //------------------------------------
     //  http
     //------------------------------------
 
@@ -439,11 +453,6 @@ public class DefaultRestClient implements RestClient
         if (_headers != null)
             request.requestHeaders = request.requestHeaders.concat(_headers);
 
-        loader = loader || new URLLoader();
-        loader.dataFormat = URLLoaderDataFormat.TEXT;
-
-        URLLoaderHandlerFactory.create(this).handle(loader);
-
         if (data != null)
         {
             encodeRequest(data,
@@ -463,40 +472,75 @@ public class DefaultRestClient implements RestClient
 
     private function load():void
     {
+        loader = loader || new URLLoader();
+        loader.dataFormat = URLLoaderDataFormat.TEXT;
+
         if (stubValue != null)
         {
-            var receiveStubData:Function = function():void
-            {
-                loader.data = stubValue is Function ? (stubValue as Function).apply() : stubValue;
-
-                loader.dispatchEvent(new HTTPStatusEvent(HTTPStatusEvent.HTTP_STATUS, false, false, 200));
-                loader.dispatchEvent(new Event(Event.COMPLETE));
-            };
-
-            if (stubDelay > 0)
-            {
-                var timer:Timer = new Timer(stubDelay, 1);
-                timer.addEventListener(TimerEvent.TIMER_COMPLETE,
-                    function(event:TimerEvent):void
-                    {
-                        timer.removeEventListener(TimerEvent.TIMER_COMPLETE, arguments.callee);
-
-                        receiveStubData();
-                    });
-
-                timer.start();
-            }
-            else
-            {
-                receiveStubData();
-            }
+            doStub();
         }
         else
         {
+            doLoad();
+        }
+    }
+
+    private function doStub():void
+    {
+        URLLoaderHandlerFactory.create(this).handle(loader);
+
+        var receiveStubData:Function = function():void
+        {
+            loader.data = stubValue is Function ? (stubValue as Function).apply() : stubValue;
+
+            loader.dispatchEvent(new HTTPStatusEvent(HTTPStatusEvent.HTTP_STATUS, false, false, 200));
+            loader.dispatchEvent(new Event(Event.COMPLETE));
+        };
+
+        if (stubDelay > 0)
+        {
+            var timer:Timer = new Timer(stubDelay, 1);
+            timer.addEventListener(TimerEvent.TIMER_COMPLETE,
+                function(event:TimerEvent):void
+                {
+                    timer.removeEventListener(TimerEvent.TIMER_COMPLETE, arguments.callee);
+
+                    receiveStubData();
+                });
+
+            timer.start();
+        }
+        else
+        {
+            receiveStubData();
+        }
+    }
+
+    private function doLoad():void
+    {
+        if (_cache != null && _cache.live(request))
+        {
+
+        }
+        else
+        {
+            if (_cache != null)
+            {
+                var response:Object = _cache.find(request);
+
+                if (response != null)
+                {
+                    request.requestHeaders = request.requestHeaders.concat(response.headers);
+                }
+            }
+
+            URLLoaderHandlerFactory.create(this).handle(loader);
+
             loader.load(request);
+        }
+
 
 //            trace("[skein] DefaultRestClient:", request.method + ":" + request.url, "DATA:" + request.data);
-        }
     }
 
     skein_internal function retry():void
@@ -672,6 +716,33 @@ public class DefaultRestClient implements RestClient
         else
         {
             return "";
+        }
+    }
+
+    internal function handleResult(data:Object, responseCode:uint, headers:Array):void
+    {
+        if (_cache != null)
+        {
+            if (responseCode == 304) // NotModified
+            {
+                var response:Object = _cache.find(request);
+
+                data = response.data;
+            }
+            else
+            {
+                _cache.keep(request, data, headers);
+            }
+        }
+
+        if (resultCallback != null)
+        {
+            if (resultCallback.length == 2)
+                resultCallback(data, responseCode);
+            else if (resultCallback.length == 1)
+                resultCallback(data);
+            else
+                resultCallback();
         }
     }
 }

@@ -110,17 +110,6 @@ public class URLLoaderHandlerExtended extends HandlerAbstract implements URLLoad
     private function responseStatusHandler(event:HTTPStatusEvent):void
     {
         headers(event.responseHeaders);
-
-        for each (var header:URLRequestHeader in event.responseHeaders)
-        {
-            var callback:Function =
-                client.headerCallbacks[header.name] || HeaderHandler.forName(header.name);
-
-            if (callback != null)
-            {
-                callback.apply(null, [header]);
-            }
-        }
     }
 
     private  function progressHandler(event:ProgressEvent):void

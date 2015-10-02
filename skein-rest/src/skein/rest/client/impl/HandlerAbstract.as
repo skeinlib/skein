@@ -10,7 +10,7 @@ package skein.rest.client.impl
 import flash.net.URLRequestHeader;
 
 import skein.core.skein_internal;
-import skein.rest.core.Config;
+import skein.rest.core.HeaderHandler;
 import skein.rest.errors.DataProcessingError;
 
 use namespace skein_internal;
@@ -29,6 +29,8 @@ public class HandlerAbstract
 
     protected var attempts:uint;
 
+    protected var responseHeaders:Array;
+
     protected function dispose():void
     {
         client.free()
@@ -44,13 +46,23 @@ public class HandlerAbstract
 
     protected function headers(headers:Array):void
     {
-        for each (var header:URLRequestHeader in headers)
+        responseHeaders = headers;
+
+        for each (var header:URLRequestHeader in responseHeaders)
         {
             switch (header.name.toLowerCase())
             {
                 case "content-type" :
                     client.setResponseContentType(header.value);
                     break;
+            }
+
+            var callback:Function =
+                client.headerCallbacks[header.name] || HeaderHandler.forName(header.name);
+
+            if (callback != null)
+            {
+                callback.apply(null, [header]);
             }
         }
     }
@@ -96,15 +108,7 @@ public class HandlerAbstract
 
     protected function handleResult(value:Object):void
     {
-        if (client.resultCallback != null)
-        {
-            if (client.resultCallback.length == 2)
-                client.resultCallback(value, responseCode);
-            else if (client.resultCallback.length == 1)
-                client.resultCallback(value);
-            else
-                client.resultCallback();
-        }
+        client.handleResult(value, responseCode, responseHeaders);
 
         dispose();
     }
