@@ -42,6 +42,16 @@ public class DefaultRestClient implements RestClient
     //
     //--------------------------------------------------------------------------
 
+    private static const DEFAULT_CONTENT_TYPE:String = "application/json";
+
+    private static const DEFAULT_RESPONSE_CONTENT_TYPE:String = DEFAULT_CONTENT_TYPE;
+
+    //--------------------------------------------------------------------------
+    //
+    //  Constructor
+    //
+    //--------------------------------------------------------------------------
+
     public function DefaultRestClient()
     {
         super();
@@ -179,7 +189,7 @@ public class DefaultRestClient implements RestClient
     //  contentType
     //------------------------------------
 
-    private var _contentType:String = "application/json";
+    private var _contentType:String = DEFAULT_CONTENT_TYPE;
 
     public function contentType(value:String):RestClient
     {
@@ -204,7 +214,7 @@ public class DefaultRestClient implements RestClient
         }
     }
 
-    private var _responseContentType:String = "application/json";
+    private var _responseContentType:String = DEFAULT_RESPONSE_CONTENT_TYPE;
 
     skein_internal function setResponseContentType(value:String):void
     {
@@ -565,8 +575,8 @@ public class DefaultRestClient implements RestClient
         _headers = null;
         _params = null;
         _fields = null;
-        _contentType = "application/json";
-        _responseContentType = "application/json";
+        _contentType = DEFAULT_CONTENT_TYPE;
+        _responseContentType = DEFAULT_RESPONSE_CONTENT_TYPE;
         _accessTokenKey = null;
         _accessTokenValue = null;
         accessTokenSpecified = false;
@@ -578,6 +588,7 @@ public class DefaultRestClient implements RestClient
         resultCallback = null;
         progressCallback = null;
         errorCallback = null;
+        statusCallback = null;
         headerCallbacks = {};
 
         stubValue = null;
