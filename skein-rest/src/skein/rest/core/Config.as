@@ -12,6 +12,8 @@ import flash.events.EventDispatcher;
 import flash.utils.Dictionary;
 
 import skein.core.skein_internal;
+import skein.rest.cache.CacheClient;
+import skein.rest.cache.impl.DefaultCacheClient;
 import skein.rest.client.RestClient;
 import skein.rest.client.impl.DefaultRestClient;
 
@@ -35,6 +37,7 @@ public class Config extends EventDispatcher
     private static var _implementations:Dictionary = new Dictionary();
     {
         _implementations[RestClient] = DefaultRestClient;
+        _implementations[CacheClient] = DefaultCacheClient;
     }
 
     skein_internal static function setImplementation(contract:Class, implementation:Class):void
@@ -168,6 +171,49 @@ public class Config extends EventDispatcher
         if (_accessTokenKey == value) return;
         _accessTokenKey = value;
         dispatchEvent(new Event("accessTokenKeyChanged"));
+    }
+
+    //-----------------------------------
+    //  useCache
+    //-----------------------------------
+
+    private var _useCache:Boolean;
+
+    [Bindable(event="useCacheChanged")]
+    public function get useCache():Boolean
+    {
+        return _useCache;
+    }
+
+    public function set useCache(value:Boolean):void
+    {
+        if (_useCache == value) return;
+
+        _useCache = value;
+        _cache = null;
+
+        dispatchEvent(new Event("useCacheChanged"));
+    }
+
+    //-----------------------------------
+    //  cache
+    //-----------------------------------
+
+    private var _cache:CacheClient;
+
+    public function get cache():CacheClient
+    {
+        if (_cache == null)
+        {
+            var Impl:Class = getImplementation(CacheClient);
+
+            if (Impl != null)
+            {
+                _cache = new Impl();
+            }
+        }
+
+        return _cache;
     }
 
     //--------------------------------------------------------------------------

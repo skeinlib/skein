@@ -350,7 +350,7 @@ public class DefaultRestClient implements RestClient
         return this;
     }
 
-    internal function hasHeaderCallbacks():Boolean
+internal function hasHeaderCallbacks():Boolean
     {
         for (var p:String in headerCallbacks)
             return true;
@@ -379,13 +379,36 @@ public class DefaultRestClient implements RestClient
     //  cache
     //------------------------------------
 
-    internal var _cache:CacheClient;
+    internal var _cache:CacheClient = Config.sharedInstance().cache;
 
     public function cache(value:CacheClient):RestClient
     {
         _cache = value;
 
         return this;
+    }
+
+    internal var _useCache:Boolean = Config.sharedInstance().useCache;
+
+    public function useCache(value:Boolean):RestClient
+    {
+        _useCache = value;
+
+        return this;
+    }
+
+    private var _forceCache:Boolean = false;
+
+    public function forceCache(value:Boolean):RestClient
+    {
+        _forceCache = value;
+
+        return this;
+    }
+
+    private function get canUseCache():Boolean
+    {
+        return _useCache && _cache != null;
     }
 
     //------------------------------------
@@ -475,6 +498,8 @@ public class DefaultRestClient implements RestClient
         loader = loader || new URLLoader();
         loader.dataFormat = URLLoaderDataFormat.TEXT;
 
+        URLLoaderHandlerFactory.create(this).handle(loader);
+
         if (stubValue != null)
         {
             doStub();
@@ -487,8 +512,6 @@ public class DefaultRestClient implements RestClient
 
     private function doStub():void
     {
-        URLLoaderHandlerFactory.create(this).handle(loader);
-
         var receiveStubData:Function = function():void
         {
             loader.data = stubValue is Function ? (stubValue as Function).apply() : stubValue;
@@ -518,29 +541,35 @@ public class DefaultRestClient implements RestClient
 
     private function doLoad():void
     {
-        if (_cache != null && _cache.live(request))
+        if (_useCache && _cache != null)
         {
+            if (_cache.live(request) || _forceCache)
+            {
+                _cache.find(request, function(response:Object):void
+                {
+                    loader.data = response.data;
 
+                    loader.dispatchEvent(new HTTPStatusEvent(HTTPStatusEvent.HTTP_STATUS, false, false, 200));
+                    loader.dispatchEvent(new Event(Event.COMPLETE));
+                });
+            }
+            else
+            {
+                _cache.find(request, function(response:Object):void
+                {
+                    if (response != null)
+                    {
+                        request.requestHeaders = request.requestHeaders.concat(response.headers);
+                    }
+
+                    loader.load(request);
+                });
+            }
         }
         else
         {
-            if (_cache != null)
-            {
-                var response:Object = _cache.find(request);
-
-                if (response != null)
-                {
-                    request.requestHeaders = request.requestHeaders.concat(response.headers);
-                }
-            }
-
-            URLLoaderHandlerFactory.create(this).handle(loader);
-
             loader.load(request);
         }
-
-
-//            trace("[skein] DefaultRestClient:", request.method + ":" + request.url, "DATA:" + request.data);
     }
 
     skein_internal function retry():void
@@ -638,6 +667,10 @@ public class DefaultRestClient implements RestClient
         stubValue = null;
         stubDelay = 0;
 
+        _cache = Config.sharedInstance().cache;
+        _useCache = Config.sharedInstance().useCache;
+        _forceCache = false;
+
         RestClientRegistry.free(this);
     }
 
@@ -721,20 +754,30 @@ public class DefaultRestClient implements RestClient
 
     internal function handleResult(data:Object, responseCode:uint, headers:Array):void
     {
-        if (_cache != null)
+        if (_useCache && _cache != null)
         {
             if (responseCode == 304) // NotModified
             {
-                var response:Object = _cache.find(request);
-
-                data = response.data;
+                _cache.find(request, function(response:Object):void
+                {
+                    notifyResult(response.data, responseCode);
+                });
             }
             else
             {
                 _cache.keep(request, data, headers);
+
+                notifyResult(data, responseCode);
             }
         }
+        else
+        {
+            notifyResult(data, responseCode);
+        }
+    }
 
+    private function notifyResult(data:Object, responseCode:uint):void
+    {
         if (resultCallback != null)
         {
             if (resultCallback.length == 2)

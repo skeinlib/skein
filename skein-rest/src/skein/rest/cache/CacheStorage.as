@@ -7,11 +7,9 @@ import flash.net.URLRequest;
 
 public interface CacheStorage
 {
-    function init():void;
+    function live(url:String):Boolean
 
-    function live(url:String):Boolean;
-
-    function find(url:String):Object;
+    function find(url:String, callback:Function):void;
 
     function keep(url:String, data:Object, headers:Array):Boolean;
 }

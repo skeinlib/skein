@@ -61,7 +61,7 @@ public class DefaultCacheClient implements CacheClient
         }
     }
 
-    public function find(request:URLRequest):Object
+    public function find(request:URLRequest, callback:Function):void
     {
         var storage:CacheStorage = CacheRegistry.storage();
 
@@ -69,11 +69,11 @@ public class DefaultCacheClient implements CacheClient
         {
             var url:String = retrieveURL(request);
 
-            return storage.find(url);
+            storage.find(url, callback);
         }
         else
         {
-            return false;
+            callback(null);
         }
     }
 

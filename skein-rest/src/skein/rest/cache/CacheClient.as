@@ -9,7 +9,7 @@ public interface CacheClient
 {
     function live(request:URLRequest):Boolean;
 
-    function find(request:URLRequest):Object;
+    function find(request:URLRequest, callback:Function):void;
 
     function keep(request:URLRequest, data:Object, headers:Array):Boolean;
 }

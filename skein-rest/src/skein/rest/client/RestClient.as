@@ -7,6 +7,8 @@
  */
 package skein.rest.client
 {
+import skein.rest.cache.CacheClient;
+
 public interface RestClient
 {
     function init(api:String, params:Array):void;
@@ -37,6 +39,10 @@ public interface RestClient
     function header(name:String, handler:Function):RestClient;
 
     function stub(value:Object, delay:uint = 0):RestClient;
+
+    function cache(value:CacheClient):RestClient;
+    function useCache(value:Boolean):RestClient;
+    function forceCache(value:Boolean):RestClient;
 
     function get():void;
     function post(data:Object = null):void;

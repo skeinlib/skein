@@ -14,7 +14,7 @@ import flash.utils.ByteArray;
 
 public class FileSystemCacheStorageHelper
 {
-    public static function saveProperties(file:File, data:Object, callback:Function = null):void
+    public static function save(file:File, data:Object, callback:Function = null):void
     {
         var outputProgressHandler:Function = function(event:OutputProgressEvent):void
         {
@@ -38,7 +38,7 @@ public class FileSystemCacheStorageHelper
             stream.close();
 
             if (callback != null)
-                callback(null, new Error(event.text, event.errorID));
+                callback(new Error(event.text, event.errorID));
         };
 
         var stream:FileStream = new FileStream();
@@ -61,11 +61,11 @@ public class FileSystemCacheStorageHelper
         catch (error:Error)
         {
             if (callback != null)
-                callback(null, error);
+                callback(error);
         }
     }
 
-    public static function readProperties(file:File, callback:Function):void
+    public static function read(file:File, callback:Function):void
     {
         var completeHandler:Function = function(event:Event):void
         {
@@ -89,13 +89,13 @@ public class FileSystemCacheStorageHelper
                     catch (error:Error) {}
 
                     if (callback != null)
-                        callback(null, new Error("Not Found"));
+                        callback(new Error("Not Found"));
                 }
             }
             else
             {
                 if (callback != null)
-                    callback(null, new Error("Not Found"));
+                    callback(new Error("Not Found"));
             }
         };
 
@@ -107,7 +107,7 @@ public class FileSystemCacheStorageHelper
             stream.close();
 
             if (callback != null)
-                callback(null, new Error(event.text, event.errorID));
+                callback(new Error(event.text, event.errorID));
         };
 
         var stream:FileStream = new FileStream();
@@ -123,13 +123,13 @@ public class FileSystemCacheStorageHelper
             catch (error:Error)
             {
                 if (callback != null)
-                    callback(null, error);
+                    callback(error);
             }
         }
         else
         {
             if (callback != null)
-                callback(null, new Error("Not Found"));
+                callback(new Error("Not Found"));
         }
     }
 }

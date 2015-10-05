@@ -69,6 +69,13 @@ public class RestConfigBuilder
         return this;
     }
 
+    public function useCache(value:Object):RestConfigBuilder
+    {
+        PropertySetter.set(Config.sharedInstance(), "useCache", value);
+
+        return this;
+    }
+
     public function configure():ConfigBuilder
     {
         return config;
