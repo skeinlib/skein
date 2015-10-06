@@ -547,10 +547,17 @@ internal function hasHeaderCallbacks():Boolean
             {
                 _cache.find(request, function(response:Object):void
                 {
-                    loader.data = response.data;
+                    if (response != null)
+                    {
+                        loader.data = response.data;
 
-                    loader.dispatchEvent(new HTTPStatusEvent(HTTPStatusEvent.HTTP_STATUS, false, false, 200));
-                    loader.dispatchEvent(new Event(Event.COMPLETE));
+                        loader.dispatchEvent(new HTTPStatusEvent(HTTPStatusEvent.HTTP_STATUS, false, false, 200));
+                        loader.dispatchEvent(new Event(Event.COMPLETE));
+                    }
+                    else // not yet in cache
+                    {
+                        loader.load(request);
+                    }
                 });
             }
             else

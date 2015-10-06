@@ -3,14 +3,15 @@
  */
 package skein.rest.cache
 {
-import flash.net.URLRequest;
+import skein.rest.cache.headers.Headers;
 
 public interface CacheStorage
 {
-    function live(url:String):Boolean
+    function head(url:String):Headers;
 
     function find(url:String, callback:Function):void;
 
-    function keep(url:String, data:Object, headers:Array):Boolean;
+    function keep(url:String, data:Object, headers:Headers):Boolean;
+
 }
 }

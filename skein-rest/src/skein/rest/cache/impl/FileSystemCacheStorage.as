@@ -7,6 +7,7 @@ import flash.filesystem.File;
 import flash.net.URLRequestHeader;
 
 import skein.rest.cache.CacheStorage;
+import skein.rest.cache.headers.Headers;
 import skein.rest.utils.DateUtil;
 import skein.rest.utils.sha1;
 
@@ -77,30 +78,16 @@ public class FileSystemCacheStorage implements CacheStorage
     //  Methods: Public API
     //-------------------------------------
 
-    public function live(url:String):Boolean
+    public function head(url:String):Headers
     {
-        if (properties != null && directory != null)
+        if (properties != null)
         {
             var key:String = normalizeURL(url);
 
-            var o:Object = properties[key];
-
-            if (o != null)
-            {
-                if ("Expires" in o)
-                {
-                    var expires:Date = o.Expires;
-                    var now:Date = new Date();
-
-                    if (expires != null && expires.time > now.time)
-                    {
-                        return directory.resolvePath(key).exists;
-                    }
-                }
-            }
+            return properties[key];
         }
 
-        return false;
+        return null;
     }
 
     public function find(url:String, callback:Function):void
@@ -131,27 +118,13 @@ public class FileSystemCacheStorage implements CacheStorage
         }
     }
 
-    public function keep(url:String, data:Object, headers:Array):Boolean
+    public function keep(url:String, data:Object, headers:Headers):Boolean
     {
         if (properties != null && directory != null)
         {
             var key:String = normalizeURL(url);
 
-            properties[key] = {};
-
-            for (var i:int = 0, n:int = headers != null ? headers.length : 0; i < n; i++)
-            {
-                var req:URLRequestHeader = headers[i];
-
-                switch (req.name)
-                {
-                    case "Expires" :
-
-                        properties[key].Expires = DateUtil.parseRFC822(req.value);
-
-                        break;
-                }
-            }
+            properties[key] = headers;
 
             FileSystemCacheStorageHelper.save(directory.resolvePath(key), data);
 

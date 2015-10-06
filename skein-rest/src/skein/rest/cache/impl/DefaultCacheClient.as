@@ -6,8 +6,9 @@ package skein.rest.cache.impl
 import flash.net.URLRequest;
 
 import skein.rest.cache.CacheClient;
-import skein.rest.cache.CacheRegistry;
+import skein.rest.cache.CacheStorageRegistry;
 import skein.rest.cache.CacheStorage;
+import skein.rest.cache.headers.Headers;
 
 public class DefaultCacheClient implements CacheClient
 {
@@ -47,23 +48,42 @@ public class DefaultCacheClient implements CacheClient
 
     public function live(request:URLRequest):Boolean
     {
-        var storage:CacheStorage = CacheRegistry.storage();
+        var storage:CacheStorage = CacheStorageRegistry.storage();
 
         if (storage != null)
         {
             var url:String = retrieveURL(request);
 
-            return storage.live(url);
+            var headers:Headers = storage.head(url);
+
+            if (headers != null)
+            {
+                if (headers.cacheControl)
+                {
+                    if (headers.cacheControl.noCache)
+                    {
+                        return false;
+                    }
+                }
+
+                if (headers.expires)
+                {
+                    var now:Date = new Date();
+
+                    if (headers.expires.date.time > now.time)
+                    {
+                        return true;
+                    }
+                }
+            }
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     public function find(request:URLRequest, callback:Function):void
     {
-        var storage:CacheStorage = CacheRegistry.storage();
+        var storage:CacheStorage = CacheStorageRegistry.storage();
 
         if (storage != null)
         {
@@ -77,20 +97,28 @@ public class DefaultCacheClient implements CacheClient
         }
     }
 
-    public function keep(request:URLRequest, data:Object, headers:Array):Boolean
+    public function keep(request:URLRequest, data:Object, responseHeaders:Array):Boolean
     {
-        var storage:CacheStorage = CacheRegistry.storage();
+        var storage:CacheStorage = CacheStorageRegistry.storage();
 
         if (storage != null)
         {
+            var headers:Headers = Headers.valueOf(responseHeaders);
+
+            if (headers.cacheControl)
+            {
+                if (headers.cacheControl.noStore)
+                {
+                    return false;
+                }
+            }
+
             var url:String = retrieveURL(request);
 
             return storage.keep(url, data, headers);
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     //-------------------------------------

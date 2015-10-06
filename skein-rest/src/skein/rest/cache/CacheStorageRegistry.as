@@ -5,7 +5,7 @@ package skein.rest.cache
 {
 import skein.rest.core.Config;
 
-public class CacheRegistry
+public class CacheStorageRegistry
 {
     private static var _storage:CacheStorage;
 
