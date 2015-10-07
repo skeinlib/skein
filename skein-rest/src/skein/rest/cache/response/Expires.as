@@ -1,7 +1,7 @@
 /**
  * Created by Max Rozdobudko on 10/5/15.
  */
-package skein.rest.cache.headers
+package skein.rest.cache.response
 {
 import skein.rest.utils.DateUtil;
 

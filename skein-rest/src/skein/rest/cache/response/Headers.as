@@ -1,10 +1,9 @@
 /**
  * Created by Max Rozdobudko on 10/5/15.
  */
-package skein.rest.cache.headers
+package skein.rest.cache.response
 {
 import flash.net.URLRequestHeader;
-import flash.net.registerClassAlias;
 
 public class Headers
 {
@@ -41,13 +40,6 @@ public class Headers
         return result;
     }
 
-    {
-        registerClassAlias("skein.rest.cache.headers.Headers", Headers);
-        registerClassAlias("skein.rest.cache.headers.ETag", ETag);
-        registerClassAlias("skein.rest.cache.headers.Expires", Expires);
-        registerClassAlias("skein.rest.cache.headers.CacheControl", CacheControl);
-    }
-
     public function Headers()
     {
         super();
@@ -58,5 +50,7 @@ public class Headers
     public var expires:Expires;
 
     public var cacheControl:CacheControl;
+
+    public var url:String;
 }
 }

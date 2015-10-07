@@ -3,7 +3,7 @@
  */
 package skein.rest.cache.impl
 {
-import flash.events.ErrorEvent;
+import flash.debugger.enterDebugger;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.events.OutputProgressEvent;
@@ -20,20 +20,25 @@ public class FileSystemCacheStorageHelper
         {
             if (event.bytesPending == 0)
             {
-                stream.removeEventListener(Event.COMPLETE, outputProgressHandler);
-                stream.removeEventListener(ErrorEvent.ERROR, errorHandler);
+                stream.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+                stream.removeEventListener(OutputProgressEvent.OUTPUT_PROGRESS, outputProgressHandler);
 
                 stream.close();
 
+                if (data is ByteArray && ByteArray(data).length != event.bytesTotal)
+                {
+                    enterDebugger();
+                }
+
                 if (callback != null)
-                    callback(true);
+                    callback(event.bytesTotal);
             }
         };
 
-        var errorHandler:Function = function(event:ErrorEvent):void
+        var errorHandler:Function = function(event:IOErrorEvent):void
         {
-            stream.removeEventListener(Event.COMPLETE, outputProgressHandler);
-            stream.removeEventListener(ErrorEvent.ERROR, errorHandler);
+            stream.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+            stream.removeEventListener(OutputProgressEvent.OUTPUT_PROGRESS, outputProgressHandler);
 
             stream.close();
 
@@ -42,8 +47,8 @@ public class FileSystemCacheStorageHelper
         };
 
         var stream:FileStream = new FileStream();
-        stream.addEventListener(OutputProgressEvent.OUTPUT_PROGRESS, outputProgressHandler);
         stream.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+        stream.addEventListener(OutputProgressEvent.OUTPUT_PROGRESS, outputProgressHandler);
 
         try
         {
@@ -65,19 +70,71 @@ public class FileSystemCacheStorageHelper
         }
     }
 
-    public static function read(file:File, callback:Function):void
+    public static function readObject(file:File, callback:Function):void
+    {
+        open(file, function(value:*=undefined):void
+        {
+            if (value is FileStream)
+            {
+                var stream:FileStream = value as FileStream;
+
+                var object:Object = stream.readObject();
+
+                stream.close();
+
+                callback(object);
+            }
+            else if (value is Error)
+            {
+                callback(value as Error);
+            }
+            else
+            {
+                callback();
+            }
+        });
+    }
+
+    public static function readBytes(file:File, callback:Function):void
+    {
+        open(file, function(value:*=undefined):void
+        {
+            if (value is FileStream)
+            {
+                var stream:FileStream = value as FileStream;
+
+                var bytes:ByteArray = new ByteArray();
+                stream.readBytes(bytes);
+
+                stream.close();
+
+                callback(bytes);
+            }
+            else if (value is Error)
+            {
+                callback(value as Error);
+            }
+            else
+            {
+                callback();
+            }
+        });
+    }
+
+    public static function open(file:File, callback:Function):void
     {
         var completeHandler:Function = function(event:Event):void
         {
+            stream.removeEventListener(Event.CLOSE, closeHandler);
             stream.removeEventListener(Event.COMPLETE, completeHandler);
-            stream.removeEventListener(ErrorEvent.ERROR, errorHandler);
+            stream.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 
             if (stream.bytesAvailable > 0)
             {
                 try
                 {
                     if (callback != null)
-                        callback(stream.readObject());
+                        callback(stream);
 
                 }
                 catch (error:Error)
@@ -87,9 +144,6 @@ public class FileSystemCacheStorageHelper
                         file.deleteFile();
                     }
                     catch (error:Error) {}
-
-                    if (callback != null)
-                        callback(new Error("Not Found"));
                 }
             }
             else
@@ -99,10 +153,11 @@ public class FileSystemCacheStorageHelper
             }
         };
 
-        var errorHandler:Function = function(event:ErrorEvent):void
+        var errorHandler:Function = function(event:IOErrorEvent):void
         {
+            stream.removeEventListener(Event.CLOSE, closeHandler);
             stream.removeEventListener(Event.COMPLETE, completeHandler);
-            stream.removeEventListener(ErrorEvent.ERROR, errorHandler);
+            stream.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 
             stream.close();
 
@@ -110,11 +165,21 @@ public class FileSystemCacheStorageHelper
                 callback(new Error(event.text, event.errorID));
         };
 
+        var closeHandler:Function = function(event:Event):void
+        {
+            stream.removeEventListener(Event.CLOSE, closeHandler);
+            stream.removeEventListener(Event.COMPLETE, completeHandler);
+            stream.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+
+            // do not call callback due to stream has been closed by result callback
+        };
+
         var stream:FileStream = new FileStream();
+        stream.addEventListener(Event.CLOSE, closeHandler);
         stream.addEventListener(Event.COMPLETE, completeHandler);
         stream.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 
-        if (file != null && file.exists)
+        if (file != null)
         {
             try
             {

@@ -16,12 +16,26 @@ import skein.rest.errors.DataProcessingError;
 use namespace skein_internal;
 public class HandlerAbstract
 {
+    //--------------------------------------------------------------------------
+    //
+    //  Constructor
+    //
+    //--------------------------------------------------------------------------
+
     public function HandlerAbstract(client:DefaultRestClient)
     {
         super();
 
         this.client = client;
+
+        // TODO: Add handling of Event.CLOSE event
     }
+
+    //--------------------------------------------------------------------------
+    //
+    //  Variables
+    //
+    //--------------------------------------------------------------------------
 
     protected var client:DefaultRestClient;
 
@@ -31,10 +45,26 @@ public class HandlerAbstract
 
     protected var responseHeaders:Array;
 
+    //--------------------------------------------------------------------------
+    //
+    //  Methods
+    //
+    //--------------------------------------------------------------------------
+
     protected function dispose():void
     {
         client.free()
     }
+
+    //--------------------------------------------------------------------------
+    //
+    //  Handlers
+    //
+    //--------------------------------------------------------------------------
+
+    //-------------------------------------
+    //  Handlers: status
+    //-------------------------------------
 
     protected function status(code:int):void
     {
@@ -43,6 +73,10 @@ public class HandlerAbstract
         if (client.statusCallback != null)
             client.statusCallback(code);
     }
+
+    //-------------------------------------
+    //  Handlers: headers
+    //-------------------------------------
 
     protected function headers(headers:Array):void
     {
@@ -67,11 +101,19 @@ public class HandlerAbstract
         }
     }
 
+    //-------------------------------------
+    //  Handlers: progress
+    //-------------------------------------
+
     protected function progress(loaded:Number, total:Number):void
     {
         if (client.progressCallback != null)
             client.progressCallback(loaded, total);
     }
+
+    //-------------------------------------
+    //  Handlers: result
+    //-------------------------------------
 
     protected function result(data:Object):void
     {
@@ -108,10 +150,15 @@ public class HandlerAbstract
 
     protected function handleResult(value:Object):void
     {
-        client.handleResult(value, responseCode, responseHeaders);
-
-        dispose();
+        client.handleResult(value, responseCode, responseHeaders, function():void
+        {
+            dispose();
+        });
     }
+
+    //-------------------------------------
+    //  Handlers: error
+    //-------------------------------------
 
     protected function error(data:Object):void
     {
@@ -161,10 +208,7 @@ public class HandlerAbstract
 
     private function proceedError(info:Object):void
     {
-        if (client.errorCallback.length == 2)
-            client.errorCallback(info, responseCode);
-        else
-           client.errorCallback(info);
+        client.handleError(info, responseCode);
 
         dispose();
     }

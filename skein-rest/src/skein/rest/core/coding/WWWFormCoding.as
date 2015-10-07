@@ -36,9 +36,9 @@ public class WWWFormCoding
                 data[pair[0]] = pair[1];
             }
         }
-        catch(error:Error)
+        catch (error:Error)
         {
-            trace("JSONCoding:", error);
+            trace("WWWFormCoding:", error);
 
             data = encoded;
         }

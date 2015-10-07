@@ -7,6 +7,7 @@
  */
 package skein.rest.core
 {
+import skein.rest.core.coding.DefaultCoding;
 import skein.rest.core.coding.JSONCoding;
 import skein.rest.core.coding.WWWFormCoding;
 
@@ -20,9 +21,13 @@ public class Decoder
                 return JSONCoding.decode;
                 break;
 
-            default :
+            case "application/x-www-form-urlencoded" :
                 return WWWFormCoding.decode;
                 break;
+
+            default :
+                return DefaultCoding.decode;
+            break;
         }
     }
 }

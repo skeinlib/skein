@@ -30,6 +30,11 @@ public class ConfigBuilder
         return new RestConfigBuilder(this, url);
     }
 
+    public function cache():CacheConfigBuilder
+    {
+        return new CacheConfigBuilder(this);
+    }
+
     public function client(implementation:Class):ConfigBuilder
     {
         Config.setImplementation(RestClient, implementation);

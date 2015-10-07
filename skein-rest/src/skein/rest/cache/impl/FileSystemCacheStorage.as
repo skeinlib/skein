@@ -5,9 +5,10 @@ package skein.rest.cache.impl
 {
 import flash.filesystem.File;
 import flash.net.URLRequestHeader;
+import flash.utils.ByteArray;
 
 import skein.rest.cache.CacheStorage;
-import skein.rest.cache.headers.Headers;
+import skein.rest.cache.response.Headers;
 import skein.rest.utils.DateUtil;
 import skein.rest.utils.sha1;
 
@@ -44,7 +45,7 @@ public class FileSystemCacheStorage implements CacheStorage
             directory = File.applicationStorageDirectory.resolvePath(CACHE_DIRECTORY_PATH);
         }
 
-        FileSystemCacheStorageHelper.read(directory.resolvePath(CACHE_PROPERTIES_FILE),
+        FileSystemCacheStorageHelper.readObject(directory.resolvePath(CACHE_PROPERTIES_FILE),
             function(value:* = undefined):void
             {
                 if (value == undefined || value is Error)
@@ -80,11 +81,16 @@ public class FileSystemCacheStorage implements CacheStorage
 
     public function head(url:String):Headers
     {
-        if (properties != null)
+        if (properties != null && directory != null)
         {
             var key:String = normalizeURL(url);
 
-            return properties[key];
+            var headers:Headers = properties[key];
+
+            if (headers != null)
+                headers.url = directory.resolvePath(key).url;
+
+            return headers;
         }
 
         return null;
@@ -96,9 +102,9 @@ public class FileSystemCacheStorage implements CacheStorage
         {
             var key:String = normalizeURL(url);
 
-            var o:Object = properties[key];
+            var headers:Headers = properties[key];
 
-            FileSystemCacheStorageHelper.read(directory.resolvePath(key), function(value:* = undefined):void
+            FileSystemCacheStorageHelper.readBytes(directory.resolvePath(key), function(value:* = undefined):void
             {
                 if (value == undefined || value is Error)
                 {
@@ -106,9 +112,7 @@ public class FileSystemCacheStorage implements CacheStorage
                 }
                 else
                 {
-                    o.data = value;
-
-                    callback(o);
+                    callback({headers : headers, data : value});
                 }
             });
         }
@@ -118,7 +122,7 @@ public class FileSystemCacheStorage implements CacheStorage
         }
     }
 
-    public function keep(url:String, data:Object, headers:Headers):Boolean
+    public function keep(url:String, data:Object, headers:Headers, callback:Function = null):Boolean
     {
         if (properties != null && directory != null)
         {
@@ -126,7 +130,7 @@ public class FileSystemCacheStorage implements CacheStorage
 
             properties[key] = headers;
 
-            FileSystemCacheStorageHelper.save(directory.resolvePath(key), data);
+            FileSystemCacheStorageHelper.save(directory.resolvePath(key), data, callback);
 
             updateProperties();
 

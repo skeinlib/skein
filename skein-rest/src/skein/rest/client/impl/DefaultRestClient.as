@@ -90,15 +90,15 @@ public class DefaultRestClient implements RestClient
     //
     //--------------------------------------------------------------------------
 
-    public function init(api:String, params:Array):void
+    public function init(path:String, params:Array):void
     {
-        if (api.indexOf("http") == 0)
+        if (path.indexOf("http") == 0 || path.indexOf("file") == 0 || path.indexOf("app-storage") == 0)
         {
-            _url = StringUtil.substitute(api, params);
+            _url = StringUtil.substitute(path, params);
         }
         else
         {
-            _url = Config.sharedInstance().rest + StringUtil.substitute(api, params);
+            _url = Config.sharedInstance().rest + StringUtil.substitute(path, params);
         }
     }
 
@@ -215,16 +215,29 @@ public class DefaultRestClient implements RestClient
         }
     }
 
-    private var _responseContentType:String = DEFAULT_RESPONSE_CONTENT_TYPE;
+    //------------------------------------
+    //  responseContentType
+    //------------------------------------
+
+    private var _requestedResponseContentType:String = DEFAULT_RESPONSE_CONTENT_TYPE;
+
+    public function requestedResponseContentType(value:String):RestClient
+    {
+        _requestedResponseContentType = value;
+
+        return this;
+    }
+
+    private var _actualResponseContentType:String = null;
 
     skein_internal function setResponseContentType(value:String):void
     {
-        _responseContentType = value;
+        _actualResponseContentType = value;
     }
 
     private function getResponseContentType():String
     {
-        return _responseContentType;
+        return _actualResponseContentType || _requestedResponseContentType;
     }
 
     //------------------------------------
@@ -415,22 +428,28 @@ internal function hasHeaderCallbacks():Boolean
     //  http
     //------------------------------------
 
-    public function get():void
+    public function get():Object
     {
         send(URLRequestMethod.GET);
+
+        return loader;
     }
 
-    public function post(data:Object = null):void
+    public function post(data:Object = null):Object
     {
         send(URLRequestMethod.POST, data);
+
+        return loader;
     }
 
-    public function put(data:Object = null):void
+    public function put(data:Object = null):Object
     {
         send(URLRequestMethod.PUT, data);
+
+        return loader;
     }
 
-    public function del(data:Object = null):void
+    public function del(data:Object = null):Object
     {
         if (Config.sharedInstance().fixKnownIssues)
         {
@@ -443,6 +462,8 @@ internal function hasHeaderCallbacks():Boolean
         {
             send(URLRequestMethod.DELETE, data);
         }
+
+        return loader;
     }
 
     public function download(to:Object):void
@@ -466,6 +487,10 @@ internal function hasHeaderCallbacks():Boolean
 
         uploader.upload(uploadFrom, formURL(), getRequestContentType(uploadFrom), _fields);
     }
+
+    //------------------------------------
+    //  loader
+    //------------------------------------
 
     private function send(method:String, data:Object = null):void
     {
@@ -496,7 +521,11 @@ internal function hasHeaderCallbacks():Boolean
     private function load():void
     {
         loader = loader || new URLLoader();
-        loader.dataFormat = URLLoaderDataFormat.TEXT;
+
+        if (_requestedResponseContentType == "application/octet-stream")
+            loader.dataFormat = URLLoaderDataFormat.BINARY;
+        else
+            loader.dataFormat = URLLoaderDataFormat.TEXT;
 
         URLLoaderHandlerFactory.create(this).handle(loader);
 
@@ -612,6 +641,8 @@ internal function hasHeaderCallbacks():Boolean
     {
         if (loader != null)
         {
+            loader.dataFormat = URLLoaderDataFormat.TEXT;
+
             try
             {
                 loader.close();
@@ -656,7 +687,8 @@ internal function hasHeaderCallbacks():Boolean
         _params = null;
         _fields = null;
         _contentType = DEFAULT_CONTENT_TYPE;
-        _responseContentType = DEFAULT_RESPONSE_CONTENT_TYPE;
+        _actualResponseContentType = null;
+        _requestedResponseContentType = DEFAULT_RESPONSE_CONTENT_TYPE;
         _accessTokenKey = null;
         _accessTokenValue = null;
         accessTokenSpecified = false;
@@ -759,7 +791,7 @@ internal function hasHeaderCallbacks():Boolean
         }
     }
 
-    internal function handleResult(data:Object, responseCode:uint, headers:Array):void
+    internal function handleResult(data:Object, responseCode:uint, headers:Array, callback:Function):void
     {
         if (_useCache && _cache != null)
         {
@@ -768,11 +800,16 @@ internal function hasHeaderCallbacks():Boolean
                 _cache.find(request, function(response:Object):void
                 {
                     notifyResult(response.data, responseCode);
+
+                    callback();
                 });
             }
             else
             {
-                _cache.keep(request, data, headers);
+                _cache.keep(request, data, headers, function(value:*=undefined):void
+                {
+                    callback();
+                });
 
                 notifyResult(data, responseCode);
             }
@@ -780,6 +817,8 @@ internal function hasHeaderCallbacks():Boolean
         else
         {
             notifyResult(data, responseCode);
+
+            callback();
         }
     }
 
@@ -793,6 +832,22 @@ internal function hasHeaderCallbacks():Boolean
                 resultCallback(data);
             else
                 resultCallback();
+        }
+    }
+
+    internal function handleError(info:Object, responseCode:uint):void
+    {
+        notifyError(info, responseCode);
+    }
+
+    private function notifyError(info:Object, responseCode:uint):void
+    {
+        if (errorCallback != null)
+        {
+            if (errorCallback.length == 2)
+                errorCallback(info, responseCode);
+            else
+                errorCallback(info);
         }
     }
 }

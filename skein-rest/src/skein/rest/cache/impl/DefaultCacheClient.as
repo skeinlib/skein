@@ -5,10 +5,12 @@ package skein.rest.cache.impl
 {
 import flash.net.URLRequest;
 
+import skein.core.skein_internal;
+
 import skein.rest.cache.CacheClient;
 import skein.rest.cache.CacheStorageRegistry;
 import skein.rest.cache.CacheStorage;
-import skein.rest.cache.headers.Headers;
+import skein.rest.cache.response.Headers;
 
 public class DefaultCacheClient implements CacheClient
 {
@@ -31,9 +33,9 @@ public class DefaultCacheClient implements CacheClient
 
     private var ignoringParams:Array = [];
 
-    public function ignoreParam(value:String):void
+    skein_internal function setIgnoreParams(value:Array):void
     {
-        ignoringParams.push(value);
+        ignoringParams = value;
     }
 
     //--------------------------------------------------------------------------
@@ -45,6 +47,22 @@ public class DefaultCacheClient implements CacheClient
     //-------------------------------------
     //  Methods: Public API
     //-------------------------------------
+
+    public function head(request:URLRequest):Headers
+    {
+        var storage:CacheStorage = CacheStorageRegistry.storage();
+
+        if (storage != null)
+        {
+            var url:String = retrieveURL(request);
+
+            var headers:Headers = storage.head(url);
+
+            return headers;
+        }
+
+        return null;
+    }
 
     public function live(request:URLRequest):Boolean
     {
@@ -97,7 +115,7 @@ public class DefaultCacheClient implements CacheClient
         }
     }
 
-    public function keep(request:URLRequest, data:Object, responseHeaders:Array):Boolean
+    public function keep(request:URLRequest, data:Object, responseHeaders:Array, callback:Function = null):Boolean
     {
         var storage:CacheStorage = CacheStorageRegistry.storage();
 
@@ -115,7 +133,7 @@ public class DefaultCacheClient implements CacheClient
 
             var url:String = retrieveURL(request);
 
-            return storage.keep(url, data, headers);
+            return storage.keep(url, data, headers, callback);
         }
 
         return false;

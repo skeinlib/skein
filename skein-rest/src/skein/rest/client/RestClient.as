@@ -11,7 +11,7 @@ import skein.rest.cache.CacheClient;
 
 public interface RestClient
 {
-    function init(api:String, params:Array):void;
+    function init(path:String, params:Array):void;
 
     function addHeader(value:Object):RestClient;
     function headers(value:Array):RestClient;
@@ -25,6 +25,7 @@ public interface RestClient
     function accessToken(value:String, key:String = "access_token"):RestClient;
 
     function contentType(value:String):RestClient;
+    function requestedResponseContentType(value:String):RestClient;
 
     function encoder(value:Function):RestClient;
     function decoder(value:Function):RestClient;
@@ -44,10 +45,10 @@ public interface RestClient
     function useCache(value:Boolean):RestClient;
     function forceCache(value:Boolean):RestClient;
 
-    function get():void;
-    function post(data:Object = null):void;
-    function put(data:Object = null):void;
-    function del(data:Object = null):void;
+    function get():Object;
+    function post(data:Object = null):Object;
+    function put(data:Object = null):Object;
+    function del(data:Object = null):Object;
 
     function download(to:Object):void;
 

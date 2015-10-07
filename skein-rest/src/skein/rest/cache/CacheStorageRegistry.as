@@ -3,6 +3,12 @@
  */
 package skein.rest.cache
 {
+import flash.net.registerClassAlias;
+
+import skein.rest.cache.response.CacheControl;
+import skein.rest.cache.response.ETag;
+import skein.rest.cache.response.Expires;
+import skein.rest.cache.response.Headers;
 import skein.rest.core.Config;
 
 public class CacheStorageRegistry
@@ -22,6 +28,13 @@ public class CacheStorageRegistry
         }
 
         return _storage;
+    }
+
+    {
+        registerClassAlias("skein.rest.cache.response.Headers", Headers);
+        registerClassAlias("skein.rest.cache.response.ETag", ETag);
+        registerClassAlias("skein.rest.cache.response.Expires", Expires);
+        registerClassAlias("skein.rest.cache.response.CacheControl", CacheControl);
     }
 }
 }

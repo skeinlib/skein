@@ -7,6 +7,7 @@
  */
 package skein.rest.core
 {
+import skein.rest.core.coding.DefaultCoding;
 import skein.rest.core.coding.JSONCoding;
 import skein.rest.core.coding.WWWFormCoding;
 
@@ -17,11 +18,15 @@ public class Encoder
         switch (contentType)
         {
             case "application/json" :
-                    return JSONCoding.encode;
+                return JSONCoding.encode;
+                break;
+
+            case "application/x-www-form-urlencoded" :
+                return WWWFormCoding.encode;
                 break;
 
             default :
-                    return WWWFormCoding.encode;
+                return DefaultCoding.encode;
                 break;
         }
     }

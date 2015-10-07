@@ -210,10 +210,31 @@ public class Config extends EventDispatcher
             if (Impl != null)
             {
                 _cache = new Impl();
+
+                if (_cache is DefaultCacheClient)
+                {
+                    DefaultCacheClient(_cache).setIgnoreParams(_cacheIgnoreParams);
+                }
             }
         }
 
         return _cache;
+    }
+
+    //-----------------------------------
+    //  cacheIgnoreParams
+    //-----------------------------------
+
+    private var _cacheIgnoreParams:Array;
+
+    public function get cacheIgnoreParams():Array
+    {
+        return _cacheIgnoreParams;
+    }
+
+    skein_internal function setCacheIgnoreParams(value:Array):void
+    {
+        _cacheIgnoreParams = value;
     }
 
     //--------------------------------------------------------------------------
