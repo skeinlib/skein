@@ -3,15 +3,17 @@
  */
 package skein.rest.cache
 {
-import skein.rest.cache.response.Headers;
+import skein.rest.cache.response.Head;
+import skein.rest.cache.response.Response;
 
 public interface CacheStorage
 {
-    function head(url:String):Headers;
+    function head(url:String):Head;
 
     function find(url:String, callback:Function):void;
 
-    function keep(url:String, data:Object, headers:Headers, callback:Function = null):Boolean;
+    function keep(url:String, response:Response, callback:Function = null):Boolean;
 
+    function purge():void;
 }
 }

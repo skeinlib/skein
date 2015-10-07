@@ -363,7 +363,7 @@ public class DefaultRestClient implements RestClient
         return this;
     }
 
-internal function hasHeaderCallbacks():Boolean
+    internal function hasHeaderCallbacks():Boolean
     {
         for (var p:String in headerCallbacks)
             return true;

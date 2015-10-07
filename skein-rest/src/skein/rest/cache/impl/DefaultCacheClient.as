@@ -10,7 +10,9 @@ import skein.core.skein_internal;
 import skein.rest.cache.CacheClient;
 import skein.rest.cache.CacheStorageRegistry;
 import skein.rest.cache.CacheStorage;
+import skein.rest.cache.response.Head;
 import skein.rest.cache.response.Headers;
+import skein.rest.cache.response.Response;
 
 public class DefaultCacheClient implements CacheClient
 {
@@ -48,7 +50,7 @@ public class DefaultCacheClient implements CacheClient
     //  Methods: Public API
     //-------------------------------------
 
-    public function head(request:URLRequest):Headers
+    public function head(request:URLRequest):Head
     {
         var storage:CacheStorage = CacheStorageRegistry.storage();
 
@@ -56,9 +58,9 @@ public class DefaultCacheClient implements CacheClient
         {
             var url:String = retrieveURL(request);
 
-            var headers:Headers = storage.head(url);
+            var head:Head = storage.head(url);
 
-            return headers;
+            return head;
         }
 
         return null;
@@ -72,23 +74,23 @@ public class DefaultCacheClient implements CacheClient
         {
             var url:String = retrieveURL(request);
 
-            var headers:Headers = storage.head(url);
+            var head:Head = storage.head(url);
 
-            if (headers != null)
+            if (head != null && head.headers != null)
             {
-                if (headers.cacheControl)
+                if (head.headers.cacheControl)
                 {
-                    if (headers.cacheControl.noCache)
+                    if (head.headers.cacheControl.noCache)
                     {
                         return false;
                     }
                 }
 
-                if (headers.expires)
+                if (head.headers.expires)
                 {
                     var now:Date = new Date();
 
-                    if (headers.expires.date.time > now.time)
+                    if (head.headers.expires.date.time > now.time)
                     {
                         return true;
                     }
@@ -121,11 +123,12 @@ public class DefaultCacheClient implements CacheClient
 
         if (storage != null)
         {
-            var headers:Headers = Headers.valueOf(responseHeaders);
+            var head:Head = new Head();
+            head.headers = Headers.valueOf(responseHeaders);
 
-            if (headers.cacheControl)
+            if (head.headers.cacheControl)
             {
-                if (headers.cacheControl.noStore)
+                if (head.headers.cacheControl.noStore)
                 {
                     return false;
                 }
@@ -133,14 +136,24 @@ public class DefaultCacheClient implements CacheClient
 
             var url:String = retrieveURL(request);
 
-            return storage.keep(url, data, headers, callback);
+            return storage.keep(url, new Response(head, data), callback);
         }
 
         return false;
     }
 
+    public function purge():void
+    {
+        var storage:CacheStorage = CacheStorageRegistry.storage();
+
+        if (storage != null)
+        {
+            storage.purge();
+        }
+    }
+
     //-------------------------------------
-    //  Methods: Public Utils
+    //  Methods: Internal
     //-------------------------------------
 
     private function retrieveURL(request:URLRequest):String

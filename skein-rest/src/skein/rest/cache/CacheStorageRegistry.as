@@ -8,7 +8,9 @@ import flash.net.registerClassAlias;
 import skein.rest.cache.response.CacheControl;
 import skein.rest.cache.response.ETag;
 import skein.rest.cache.response.Expires;
+import skein.rest.cache.response.Head;
 import skein.rest.cache.response.Headers;
+import skein.rest.cache.response.Response;
 import skein.rest.core.Config;
 
 public class CacheStorageRegistry
@@ -31,6 +33,8 @@ public class CacheStorageRegistry
     }
 
     {
+        registerClassAlias("skein.rest.cache.response.Head", Head);
+        registerClassAlias("skein.rest.cache.response.Response", Response);
         registerClassAlias("skein.rest.cache.response.Headers", Headers);
         registerClassAlias("skein.rest.cache.response.ETag", ETag);
         registerClassAlias("skein.rest.cache.response.Expires", Expires);
