@@ -149,11 +149,13 @@ public class FileSystemCacheStorage implements CacheStorage
                 {
                     if (value == undefined || value is Error)
                     {
-                        callback(null);
+                        if (callback != null)
+                            callback(null);
                     }
                     else
                     {
-                        callback(new Response(head, value));
+                        if (callback != null)
+                            callback(new Response(head, value));
                     }
                 };
 
@@ -175,12 +177,14 @@ public class FileSystemCacheStorage implements CacheStorage
             }
             else
             {
-                callback(null);
+                if (callback != null)
+                    callback(null);
             }
         }
         else
         {
-            callback(null);
+            if (callback != null)
+                callback(null);
         }
     }
 
@@ -209,11 +213,13 @@ public class FileSystemCacheStorage implements CacheStorage
             {
                 if (value == undefined || value is Error)
                 {
-                    callback(null);
+                    if (callback != null)
+                        callback(null);
                 }
                 else
                 {
-                    callback(response);
+                    if (callback != null)
+                        callback(response);
                 }
             };
 
