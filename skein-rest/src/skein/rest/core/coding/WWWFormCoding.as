@@ -38,7 +38,7 @@ public class WWWFormCoding
         }
         catch (error:Error)
         {
-            trace("WWWFormCoding:", error);
+            trace("[skein-rest] WWWFormCoding:", error);
 
             data = encoded;
         }

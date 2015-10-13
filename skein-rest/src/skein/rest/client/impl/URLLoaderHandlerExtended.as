@@ -52,10 +52,10 @@ public class URLLoaderHandlerExtended extends HandlerAbstract implements URLLoad
         _loader = loader;
 
         _loader.addEventListener(Event.COMPLETE, resultHandler);
-        _loader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, responseStatusHandler)
         _loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, statusHandler);
-        _loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+        _loader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, responseStatusHandler);
         _loader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+        _loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
         _loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
     }
 

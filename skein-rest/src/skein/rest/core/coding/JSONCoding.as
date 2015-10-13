@@ -24,7 +24,7 @@ public class JSONCoding
         }
         catch(error:Error)
         {
-            trace("JSONCoding:", error);
+            trace("[skein-rest] JSONCoding:", error);
 
             data = json;
         }
