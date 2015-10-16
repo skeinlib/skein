@@ -231,6 +231,30 @@ public class FileSystemCacheStorage implements CacheStorage
         return false;
     }
 
+    public function drop(url:String):void
+    {
+        if (_properties != null && _directory != null)
+        {
+            var key:String = keyFromURL(url);
+
+            var file:File = _directory.resolvePath(key);
+
+            try
+            {
+                file.deleteFileAsync();
+            }
+            catch (error:Error)
+            {
+                // ignore
+            }
+
+            _properties[key] = null;
+            delete _properties[key];
+
+            updateProperties();
+        }
+    }
+
     public function purge():void
     {
         _properties = {};

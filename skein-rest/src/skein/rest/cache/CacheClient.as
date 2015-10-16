@@ -54,6 +54,13 @@ public interface CacheClient
     function keep(request:URLRequest, data:Object, headers:Array, callback:Function = null):Boolean;
 
     /**
+     * Removes cached response for specified request.
+     *
+     * @param request An request for which response should be removed.
+     */
+    function drop(request:URLRequest):void;
+
+    /**
      * Clears all cache
      */
     function purge():void;

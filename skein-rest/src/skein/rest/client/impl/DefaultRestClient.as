@@ -26,6 +26,7 @@ import skein.rest.cache.CacheClient;
 import skein.rest.client.RestClient;
 import skein.rest.client.extras.Downloader;
 import skein.rest.client.extras.Uploader;
+import skein.rest.client.impl.URLLoadersQueue;
 import skein.rest.client.impl.extras.DownloaderHandler;
 import skein.rest.client.impl.extras.UploaderHandler;
 import skein.rest.core.Config;
@@ -57,7 +58,7 @@ public class DefaultRestClient implements RestClient
     {
         super();
 
-        trace("DefaultRestClient");
+        trace("[skein-rest] DefaultRestClient");
     }
 
     //--------------------------------------------------------------------------
@@ -66,7 +67,7 @@ public class DefaultRestClient implements RestClient
     //
     //--------------------------------------------------------------------------
 
-    private var _url:String;
+    protected var _url:String;
 
     protected var loader:URLLoader;
 
@@ -520,7 +521,9 @@ public class DefaultRestClient implements RestClient
 
     private function load():void
     {
-        loader = loader || new URLLoader();
+        loader = loader || URLLoadersQueue.find(request) || new  URLLoader();
+
+        URLLoadersQueue.keep(request, loader);
 
         if (_requestedResponseContentType == "application/octet-stream")
             loader.dataFormat = URLLoaderDataFormat.BINARY;
@@ -651,6 +654,15 @@ public class DefaultRestClient implements RestClient
             {
                 // ignore any error
             }
+
+            // false indicates that this loader was removed previously, this
+            // means that it is shared loader and we don't own this loader
+            if (!URLLoadersQueue.free(loader))
+            {
+                // remove reference to URLLoader as it is shared instance
+
+                loader = null;
+            }
         }
 
         if (downloader != null)
@@ -679,6 +691,7 @@ public class DefaultRestClient implements RestClient
             }
         }
 
+        _url = null;
         request = null;
         downloadTo = null;
         uploadFrom = null;
@@ -710,7 +723,7 @@ public class DefaultRestClient implements RestClient
         _useCache = Config.sharedInstance().useCache;
         _forceCache = false;
 
-        RestClientRegistry.free(this);
+        RestClientRegistry.reuse(this);
     }
 
     private function formURL():String

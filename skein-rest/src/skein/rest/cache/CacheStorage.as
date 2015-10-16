@@ -15,5 +15,7 @@ public interface CacheStorage
     function keep(url:String, response:Response, callback:Function = null):Boolean;
 
     function purge():void;
+
+    function drop(url:String):void;
 }
 }

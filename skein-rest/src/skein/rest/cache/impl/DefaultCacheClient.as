@@ -142,6 +142,18 @@ public class DefaultCacheClient implements CacheClient
         return false;
     }
 
+    public function drop(request:URLRequest):void
+    {
+        var storage:CacheStorage = CacheStorageRegistry.storage();
+
+        if (storage != null)
+        {
+            var url:String = retrieveURL(request);
+
+            storage.drop(url);
+        }
+    }
+
     public function purge():void
     {
         var storage:CacheStorage = CacheStorageRegistry.storage();

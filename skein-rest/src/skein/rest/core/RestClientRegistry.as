@@ -33,7 +33,7 @@ public class RestClientRegistry
         repository.length = 0;
     }
 
-    skein_internal static function free(client:RestClient = null):void
+    skein_internal static function reuse(client:RestClient = null):void
     {
         if (repository.length < 2)
         {
