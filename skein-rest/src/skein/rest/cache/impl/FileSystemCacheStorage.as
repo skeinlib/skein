@@ -116,16 +116,24 @@ public class FileSystemCacheStorage implements CacheStorage
 
             if (head != null)
             {
-                if (head.link == null)
+                if (head.link != null)
+                {
+                    if (isRelativeURL(head.link))
+                    {
+                        try
+                        {
+                            head.link = _directory.resolvePath(head.link).url;
+                        }
+                        catch (error:Error) { /* ignore error */ }
+                    }
+                }
+                else
                 {
                     try
                     {
                         head.link = _directory.resolvePath(key).url;
                     }
-                    catch (error:Error)
-                    {
-                        // ignore error
-                    }
+                    catch (error:Error) { /* ignore error */ }
                 }
 
                 return head;
@@ -145,6 +153,15 @@ public class FileSystemCacheStorage implements CacheStorage
 
             if (head != null)
             {
+                if (isRelativeURL(head.link))
+                {
+                    try
+                    {
+                        head.link = _directory.resolvePath(head.link).url;
+                    }
+                    catch (error:Error) { /* ignore error */ }
+                }
+
                 var resultOrErrorCallback:Function = function(value:*=undefined):void
                 {
                     if (value == undefined || value is Error)
@@ -194,11 +211,9 @@ public class FileSystemCacheStorage implements CacheStorage
         {
             var key:String = keyFromURL(url);
 
-            var file:File = _directory.resolvePath(key);
-
             try
             {
-                response.head.link = file.url;
+                response.head.link = key;
             }
             catch (error:Error)
             {
@@ -223,7 +238,7 @@ public class FileSystemCacheStorage implements CacheStorage
                 }
             };
 
-            FileSystemCacheStorageHelper.save(file, response.body, resultOrErrorCallback);
+            FileSystemCacheStorageHelper.save(_directory.resolvePath(key), response.body, resultOrErrorCallback);
 
             return true;
         }
@@ -311,6 +326,11 @@ public class FileSystemCacheStorage implements CacheStorage
     private function keyFromURL(url:String):String
     {
         return url != null ? sha1(url) : null;
+    }
+
+    private function isRelativeURL(url:String):Boolean
+    {
+        return url && url.indexOf("://") == -1;
     }
 }
 }
