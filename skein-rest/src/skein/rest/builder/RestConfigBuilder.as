@@ -76,7 +76,7 @@ public class RestConfigBuilder
         return this;
     }
 
-    public function configure():ConfigBuilder
+    public function build():ConfigBuilder
     {
         return config;
     }

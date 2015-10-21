@@ -26,7 +26,7 @@ public class AuthConfigBuilder
 
     private var url:String;
 
-    public function configure():ConfigBuilder
+    public function build():ConfigBuilder
     {
         Config.skein_internal::auth(url);
 

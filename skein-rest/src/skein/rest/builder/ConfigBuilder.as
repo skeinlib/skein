@@ -42,6 +42,11 @@ public class ConfigBuilder
         return this;
     }
 
+    public function logger():LoggerConfigBuilder
+    {
+        return new LoggerConfigBuilder(this);
+    }
+
     public function setImplementation(contract:Class, implementation:Class):ConfigBuilder
     {
         Config.setImplementation(contract, implementation);

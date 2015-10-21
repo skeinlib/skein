@@ -28,7 +28,7 @@ public class CacheConfigBuilder
         return this;
     }
 
-    public function configure():ConfigBuilder
+    public function build():ConfigBuilder
     {
         Config.sharedInstance().setCacheIgnoreParams(ignoreParams);
 
