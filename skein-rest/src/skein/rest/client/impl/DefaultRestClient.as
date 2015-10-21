@@ -7,6 +7,8 @@
  */
 package skein.rest.client.impl
 {
+import avmplus.methodXml;
+
 import flash.events.Event;
 import flash.events.HTTPStatusEvent;
 import flash.events.TimerEvent;
@@ -33,6 +35,7 @@ import skein.rest.core.Config;
 import skein.rest.core.Decoder;
 import skein.rest.core.Encoder;
 import skein.rest.core.RestClientRegistry;
+import skein.rest.logger.Log;
 
 use namespace skein_internal;
 
@@ -58,7 +61,7 @@ public class DefaultRestClient implements RestClient
     {
         super();
 
-        trace("[skein-rest] DefaultRestClient");
+        Log.d("skein-rest", "DefaultRestClient");
     }
 
     //--------------------------------------------------------------------------
@@ -71,7 +74,7 @@ public class DefaultRestClient implements RestClient
 
     protected var loader:URLLoader;
 
-    protected var request:URLRequest;
+    internal var request:URLRequest;
 
     protected var uploader:Uploader;
 
@@ -475,7 +478,9 @@ public class DefaultRestClient implements RestClient
 
         new DownloaderHandler(this).handle(downloader);
 
-        downloader.download(formURL(), downloadTo);
+        request = new URLRequest(formURL());
+
+        downloader.download(request, downloadTo);
     }
 
     public function upload(from:Object):void
@@ -486,7 +491,9 @@ public class DefaultRestClient implements RestClient
 
         new UploaderHandler(this).handle(uploader);
 
-        uploader.upload(uploadFrom, formURL(), getRequestContentType(uploadFrom), _fields);
+        request = new URLRequest(formURL());
+
+        uploader.upload(uploadFrom, request, getRequestContentType(uploadFrom), _fields);
     }
 
     //------------------------------------
@@ -608,25 +615,36 @@ public class DefaultRestClient implements RestClient
         else
         {
             loader.load(request);
+
+            Log.i("skein-rest", request.method.toUpperCase() + ":" + request.url + ":" + (request.data || ""));
         }
     }
 
-    skein_internal function retry():void
+    skein_internal function retry():Boolean
     {
         if (loader != null && request != null)
         {
             request.url = formURL();
-
             loader.load(request);
+
+            return true;
         }
-        else if (downloader != null && downloadTo != null)
+        else if (downloader != null && downloadTo != null && request != null)
         {
-            downloader.download(formURL(), downloadTo);
+            request.url = formURL();
+            downloader.download(request, downloadTo);
+
+            return true;
         }
-        else if (uploader != null && uploadFrom != null)
+        else if (uploader != null && uploadFrom != null && request != null)
         {
-            uploader.upload(uploadFrom, formURL(), getRequestContentType(uploadFrom), _fields);
+            request.url = formURL();
+            uploader.upload(uploadFrom, request, getRequestContentType(uploadFrom), _fields);
+
+            return true;
         }
+
+        return false;
     }
 
     public function url():String

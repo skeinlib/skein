@@ -12,6 +12,7 @@ import flash.net.URLRequestHeader;
 import skein.core.skein_internal;
 import skein.rest.core.HeaderHandler;
 import skein.rest.errors.DataProcessingError;
+import skein.rest.logger.Log;
 
 use namespace skein_internal;
 public class HandlerAbstract
@@ -117,6 +118,8 @@ public class HandlerAbstract
 
     protected function result(data:Object):void
     {
+        Log.d("skein-rest", client.request.method.toUpperCase() + ":" + client.request.url + ":" + (client.request.data || "") + "->" + responseCode + ":" + (data is String ? data : "BINARY"));
+
         // indicates if result callback was called before an exception occurred
         var wasHandlerCalledBeforeError:Boolean = false;
 
@@ -162,6 +165,8 @@ public class HandlerAbstract
 
     protected function error(data:Object):void
     {
+        Log.e("skein-rest", client.request.method.toUpperCase() + ":" + client.request.url + ":" + (client.request.data || "") + "->" + responseCode + ":" + (data is String ? data : "BINARY"));
+
         client.decodeError(data, handleError);
     }
 
@@ -190,7 +195,7 @@ public class HandlerAbstract
 
         var retryRequestCallback:Function = function():void
         {
-            retryRequest();
+            retryRequest(info);
         };
 
         if (client.errorInterceptor.length == 2)
@@ -199,11 +204,16 @@ public class HandlerAbstract
             client.errorInterceptor(info)(attempts, proceedErrorCallback, retryRequestCallback);
     }
 
-    private function retryRequest():void
+    private function retryRequest(info:Object):void
     {
-        attempts++;
-
-        client.retry();
+        if (client.retry())
+        {
+            attempts++;
+        }
+        else
+        {
+            proceedError(info);
+        }
     }
 
     private function proceedError(info:Object):void

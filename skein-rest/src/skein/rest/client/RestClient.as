@@ -51,7 +51,6 @@ public interface RestClient
     function del(data:Object = null):Object;
 
     function download(to:Object):void;
-
     function upload(from:Object):void;
 
     function url():String;
