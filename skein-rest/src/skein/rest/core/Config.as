@@ -12,10 +12,17 @@ import flash.events.EventDispatcher;
 import flash.utils.Dictionary;
 
 import skein.core.skein_internal;
+
+import skein.core.skein_internal;
 import skein.rest.cache.CacheClient;
 import skein.rest.cache.impl.DefaultCacheClient;
 import skein.rest.client.RestClient;
 import skein.rest.client.impl.DefaultRestClient;
+import skein.rest.logger.Logger;
+import skein.rest.logger.LoggerAppender;
+import skein.rest.logger.impl.DefaultLogger;
+import skein.rest.logger.impl.SimpleLoggerLayout;
+import skein.rest.logger.impl.TraceLoggerAppender;
 
 use namespace skein_internal;
 
@@ -38,6 +45,7 @@ public class Config extends EventDispatcher
     {
         _implementations[RestClient] = DefaultRestClient;
         _implementations[CacheClient] = DefaultCacheClient;
+        _implementations[Logger] = DefaultLogger;
     }
 
     skein_internal static function setImplementation(contract:Class, implementation:Class):void
@@ -235,6 +243,42 @@ public class Config extends EventDispatcher
     skein_internal function setCacheIgnoreParams(value:Array):void
     {
         _cacheIgnoreParams = value;
+    }
+
+    //-----------------------------------
+    //  logLevel
+    //-----------------------------------
+
+    private var _logLevel:uint = uint.MAX_VALUE;
+
+    public function get logLevel():uint
+    {
+        return _logLevel;
+    }
+
+    public function set logLevel(value:uint):void
+    {
+        _logLevel = value;
+    }
+
+    //-----------------------------------
+    //  loggerAppenders
+    //-----------------------------------
+
+    private var _loggerAppenders:Vector.<LoggerAppender>;
+
+    skein_internal function releaseLoggerAppenders():Vector.<LoggerAppender>
+    {
+        var result:Vector.<LoggerAppender> = _loggerAppenders;
+
+        _loggerAppenders = null;
+
+        return result;
+    }
+
+    skein_internal function retainLoggerAppenders(value:Vector.<LoggerAppender>):void
+    {
+        _loggerAppenders = value;
     }
 
     //--------------------------------------------------------------------------
