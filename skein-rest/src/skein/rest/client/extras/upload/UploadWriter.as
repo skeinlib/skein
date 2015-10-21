@@ -11,7 +11,7 @@ public interface UploadWriter
 {
     function close():void;
 
-    function load(from:Object, to:String, contentType:String, fields:Object = null):void;
+    function load(from:Object, to:Object, contentType:String, fields:Object = null):void;
 
     function errorCallback(callback:Function):void;
 

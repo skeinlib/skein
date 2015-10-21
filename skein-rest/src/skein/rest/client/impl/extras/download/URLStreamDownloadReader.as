@@ -95,7 +95,7 @@ public class URLStreamDownloadReader implements DownloadReader
             stream.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
             stream.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 
-            var request:URLRequest = new URLRequest(from as String);
+            var request:URLRequest = from as URLRequest;
 
             stream.load(request);
         }

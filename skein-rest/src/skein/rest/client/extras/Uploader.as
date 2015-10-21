@@ -87,7 +87,7 @@ public class Uploader
     //
     //--------------------------------------------------------------------------
 
-    public function upload(from:Object, to:String, contentType:String, fields:Object = null):void
+    public function upload(from:Object, to:Object, contentType:String, fields:Object = null):void
     {
         if (writer == null)
         {
