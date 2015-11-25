@@ -528,7 +528,21 @@ public class DefaultRestClient implements RestClient
 
     private function load():void
     {
-        loader = loader || URLLoadersQueue.find(request) || new  URLLoader();
+        var isOwnedLoader:Boolean = true;
+
+        if (loader == null)
+        {
+            loader = URLLoadersQueue.find(request);
+
+            if (loader == null)
+            {
+                loader = new URLLoader();
+            }
+            else
+            {
+                isOwnedLoader = false;
+            }
+        }
 
         URLLoadersQueue.keep(request, loader);
 
@@ -539,13 +553,16 @@ public class DefaultRestClient implements RestClient
 
         URLLoaderHandlerFactory.create(this).handle(loader);
 
-        if (stubValue != null)
+        if (isOwnedLoader)
         {
-            doStub();
-        }
-        else
-        {
-            doLoad();
+            if (stubValue != null)
+            {
+                doStub();
+            }
+            else
+            {
+                doLoad();
+            }
         }
     }
 
@@ -576,6 +593,8 @@ public class DefaultRestClient implements RestClient
         {
             receiveStubData();
         }
+
+        Log.i("skein-rest", "*STUB*" + request.method.toUpperCase() + ":" + request.url + ":" + (request.data || ""));
     }
 
     private function doLoad():void
