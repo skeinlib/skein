@@ -7,8 +7,6 @@
  */
 package skein.rest.client.impl
 {
-import avmplus.methodXml;
-
 import flash.events.Event;
 import flash.events.HTTPStatusEvent;
 import flash.events.TimerEvent;
@@ -21,14 +19,11 @@ import flash.net.URLVariables;
 import flash.utils.ByteArray;
 import flash.utils.Timer;
 
-import mx.utils.StringUtil;
-
 import skein.core.skein_internal;
 import skein.rest.cache.CacheClient;
 import skein.rest.client.RestClient;
 import skein.rest.client.extras.Downloader;
 import skein.rest.client.extras.Uploader;
-import skein.rest.client.impl.URLLoadersQueue;
 import skein.rest.client.impl.extras.DownloaderHandler;
 import skein.rest.client.impl.extras.UploaderHandler;
 import skein.rest.core.Config;
@@ -36,6 +31,7 @@ import skein.rest.core.Decoder;
 import skein.rest.core.Encoder;
 import skein.rest.core.RestClientRegistry;
 import skein.rest.logger.Log;
+import skein.utils.StringUtil;
 
 use namespace skein_internal;
 

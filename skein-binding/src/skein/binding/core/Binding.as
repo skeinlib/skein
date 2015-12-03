@@ -9,13 +9,8 @@ package skein.binding.core
 {
 import flash.utils.getTimer;
 
-import mx.utils.StringUtil;
-
-import skein.binding.core.Source;
-
 import skein.core.skein_internal;
 import skein.core.Reference;
-import skein.core.StrongReference;
 import skein.core.WeakReference;
 
 use namespace skein_internal;

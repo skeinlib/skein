@@ -3,7 +3,7 @@
   <component name="FlexBuildConfigurationManager" active="skein-states">
     <configurations>
       <configuration name="skein-states" pure-as="true" output-type="Library" output-file="skein-states.swc" output-folder="$MODULE_DIR$/../../mobitile/client/mobitile/out/production/skein-states">
-        <dependencies target-player="18.0">
+        <dependencies target-player="19.0">
           <entries>
             <entry module-name="skein-core" build-configuration-name="skein-core">
               <dependency linkage="Merged" />
@@ -12,7 +12,7 @@
               <dependency linkage="Merged" />
             </entry>
           </entries>
-          <sdk name="18.0.0.180" />
+          <sdk name="19.0.0" />
         </dependencies>
         <compiler-options />
         <packaging-air-desktop />
@@ -27,7 +27,7 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="18.0.0.180" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="jdk" jdkName="19.0.0" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="skein-core" exported="" />
     <orderEntry type="module" module-name="skein-binding" exported="" />

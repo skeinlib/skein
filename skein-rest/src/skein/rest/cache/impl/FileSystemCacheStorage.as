@@ -3,7 +3,7 @@
  */
 package skein.rest.cache.impl
 {
-import flash.filesystem.File;
+import flash.utils.getDefinitionByName;
 
 import skein.rest.cache.CacheStorage;
 import skein.rest.cache.response.BodyFormat;
@@ -15,7 +15,19 @@ public class FileSystemCacheStorage implements CacheStorage
 {
     //--------------------------------------------------------------------------
     //
-    //  Constructor
+    //  AIR classes references
+    //
+    //--------------------------------------------------------------------------
+
+    protected static const File:Class = getDefinitionByName("flash.filesystem::File") as Class;
+
+    protected static const FileMode:Class = getDefinitionByName("flash.filesystem::FileMode") as Class;
+
+    protected static const FileStream:Class = getDefinitionByName("flash.filesystem::FileStream") as Class;
+
+    //--------------------------------------------------------------------------
+    //
+    //  Class constants
     //
     //--------------------------------------------------------------------------
 
@@ -66,9 +78,9 @@ public class FileSystemCacheStorage implements CacheStorage
     //  directory
     //-------------------------------------
 
-    private var _directory:File;
+    private var _directory:Object;
 
-    public function get directory():File
+    public function get directory():Object
     {
         if (_directory == null)
         {
@@ -252,7 +264,7 @@ public class FileSystemCacheStorage implements CacheStorage
         {
             var key:String = keyFromURL(url);
 
-            var file:File = _directory.resolvePath(key);
+            var file:Object = _directory.resolvePath(key);
 
             try
             {

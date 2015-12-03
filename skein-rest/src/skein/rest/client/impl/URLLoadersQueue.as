@@ -67,11 +67,13 @@ public class URLLoadersQueue
 
     private static function compare(r1:URLRequest, r2:URLRequest):Boolean
     {
-        var result:Boolean =
-            r1.url == r2.url &&
-            r1.method == r2.method &&
-            r1.cacheResponse == r2.cacheResponse &&
-            r1.authenticate == r2.authenticate;
+        var result:Boolean = r1.url == r2.url && r1.method == r2.method;
+
+        if (r1.hasOwnProperty("cacheResponse"))
+            result = result && r1["cacheResponse"] == r2["cacheResponse"];
+
+        if (r1.hasOwnProperty("authenticate"))
+            result = result && r1["authenticate"] == r2["authenticate"];
 
         if (result)
         {

@@ -7,14 +7,30 @@ import flash.debugger.enterDebugger;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.events.OutputProgressEvent;
-import flash.filesystem.File;
-import flash.filesystem.FileMode;
-import flash.filesystem.FileStream;
 import flash.utils.ByteArray;
+import flash.utils.getDefinitionByName;
 
 public class FileSystemCacheStorageHelper
 {
-    public static function save(file:File, data:Object, callback:Function = null):void
+    //--------------------------------------------------------------------------
+    //
+    //  AIR classes references
+    //
+    //--------------------------------------------------------------------------
+
+    protected static const File:Class = getDefinitionByName("flash.filesystem::File") as Class;
+
+    protected static const FileMode:Class = getDefinitionByName("flash.filesystem::FileMode") as Class;
+
+    protected static const FileStream:Class = getDefinitionByName("flash.filesystem::FileStream") as Class;
+
+    //--------------------------------------------------------------------------
+    //
+    //  Class methods
+    //
+    //--------------------------------------------------------------------------
+
+    public static function save(file:Object, data:Object, callback:Function = null):void
     {
         var outputProgressHandler:Function = function(event:OutputProgressEvent):void
         {
@@ -46,7 +62,7 @@ public class FileSystemCacheStorageHelper
                 callback(new Error(event.text, event.errorID));
         };
 
-        var stream:FileStream = new FileStream();
+        var stream:Object = new FileStream();
         stream.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
         stream.addEventListener(OutputProgressEvent.OUTPUT_PROGRESS, outputProgressHandler);
 
@@ -70,13 +86,13 @@ public class FileSystemCacheStorageHelper
         }
     }
 
-    public static function readObject(file:File, callback:Function):void
+    public static function readObject(file:Object, callback:Function):void
     {
         open(file, function(value:*=undefined):void
         {
             if (value is FileStream)
             {
-                var stream:FileStream = value as FileStream;
+                var stream:Object = value as FileStream;
 
                 var object:Object = stream.readObject();
 
@@ -95,13 +111,13 @@ public class FileSystemCacheStorageHelper
         });
     }
 
-    public static function readBytes(file:File, callback:Function):void
+    public static function readBytes(file:Object, callback:Function):void
     {
         open(file, function(value:*=undefined):void
         {
             if (value is FileStream)
             {
-                var stream:FileStream = value as FileStream;
+                var stream:Object = value as FileStream;
 
                 var bytes:ByteArray = new ByteArray();
                 stream.readBytes(bytes);
@@ -121,7 +137,7 @@ public class FileSystemCacheStorageHelper
         });
     }
 
-    public static function open(file:File, callback:Function):void
+    public static function open(file:Object, callback:Function):void
     {
         var completeHandler:Function = function(event:Event):void
         {
@@ -174,7 +190,7 @@ public class FileSystemCacheStorageHelper
             // do not call callback due to stream has been closed by result callback
         };
 
-        var stream:FileStream = new FileStream();
+        var stream:Object = new FileStream();
         stream.addEventListener(Event.CLOSE, closeHandler);
         stream.addEventListener(Event.COMPLETE, completeHandler);
         stream.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
