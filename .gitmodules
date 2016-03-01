@@ -1,0 +1,3 @@
+[submodule "Vendor/sha1"]
+	path = Vendor/sha1
+	url = https://github.com/mherkender/sha1.git
