@@ -8,7 +8,7 @@
             <entry module-name="skein-core" build-configuration-name="skein-core">
               <dependency linkage="Merged" />
             </entry>
-            <entry module-name="spicelib-reflect" build-configuration-name="spicelib-reflect">
+            <entry library-id="b945489d-ff19-4b3b-964d-64723fe3629c">
               <dependency linkage="Merged" />
             </entry>
           </entries>
@@ -30,6 +30,16 @@
     <orderEntry type="jdk" jdkName="19.0.0" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="skein-core" exported="" />
-    <orderEntry type="module" module-name="spicelib-reflect" exported="" />
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="b945489d-ff19-4b3b-964d-64723fe3629c" />
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
+      </library>
+    </orderEntry>
   </component>
 </module>
