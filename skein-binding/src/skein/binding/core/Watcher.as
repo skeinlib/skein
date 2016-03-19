@@ -260,9 +260,9 @@ public class Watcher
             result.push(bind.getArgument("event"));
         }
 
-        for each (var bind:Metadata in property.getMetadata("Bindable", true))
+        for each (var bindable:Metadata in property.getMetadata("Bindable", true))
         {
-            result.push(bind.getDefaultArgument() || bind.getArgument("event"));
+            result.push(bindable.getDefaultArgument() || bindable.getArgument("event"));
         }
 
         return result;
@@ -277,9 +277,9 @@ public class Watcher
             result.push(bind.getArgument("event"));
         }
 
-        for each (var bind:Metadata in method.getMetadata("Bindable", true))
+        for each (var bindable:Metadata in method.getMetadata("Bindable", true))
         {
-            result.push(bind.getDefaultArgument() || bind.getArgument("event"));
+            result.push(bindable.getDefaultArgument() || bindable.getArgument("event"));
         }
 
         return result;

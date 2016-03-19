@@ -732,12 +732,12 @@ public class DateUtil
      */
     public static function makeMorning(d:Date):Date
     {
-        var d:Date = new Date(d.time);
-        d.hours = 0;
-        d.minutes = 0;
-        d.seconds = 0;
-        d.milliseconds = 0;
-        return d;
+        var date:Date = new Date(d.time);
+        date.hours = 0;
+        date.minutes = 0;
+        date.seconds = 0;
+        date.milliseconds = 0;
+        return date;
     }
 
     /**
@@ -745,12 +745,12 @@ public class DateUtil
      */
     public static function makeNight(d:Date):Date
     {
-        var d:Date = new Date(d.time);
-        d.hours = 23;
-        d.minutes = 59;
-        d.seconds = 59;
-        d.milliseconds = 999;
-        return d;
+        var date:Date = new Date(d.time);
+        date.hours = 23;
+        date.minutes = 59;
+        date.seconds = 59;
+        date.milliseconds = 999;
+        return date;
     }
 
     /**

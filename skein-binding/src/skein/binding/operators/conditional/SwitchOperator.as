@@ -32,7 +32,7 @@ public class SwitchOperator extends OperatorBase
 
     private var statements:Object = {};
 
-    private var defaultValue:Object;
+    private var defaultValue:*;
 
     //---------------------------------------------------------------------------
     //

@@ -2,7 +2,7 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="skein-async">
     <configurations>
-      <configuration name="skein-async" pure-as="true" output-type="Library" output-file="skein-async.swc" output-folder="$MODULE_DIR$/../../mobitile/client/mobitile/out/production/skein-async">
+      <configuration name="skein-async" pure-as="true" output-type="Library" output-file="skein-async-1.0.0.swc" output-folder="$MODULE_DIR$/../bin">
         <dependencies target-player="19.0">
           <sdk name="19.0.0" />
         </dependencies>

@@ -21,7 +21,7 @@ public class DefaultObjectNature implements ObjectNature
 
     private var instance:Object;
 
-    public function set(property:String, value:Object)
+    public function set(property:String, value:Object):void
     {
         PropertySetter.set(this.instance, property, value);
     }

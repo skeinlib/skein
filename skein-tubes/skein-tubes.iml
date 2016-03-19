@@ -2,7 +2,7 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="skein-tubes">
     <configurations>
-      <configuration name="skein-tubes" pure-as="true" output-type="Library" output-file="skein-tubes.swc" output-folder="$MODULE_DIR$/../../mobitile/client/mobitile/out/production/skein-tubes">
+      <configuration name="skein-tubes" pure-as="true" output-type="Library" output-file="skein-tubes-1.0.0.swc" output-folder="$MODULE_DIR$/../bin">
         <dependencies target-player="19.0">
           <entries>
             <entry module-name="skein-core" build-configuration-name="skein-core">

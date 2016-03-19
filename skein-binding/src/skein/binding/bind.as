@@ -10,7 +10,7 @@ use namespace skein_internal;
 
 public function bind(destination:Destination, source:Source):Binding
 {
-    var binding = new BindingContext().bind(source, destination);
+    var binding:Binding = new BindingContext().bind(source, destination);
 
     return binding;
 }

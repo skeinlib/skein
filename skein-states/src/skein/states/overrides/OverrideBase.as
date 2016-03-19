@@ -73,7 +73,7 @@ public class OverrideBase implements Override
     //  value
     //-----------------------------------
 
-    protected var _value;
+    protected var _value:Object;
 
     public function get value():Object
     {

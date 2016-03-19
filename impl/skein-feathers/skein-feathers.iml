@@ -6,13 +6,10 @@
         <dependencies target-player="19.0">
           <entries>
             <entry module-name="skein" build-configuration-name="skein">
-              <dependency linkage="Merged" />
+              <dependency linkage="External" />
             </entry>
-            <entry module-name="feathers" build-configuration-name="feathers">
-              <dependency linkage="Merged" />
-            </entry>
-            <entry module-name="starling" build-configuration-name="starling">
-              <dependency linkage="Merged" />
+            <entry library-id="3caf6267-db0e-439d-88e7-73d27b450d9c">
+              <dependency linkage="External" />
             </entry>
           </entries>
           <sdk name="19.0.0" />
@@ -33,7 +30,16 @@
     <orderEntry type="jdk" jdkName="19.0.0" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="skein" exported="" />
-    <orderEntry type="module" module-name="feathers" exported="" />
-    <orderEntry type="module" module-name="starling" exported="" />
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="3caf6267-db0e-439d-88e7-73d27b450d9c" />
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
+      </library>
+    </orderEntry>
   </component>
 </module>

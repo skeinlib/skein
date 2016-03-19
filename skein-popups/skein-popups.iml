@@ -2,7 +2,7 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="skein-popups">
     <configurations>
-      <configuration name="skein-popups" pure-as="true" output-type="Library" output-file="skein-popups.swc" output-folder="$MODULE_DIR$/../../mobitile/client/mobitile/out/production/skein-popups">
+      <configuration name="skein-popups" pure-as="true" output-type="Library" output-file="skein-popups-1.0.0.swc" output-folder="$MODULE_DIR$/../bin">
         <dependencies target-player="19.0">
           <sdk name="19.0.0" />
         </dependencies>

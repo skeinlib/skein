@@ -9,6 +9,6 @@ package skein.components.builder.mixins
 {
 public interface ObjectNature
 {
-    function set(property:String, value:Object);
+    function set(property:String, value:Object):void;
 }
 }

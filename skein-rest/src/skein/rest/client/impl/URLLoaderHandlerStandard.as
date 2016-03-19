@@ -86,17 +86,17 @@ public class URLLoaderHandlerStandard extends HandlerAbstract implements URLLoad
         result(_loader.data);
     }
 
-    function errorHandler(event:ErrorEvent):void
+    internal function errorHandler(event:ErrorEvent):void
     {
         error(_loader.data);
     }
 
-    function statusHandler(event:HTTPStatusEvent):void
+    internal function statusHandler(event:HTTPStatusEvent):void
     {
         status(event.status);
     }
 
-    function progressHandler(event:ProgressEvent):void
+    internal function progressHandler(event:ProgressEvent):void
     {
         progress(event.bytesLoaded, event.bytesTotal);
     }
