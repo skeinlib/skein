@@ -9,7 +9,6 @@ import skein.rest.cache.CacheStorage;
 import skein.rest.cache.response.BodyFormat;
 import skein.rest.cache.response.Head;
 import skein.rest.cache.response.Response;
-import skein.rest.utils.sha1;
 
 public class FileSystemCacheStorage implements CacheStorage
 {

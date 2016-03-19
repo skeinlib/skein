@@ -66,7 +66,8 @@ public class DefaultRestClient implements RestClient
     //
     //--------------------------------------------------------------------------
 
-    protected var _url:String;
+    protected var _path:String;
+    protected var _pathParams:Array;
 
     protected var loader:URLLoader;
 
@@ -92,13 +93,19 @@ public class DefaultRestClient implements RestClient
 
     public function init(path:String, params:Array):void
     {
-        if (path.indexOf("http") == 0 || path.indexOf("file") == 0 || path.indexOf("app-storage") == 0)
+        _path = path;
+        _pathParams = params;
+    }
+
+    protected function get path():String
+    {
+        if (_path.indexOf("http") == 0 || _path.indexOf("file") == 0 || _path.indexOf("app-storage") == 0)
         {
-            _url = StringUtil.substitute(path, params);
+            return StringUtil.substitute(_path, _pathParams);
         }
         else
         {
-            _url = Config.sharedInstance().rest + StringUtil.substitute(path, params);
+            return Config.sharedInstance().rest + StringUtil.substitute(_path, _pathParams);
         }
     }
 
@@ -372,6 +379,19 @@ public class DefaultRestClient implements RestClient
     }
 
     //------------------------------------
+    //  timeout
+    //------------------------------------
+
+    internal var _timeout:Number = NaN;
+
+    public function timeout(value:Number):RestClient
+    {
+        _timeout = value;
+
+        return this;
+    }
+
+    //------------------------------------
     //  stub
     //------------------------------------
 
@@ -504,6 +524,11 @@ public class DefaultRestClient implements RestClient
 
         if (_headers != null)
             request.requestHeaders = request.requestHeaders.concat(_headers);
+
+        if (!isNaN(_timeout) && Object(request).hasOwnProperty("idleTimeout"))
+        {
+            request["idleTimeout"] = _timeout;
+        }
 
         if (data != null)
         {
@@ -689,7 +714,7 @@ public class DefaultRestClient implements RestClient
             }
 
             // false indicates that this loader was removed previously, this
-            // means that it is shared loader and we don't own this loader
+            // means that it is shared loader and we don't own it
             if (!URLLoadersQueue.free(loader))
             {
                 // remove reference to URLLoader as it is shared instance
@@ -724,7 +749,8 @@ public class DefaultRestClient implements RestClient
             }
         }
 
-        _url = null;
+        _path = null;
+        _pathParams = null;
         request = null;
         downloadTo = null;
         uploadFrom = null;
@@ -749,6 +775,8 @@ public class DefaultRestClient implements RestClient
         statusCallback = null;
         headerCallbacks = {};
 
+        _timeout = NaN;
+
         stubValue = null;
         stubDelay = 0;
 
@@ -759,11 +787,13 @@ public class DefaultRestClient implements RestClient
         RestClientRegistry.reuse(this);
     }
 
+//    private function formHost()
+
     private function formURL():String
     {
         var urlParams:String = encodeParams();
 
-        return urlParams ? _url + "?" + urlParams : _url;
+        return urlParams ? path + "?" + urlParams : path;
     }
 
     private function encodeRequest(data:Object, callback:Function):void

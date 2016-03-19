@@ -38,6 +38,8 @@ public interface RestClient
     function error(handler:Function):RestClient;
 
     function header(name:String, handler:Function):RestClient;
+    
+    function timeout(value:Number):RestClient;
 
     function stub(value:Object, delay:uint = 0):RestClient;
 
