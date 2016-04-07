@@ -23,6 +23,7 @@ import skein.rest.logger.LoggerAppender;
 import skein.rest.logger.impl.DefaultLogger;
 import skein.rest.logger.impl.SimpleLoggerLayout;
 import skein.rest.logger.impl.TraceLoggerAppender;
+import skein.utils.Base64;
 
 use namespace skein_internal;
 
@@ -179,6 +180,67 @@ public class Config extends EventDispatcher
         if (_accessTokenKey == value) return;
         _accessTokenKey = value;
         dispatchEvent(new Event("accessTokenKeyChanged"));
+    }
+
+    //-----------------------------------
+    //  username
+    //-----------------------------------
+
+    private var _username:String;
+
+    /** Basic Authorization username */
+    public function get username():String
+    {
+        return _username;
+    }
+
+    public function set username(value:String):void
+    {
+        if (_username == value) return;
+        _username = value;
+        updateBasicAuthorization();
+    }
+
+    //-----------------------------------
+    //  password
+    //-----------------------------------
+
+    private var _password:String;
+
+    /** Basic Authorization password */
+    public function get password():String
+    {
+        return _password;
+    }
+
+    public function set password(value:String):void
+    {
+        if (_password == value) return;
+        _password = value;
+        updateBasicAuthorization();
+    }
+
+    //-----------------------------------
+    //  basicAuthorization
+    //-----------------------------------
+
+    private var _basicAuthorization:String = null;
+
+    public function get basicAuthorization():String
+    {
+        return _basicAuthorization;
+    }
+
+    private function updateBasicAuthorization():void
+    {
+        if (_username && _password)
+        {
+            _basicAuthorization = "Basic " + Base64.encode(_username + ":" + _password);
+        }
+        else
+        {
+            _basicAuthorization = null;
+        }
     }
 
     //-----------------------------------

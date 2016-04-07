@@ -524,6 +524,11 @@ public class DefaultRestClient implements RestClient
 
         if (_headers != null)
             request.requestHeaders = request.requestHeaders.concat(_headers);
+        
+        if (Config.sharedInstance().basicAuthorization)
+        {
+            request.requestHeaders = request.requestHeaders.concat(new URLRequestHeader("Authorization", Config.sharedInstance().basicAuthorization));
+        }
 
         if (!isNaN(_timeout) && Object(request).hasOwnProperty("idleTimeout"))
         {
@@ -636,6 +641,7 @@ public class DefaultRestClient implements RestClient
                     else // not yet in cache
                     {
                         loader.load(request);
+                        Log.i("skein-rest", request.method.toUpperCase() + ":" + request.url + ":" + (request.data || ""));
                     }
                 });
             }
@@ -649,13 +655,13 @@ public class DefaultRestClient implements RestClient
                     }
 
                     loader.load(request);
+                    Log.i("skein-rest", request.method.toUpperCase() + ":" + request.url + ":" + (request.data || ""));
                 });
             }
         }
         else
         {
             loader.load(request);
-
             Log.i("skein-rest", request.method.toUpperCase() + ":" + request.url + ":" + (request.data || ""));
         }
     }
@@ -666,6 +672,7 @@ public class DefaultRestClient implements RestClient
         {
             request.url = formURL();
             loader.load(request);
+            Log.i("skein-rest", request.method.toUpperCase() + ":" + request.url + ":" + (request.data || ""));
 
             return true;
         }

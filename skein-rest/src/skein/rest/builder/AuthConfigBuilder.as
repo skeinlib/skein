@@ -26,6 +26,11 @@ public class AuthConfigBuilder
 
     private var url:String;
 
+    public function basic():AuthBasicConfigBuilder
+    {
+        return new AuthBasicConfigBuilder(this);
+    }
+
     public function build():ConfigBuilder
     {
         Config.skein_internal::auth(url);

@@ -20,7 +20,7 @@ public class ConfigBuilder
         super();
     }
 
-    public function auth(url:String):AuthConfigBuilder
+    public function auth(url:String = null):AuthConfigBuilder
     {
         return new AuthConfigBuilder(this, url);
     }
