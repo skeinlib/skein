@@ -8,6 +8,8 @@ import flash.net.URLRequest;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
+import skein.utils.ByteArrayUtil;
+
 public class URLLoadersQueue
 {
     private static const queue:Array = [];
@@ -85,7 +87,7 @@ public class URLLoadersQueue
                 var ba2:ByteArray = new ByteArray();
                 ba2.writeObject(ba2);
 
-                result = ba1.length == ba2.length;
+                result = ByteArrayUtil.compare(ba1, ba2);
             }
         }
 

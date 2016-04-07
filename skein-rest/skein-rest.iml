@@ -2,7 +2,7 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="skein-rest">
     <configurations>
-      <configuration name="skein-rest" pure-as="true" output-type="Library" output-file="skein-rest-1.0.0.swc" output-folder="$MODULE_DIR$/../bin">
+      <configuration name="skein-rest" pure-as="true" output-type="Library" output-file="skein-rest-1.0.1.swc" output-folder="$MODULE_DIR$/../bin">
         <dependencies target-player="20.0">
           <entries>
             <entry module-name="skein-core" build-configuration-name="skein-core">

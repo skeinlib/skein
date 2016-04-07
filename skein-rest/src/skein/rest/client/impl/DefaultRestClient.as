@@ -640,8 +640,8 @@ public class DefaultRestClient implements RestClient
                     }
                     else // not yet in cache
                     {
+                        Log.i("skein-rest", request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
                         loader.load(request);
-                        Log.i("skein-rest", request.method.toUpperCase() + ":" + request.url + ":" + (request.data || ""));
                     }
                 });
             }
@@ -654,15 +654,15 @@ public class DefaultRestClient implements RestClient
                         request.requestHeaders = request.requestHeaders.concat(response.headers);
                     }
 
+                    Log.i("skein-rest", request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
                     loader.load(request);
-                    Log.i("skein-rest", request.method.toUpperCase() + ":" + request.url + ":" + (request.data || ""));
                 });
             }
         }
         else
         {
+            Log.i("skein-rest", request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
             loader.load(request);
-            Log.i("skein-rest", request.method.toUpperCase() + ":" + request.url + ":" + (request.data || ""));
         }
     }
 
@@ -671,8 +671,9 @@ public class DefaultRestClient implements RestClient
         if (loader != null && request != null)
         {
             request.url = formURL();
+
+            Log.i("skein-rest", request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
             loader.load(request);
-            Log.i("skein-rest", request.method.toUpperCase() + ":" + request.url + ":" + (request.data || ""));
 
             return true;
         }

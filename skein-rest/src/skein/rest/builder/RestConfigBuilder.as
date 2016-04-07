@@ -62,9 +62,9 @@ public class RestConfigBuilder
         return this;
     }
 
-    public function fixKnownIssues(value:Boolean):RestConfigBuilder
+    public function fixKnownIssues():RestConfigBuilder
     {
-        Config.sharedInstance().setFixKnownIssues(value);
+        Config.sharedInstance().setFixKnownIssues(true);
 
         return this;
     }
