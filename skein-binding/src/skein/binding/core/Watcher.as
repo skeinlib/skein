@@ -227,7 +227,7 @@ public class Watcher
 
             if (result.length == 0)
             {
-                trace("[Binding] Warning: Unable to find binding events for property '" + this.propertyName + "' on class '" + info.simpleName + "'");
+                trace("[skein-binding] Warning: Unable to find binding events for property '" + this.propertyName + "' on class '" + info.simpleName + "'");
             }
         }
 
@@ -244,7 +244,7 @@ public class Watcher
 
             if (result.length == 0)
             {
-                trace("[Binding] Warning: Unable to find binding events for method '" + this.methodName + "' on class '" + info.simpleName + "'");
+                trace("[skein-binding] Warning: Unable to find binding events for method '" + this.methodName + "' on class '" + info.simpleName + "'");
             }
         }
 
