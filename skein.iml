@@ -3,7 +3,7 @@
   <component name="FlexBuildConfigurationManager" active="skein">
     <configurations>
       <configuration name="skein" pure-as="true" output-type="Library" output-file="skein-1.0.0.swc" output-folder="$MODULE_DIR$/bin">
-        <dependencies target-player="19.0">
+        <dependencies target-player="20.0">
           <entries>
             <entry library-id="7725ffcd-bdf6-4688-a499-34aac54d2b58">
               <dependency linkage="External" />
@@ -42,7 +42,7 @@
               <dependency linkage="Include" />
             </entry>
           </entries>
-          <sdk name="19.0.0" />
+          <sdk name="20.0.0" />
         </dependencies>
         <compiler-options>
           <option name="additionalOptions" value="-advanced-telemetry=true" />
@@ -60,7 +60,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
     </content>
-    <orderEntry type="jdk" jdkName="19.0.0" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="jdk" jdkName="20.0.0" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library" exported="">
       <library type="flex">
