@@ -23,7 +23,20 @@ public class Base64
     private static const _encodeChars:Vector.<int> = InitEncoreChar();
     private static const _decodeChars:Vector.<int> = InitDecodeChar();
 
-    public static function encode(data:ByteArray):String
+    public static function encode(data:String):String
+    {
+        var bytes:ByteArray = new ByteArray();
+        bytes.writeUTFBytes(data);
+        return encodeByteArray(bytes);
+    }
+
+    public static function decode(data:String):String
+    {
+        var bytes:ByteArray = decodeToByteArray(data);
+        return bytes.readUTFBytes(bytes.length);
+    }
+
+    public static function encodeByteArray(data:ByteArray):String
     {
         var out:ByteArray = new ByteArray();
         //Presetting the length keep the memory smaller and optimize speed since there is no "grow" needed
@@ -67,7 +80,7 @@ public class Base64
         return out.readUTFBytes(out.length);
     }
 
-    public static function decode(str:String):ByteArray
+    public static function decodeToByteArray(str:String):ByteArray
     {
         var c1:int;
         var c2:int;
@@ -166,5 +179,4 @@ public class Base64
 
 }
 }
-	
-	
+
