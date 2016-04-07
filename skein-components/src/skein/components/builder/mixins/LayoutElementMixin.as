@@ -10,16 +10,22 @@ package skein.components.builder.mixins
 public interface LayoutElementMixin
 {
     function left(value:Object):void;
+    function leftAnchor(value:Object):void;
 
     function top(value:Object):void;
+    function topAnchor(value:Object):void;
 
     function right(value:Object):void;
+    function rightAnchor(value:Object):void;
 
     function bottom(value:Object):void;
+    function bottomAnchor(value:Object):void;
 
     function horizontalCenter(value:Object):void;
+    function horizontalCenterAnchor(value:Object):void;
 
     function verticalCenter(value:Object):void;
+    function verticalCenterAnchor(value:Object):void;
 
     function includeInLayout(value:Object):void;
 }

@@ -10,6 +10,8 @@ package skein.impl.feathers.components.builder.components
 import feathers.controls.Label;
 
 import skein.components.builder.components.LabelBuilder;
+
+import skein.components.builder.components.LabelBuilder;
 import skein.components.builder.mixins.ComponentMixin;
 import skein.components.builder.mixins.EventDispatcherMixin;
 import skein.components.builder.mixins.LayoutElementMixin;
@@ -36,7 +38,7 @@ public class FeathersLabelBuilder extends FeathersBuilder implements LabelBuilde
         this.objectNature = new DefaultObjectNature(this.instance);
         this.spriteMixin = new FeathersSpriteNature(this.instance);
         this.componentMixin = new FeathersComponentNature(this.instance);
-        this.layoutElementMixin = new FeathersLayoutElementNature(this.instance);
+        this.layoutElementNature = new FeathersLayoutElementNature(this.instance);
         this.eventDispatcherMixin = new FeathersEventDispatcherNature(this.instance);
     }
 
@@ -56,7 +58,7 @@ public class FeathersLabelBuilder extends FeathersBuilder implements LabelBuilde
 
     private var componentMixin:ComponentMixin;
 
-    private var layoutElementMixin:LayoutElementMixin;
+    private var layoutElementNature:LayoutElementMixin;
 
     private var eventDispatcherMixin:EventDispatcherMixin;
 
@@ -183,49 +185,91 @@ public class FeathersLabelBuilder extends FeathersBuilder implements LabelBuilde
 
     public function left(value:Object):LabelBuilder
     {
-        layoutElementMixin.left(value);
+        layoutElementNature.left(value);
+
+        return this;
+    }
+
+    public function leftAnchor(value:Object):LabelBuilder
+    {
+        layoutElementNature.leftAnchor(value);
 
         return this;
     }
 
     public function top(value:Object):LabelBuilder
     {
-        layoutElementMixin.top(value);
+        layoutElementNature.top(value);
+
+        return this;
+    }
+
+    public function topAnchor(value:Object):LabelBuilder
+    {
+        layoutElementNature.topAnchor(value);
 
         return this;
     }
 
     public function right(value:Object):LabelBuilder
     {
-        layoutElementMixin.right(value);
+        layoutElementNature.right(value);
+
+        return this;
+    }
+
+    public function rightAnchor(value:Object):LabelBuilder
+    {
+        layoutElementNature.rightAnchor(value);
 
         return this;
     }
 
     public function bottom(value:Object):LabelBuilder
     {
-        layoutElementMixin.bottom(value);
+        layoutElementNature.bottom(value);
+
+        return this;
+    }
+
+    public function bottomAnchor(value:Object):LabelBuilder
+    {
+        layoutElementNature.bottomAnchor(value);
 
         return this;
     }
 
     public function horizontalCenter(value:Object):LabelBuilder
     {
-        layoutElementMixin.horizontalCenter(value);
+        layoutElementNature.horizontalCenter(value);
+
+        return this;
+    }
+
+    public function horizontalCenterAnchor(value:Object):LabelBuilder
+    {
+        layoutElementNature.horizontalCenterAnchor(value);
 
         return this;
     }
 
     public function verticalCenter(value:Object):LabelBuilder
     {
-        layoutElementMixin.verticalCenter(value);
+        layoutElementNature.verticalCenter(value);
+
+        return this;
+    }
+
+    public function verticalCenterAnchor(value:Object):LabelBuilder
+    {
+        layoutElementNature.verticalCenterAnchor(value);
 
         return this;
     }
 
     public function includeInLayout(value:Object):LabelBuilder
     {
-        layoutElementMixin.includeInLayout(value);
+        layoutElementNature.includeInLayout(value);
 
         return this;
     }

@@ -68,12 +68,16 @@ public interface TextInputBuilder extends Builder
     //-----------------------------------
 
     function left(value:Object):TextInputBuilder;
+    function leftAnchor(value:Object):TextInputBuilder;
 
     function top(value:Object):TextInputBuilder;
+    function topAnchor(value:Object):TextInputBuilder;
 
     function right(value:Object):TextInputBuilder;
+    function rightAnchor(value:Object):TextInputBuilder;
 
     function bottom(value:Object):TextInputBuilder;
+    function bottomAnchor(value:Object):TextInputBuilder;
 
     function horizontalCenter(value:Object):TextInputBuilder;
 

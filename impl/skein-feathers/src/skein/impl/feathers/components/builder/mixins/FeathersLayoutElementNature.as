@@ -34,9 +34,19 @@ public class FeathersLayoutElementNature implements LayoutElementMixin
         PropertySetter.set(this.layoutData, "left", value);
     }
 
+    public function leftAnchor(value:Object):void
+    {
+        PropertySetter.set(this.layoutData, "leftAnchorDisplayObject", value);
+    }
+
     public function top(value:Object):void
     {
         PropertySetter.set(this.layoutData, "top", value);
+    }
+
+    public function topAnchor(value:Object):void
+    {
+        PropertySetter.set(this.layoutData, "topAnchorDisplayObject", value);
     }
 
     public function right(value:Object):void
@@ -44,9 +54,19 @@ public class FeathersLayoutElementNature implements LayoutElementMixin
         PropertySetter.set(this.layoutData, "right", value);
     }
 
+    public function rightAnchor(value:Object):void
+    {
+        PropertySetter.set(this.layoutData, "rightAnchorDisplayObject", value);
+    }
+
     public function bottom(value:Object):void
     {
         PropertySetter.set(this.layoutData, "bottom", value);
+    }
+
+    public function bottomAnchor(value:Object):void
+    {
+        PropertySetter.set(this.layoutData, "bottomAnchorDisplayObject", value);
     }
 
     public function horizontalCenter(value:Object):void
@@ -54,9 +74,19 @@ public class FeathersLayoutElementNature implements LayoutElementMixin
         PropertySetter.set(this.layoutData, "horizontalCenter", value);
     }
 
+    public function horizontalCenterAnchor(value:Object):void
+    {
+        PropertySetter.set(this.layoutData, "horizontalCenterAnchorDisplayObject", value);
+    }
+
     public function verticalCenter(value:Object):void
     {
         PropertySetter.set(this.layoutData, "verticalCenter", value);
+    }
+
+    public function verticalCenterAnchor(value:Object):void
+    {
+        PropertySetter.set(this.layoutData, "verticalCenterAnchorDisplayObject", value);
     }
 
     public function includeInLayout(value:Object):void

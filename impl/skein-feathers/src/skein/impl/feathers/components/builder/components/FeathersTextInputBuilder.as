@@ -9,8 +9,6 @@ package skein.impl.feathers.components.builder.components
 {
 import feathers.controls.TextInput;
 
-import skein.components.builder.components.ButtonBuilder;
-
 import skein.components.builder.components.TextInputBuilder;
 import skein.components.builder.mixins.ComponentMixin;
 import skein.components.builder.mixins.EventDispatcherMixin;
@@ -40,7 +38,7 @@ public class FeathersTextInputBuilder extends FeathersBuilder implements TextInp
 
         this.spriteMixin = new FeathersSpriteNature(this.instance);
         this.componentMixin = new FeathersComponentNature(this.instance);
-        this.layoutElementMixin = new FeathersLayoutElementNature(this.instance);
+        this.layoutElementNature = new FeathersLayoutElementNature(this.instance);
         this.eventDispatcherMixin = new FeathersEventDispatcherNature(this.instance);
     }
 
@@ -58,7 +56,7 @@ public class FeathersTextInputBuilder extends FeathersBuilder implements TextInp
 
     private var componentMixin:ComponentMixin;
 
-    private var layoutElementMixin:LayoutElementMixin;
+    private var layoutElementNature:LayoutElementMixin;
 
     private var eventDispatcherMixin:EventDispatcherMixin;
 
@@ -183,51 +181,80 @@ public class FeathersTextInputBuilder extends FeathersBuilder implements TextInp
     //  Methods: LayoutElement
     //-----------------------------------
 
+
     public function left(value:Object):TextInputBuilder
     {
-        layoutElementMixin.left(value);
+        layoutElementNature.left(value);
+
+        return this;
+    }
+
+    public function leftAnchor(value:Object):TextInputBuilder
+    {
+        layoutElementNature.leftAnchor(value);
 
         return this;
     }
 
     public function top(value:Object):TextInputBuilder
     {
-        layoutElementMixin.top(value);
+        layoutElementNature.top(value);
+
+        return this;
+    }
+
+    public function topAnchor(value:Object):TextInputBuilder
+    {
+        layoutElementNature.topAnchor(value);
 
         return this;
     }
 
     public function right(value:Object):TextInputBuilder
     {
-        layoutElementMixin.right(value);
+        layoutElementNature.right(value);
+
+        return this;
+    }
+
+    public function rightAnchor(value:Object):TextInputBuilder
+    {
+        layoutElementNature.rightAnchor(value);
 
         return this;
     }
 
     public function bottom(value:Object):TextInputBuilder
     {
-        layoutElementMixin.bottom(value);
+        layoutElementNature.bottom(value);
+
+        return this;
+    }
+
+    public function bottomAnchor(value:Object):TextInputBuilder
+    {
+        layoutElementNature.bottomAnchor(value);
 
         return this;
     }
 
     public function horizontalCenter(value:Object):TextInputBuilder
     {
-        layoutElementMixin.horizontalCenter(value);
+        layoutElementNature.horizontalCenter(value);
 
         return this;
     }
 
     public function verticalCenter(value:Object):TextInputBuilder
     {
-        layoutElementMixin.verticalCenter(value);
+        layoutElementNature.verticalCenter(value);
 
         return this;
     }
 
     public function includeInLayout(value:Object):TextInputBuilder
     {
-        layoutElementMixin.includeInLayout(value);
+        layoutElementNature.includeInLayout(value);
 
         return this;
     }

@@ -7,8 +7,12 @@
  */
 package skein.impl.feathers.components.builder.mixins
 {
+import feathers.layout.AnchorLayoutData;
+import feathers.layout.ILayoutDisplayObject;
+
 import skein.components.builder.mixins.SpriteMixin;
 import skein.components.enum.Axis;
+import skein.components.utils.LayoutUtil;
 import skein.core.PropertySetter;
 
 import starling.display.Sprite;
@@ -39,14 +43,48 @@ public class FeathersSpriteNature implements SpriteMixin
         // not supported
     }
 
+    // TODO: Refactor setting percentage width
     public function width(value:Object):void
     {
-        PropertySetter.set(this.instance, "width", value);
+        if (this.instance is ILayoutDisplayObject && LayoutUtil.isPercentageValue(value))
+        {
+            var layoutData:AnchorLayoutData = ILayoutDisplayObject(this.instance).layoutData as AnchorLayoutData;
+
+            if (layoutData == null)
+            {
+                ILayoutDisplayObject(this.instance).layoutData = layoutData = new AnchorLayoutData();
+            }
+
+            var percentWidth:Object = LayoutUtil.extractPercentageValue(value);
+
+            PropertySetter.set(layoutData, "percentWidth", percentWidth);
+        }
+        else
+        {
+            PropertySetter.set(this.instance, "width", value);
+        }
     }
 
+    // TODO: Refactor setting percentage height
     public function height(value:Object):void
     {
-        PropertySetter.set(this.instance, "height", value);
+        if (this.instance is ILayoutDisplayObject && LayoutUtil.isPercentageValue(value))
+        {
+            var layoutData:AnchorLayoutData = ILayoutDisplayObject(this.instance).layoutData as AnchorLayoutData;
+
+            if (layoutData == null)
+            {
+                ILayoutDisplayObject(this.instance).layoutData = layoutData = new AnchorLayoutData();
+            }
+
+            var percentHeight:Object = LayoutUtil.extractPercentageValue(value);
+
+            PropertySetter.set(layoutData, "percentHeight", percentHeight);
+        }
+        else
+        {
+            PropertySetter.set(this.instance, "height", value);
+        }
     }
 
     public function maxWidth(value:Object):void

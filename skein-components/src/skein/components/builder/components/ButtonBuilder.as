@@ -64,12 +64,16 @@ public interface ButtonBuilder extends Builder
     //-----------------------------------
 
     function left(value:Object):ButtonBuilder;
+    function leftAnchor(value:Object):ButtonBuilder;
 
     function top(value:Object):ButtonBuilder;
+    function topAnchor(value:Object):ButtonBuilder;
 
     function right(value:Object):ButtonBuilder;
+    function rightAnchor(value:Object):ButtonBuilder;
 
     function bottom(value:Object):ButtonBuilder;
+    function bottomAnchor(value:Object):ButtonBuilder;
 
     function horizontalCenter(value:Object):ButtonBuilder;
 

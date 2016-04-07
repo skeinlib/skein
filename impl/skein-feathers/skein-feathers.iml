@@ -11,6 +11,9 @@
             <entry library-id="3caf6267-db0e-439d-88e7-73d27b450d9c">
               <dependency linkage="External" />
             </entry>
+            <entry module-name="feathers" build-configuration-name="feathers">
+              <dependency linkage="External" />
+            </entry>
           </entries>
           <sdk name="19.0.0" />
         </dependencies>
@@ -41,5 +44,6 @@
         <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="feathers" exported="" />
   </component>
 </module>

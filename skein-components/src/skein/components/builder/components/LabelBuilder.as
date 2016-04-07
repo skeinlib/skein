@@ -68,16 +68,22 @@ public interface LabelBuilder extends Builder
     //-----------------------------------
 
     function left(value:Object):LabelBuilder;
+    function leftAnchor(value:Object):LabelBuilder;
 
     function top(value:Object):LabelBuilder;
+    function topAnchor(value:Object):LabelBuilder;
 
     function right(value:Object):LabelBuilder;
+    function rightAnchor(value:Object):LabelBuilder;
 
     function bottom(value:Object):LabelBuilder;
+    function bottomAnchor(value:Object):LabelBuilder;
 
     function horizontalCenter(value:Object):LabelBuilder;
+    function horizontalCenterAnchor(value:Object):LabelBuilder;
 
     function verticalCenter(value:Object):LabelBuilder;
+    function verticalCenterAnchor(value:Object):LabelBuilder;
 
     function includeInLayout(value:Object):LabelBuilder;
 

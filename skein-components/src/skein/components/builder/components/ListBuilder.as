@@ -72,16 +72,22 @@ public interface ListBuilder extends Builder
     //-----------------------------------
 
     function left(value:Object):ListBuilder;
+    function leftAnchor(value:Object):ListBuilder;
 
     function top(value:Object):ListBuilder;
+    function topAnchor(value:Object):ListBuilder;
 
     function right(value:Object):ListBuilder;
+    function rightAnchor(value:Object):ListBuilder;
 
     function bottom(value:Object):ListBuilder;
+    function bottomAnchor(value:Object):ListBuilder;
 
     function horizontalCenter(value:Object):ListBuilder;
+    function horizontalCenterAnchor(value:Object):ListBuilder;
 
     function verticalCenter(value:Object):ListBuilder;
+    function verticalCenterAnchor(value:Object):ListBuilder;
 
     function includeInLayout(value:Object):ListBuilder;
     

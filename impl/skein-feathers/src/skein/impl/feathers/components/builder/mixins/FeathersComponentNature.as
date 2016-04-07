@@ -7,14 +7,14 @@
  */
 package skein.impl.feathers.components.builder.mixins
 {
-import feathers.core.FeathersControl;
+import feathers.core.IFeathersControl;
 
 import skein.components.builder.mixins.ComponentMixin;
 import skein.core.PropertySetter;
 
 public class FeathersComponentNature implements ComponentMixin
 {
-    public function FeathersComponentNature(instance:FeathersControl)
+    public function FeathersComponentNature(instance:IFeathersControl)
     {
         super();
 
@@ -22,7 +22,7 @@ public class FeathersComponentNature implements ComponentMixin
     }
 
     private var host:Object;
-    private var instance:FeathersControl;
+    private var instance:IFeathersControl;
 
     public function enabled(value:Object):void
     {

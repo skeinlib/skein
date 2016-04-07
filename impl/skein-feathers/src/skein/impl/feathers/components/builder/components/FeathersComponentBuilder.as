@@ -8,7 +8,12 @@
 package skein.impl.feathers.components.builder.components
 {
 import feathers.core.FeathersControl;
+import feathers.core.IFeathersControl;
+import feathers.layout.ILayoutDisplayObject;
 
+import skein.components.builder.components.ComponentBuilder;
+
+import skein.components.builder.components.ComponentBuilder;
 import skein.components.builder.components.ComponentBuilder;
 import skein.components.builder.mixins.ComponentMixin;
 import skein.components.builder.mixins.EventDispatcherMixin;
@@ -20,6 +25,8 @@ import skein.impl.feathers.components.builder.mixins.FeathersComponentNature;
 import skein.impl.feathers.components.builder.mixins.FeathersEventDispatcherNature;
 import skein.impl.feathers.components.builder.mixins.FeathersLayoutElementNature;
 import skein.impl.feathers.components.builder.mixins.FeathersSpriteNature;
+
+import starling.display.Sprite;
 
 public class FeathersComponentBuilder extends FeathersBuilder implements ComponentBuilder
 {
@@ -38,10 +45,22 @@ public class FeathersComponentBuilder extends FeathersBuilder implements Compone
 
         createInstance();
 
-        this.spriteMixin = new FeathersSpriteNature(this.instance);
-        this.componentMixin = new FeathersComponentNature(this.instance);
-        this.layoutElementMixin = new FeathersLayoutElementNature(this.instance);
-        this.eventDispatcherMixin = new FeathersEventDispatcherNature(this.instance);
+        this.eventDispatcherNature = new FeathersEventDispatcherNature(_instance);
+
+        if (_instance is Sprite)
+        {
+            this.spriteNature = new FeathersSpriteNature(_instance as Sprite);
+        }
+
+        if (_instance is IFeathersControl)
+        {
+            this.componentMixin = new FeathersComponentNature(_instance as IFeathersControl);
+        }
+
+        if (_instance is ILayoutDisplayObject)
+        {
+            this.layoutElementNature = new FeathersLayoutElementNature(_instance as ILayoutDisplayObject);
+        }
     }
 
     //--------------------------------------------------------------------------
@@ -60,13 +79,13 @@ public class FeathersComponentBuilder extends FeathersBuilder implements Compone
     //  Variables: Natures
     //-------------------------------------
 
-    private var spriteMixin:SpriteMixin;
+    private var spriteNature:SpriteMixin;
 
     private var componentMixin:ComponentMixin;
 
-    private var layoutElementMixin:LayoutElementMixin;
+    private var layoutElementNature:LayoutElementMixin;
 
-    private var eventDispatcherMixin:EventDispatcherMixin;
+    private var eventDispatcherNature:EventDispatcherMixin;
 
     //--------------------------------------------------------------------------
     //
@@ -92,7 +111,13 @@ public class FeathersComponentBuilder extends FeathersBuilder implements Compone
     override protected function createInstance(generator:Class = null):void
     {
         if (factory is Class)
-            this._instance = new factory();
+        {
+            _instance = new factory();
+        }
+        else if (factory is Function)
+        {
+            _instance = (factory as Function)();
+        }
     }
 
     //--------------------------------------------------------------------------
@@ -107,70 +132,70 @@ public class FeathersComponentBuilder extends FeathersBuilder implements Compone
 
     public function x(value:Object):ComponentBuilder
     {
-        spriteMixin.x(value);
+        spriteNature.x(value);
 
         return this;
     }
 
     public function y(value:Object):ComponentBuilder
     {
-        spriteMixin.y(value);
+        spriteNature.y(value);
 
         return this;
     }
 
     public function width(value:Object):ComponentBuilder
     {
-        spriteMixin.width(value);
+        spriteNature.width(value);
 
         return this;
     }
 
     public function height(value:Object):ComponentBuilder
     {
-        spriteMixin.height(value);
+        spriteNature.height(value);
 
         return this;
     }
 
     public function rotation(value:Object, axis:String = null):ComponentBuilder
     {
-        spriteMixin.rotation(value, axis);
+        spriteNature.rotation(value, axis);
 
         return this;
     }
 
     public function visible(value:Object):ComponentBuilder
     {
-        spriteMixin.visible(value);
+        spriteNature.visible(value);
 
         return this;
     }
 
     public function alpha(value:Object):ComponentBuilder
     {
-        spriteMixin.alpha(value);
+        spriteNature.alpha(value);
 
         return this;
     }
 
     public function z(value:Object):ComponentBuilder
     {
-        spriteMixin.z(value);
+        spriteNature.z(value);
 
         return this;
     }
 
     public function scale(value:Object, axis:String = null):ComponentBuilder
     {
-        spriteMixin.scale(value, axis);
+        spriteNature.scale(value, axis);
 
         return this;
     }
 
     public function mask(value:Object):ComponentBuilder
     {
-        spriteMixin.mask(value);
+        spriteNature.mask(value);
 
         return this;
     }
@@ -181,7 +206,7 @@ public class FeathersComponentBuilder extends FeathersBuilder implements Compone
 
     public function on(type:String, handler:Function, weak:Boolean = true):ComponentBuilder
     {
-        eventDispatcherMixin.on(type, handler, weak);
+        eventDispatcherNature.on(type, handler, weak);
 
         return this;
     }
@@ -192,49 +217,91 @@ public class FeathersComponentBuilder extends FeathersBuilder implements Compone
 
     public function left(value:Object):ComponentBuilder
     {
-        layoutElementMixin.left(value);
+        layoutElementNature.left(value);
+
+        return this;
+    }
+
+    public function leftAnchor(value:Object):ComponentBuilder
+    {
+        layoutElementNature.leftAnchor(value);
 
         return this;
     }
 
     public function top(value:Object):ComponentBuilder
     {
-        layoutElementMixin.top(value);
+        layoutElementNature.top(value);
+
+        return this;
+    }
+
+    public function topAnchor(value:Object):ComponentBuilder
+    {
+        layoutElementNature.topAnchor(value);
 
         return this;
     }
 
     public function right(value:Object):ComponentBuilder
     {
-        layoutElementMixin.right(value);
+        layoutElementNature.right(value);
+
+        return this;
+    }
+
+    public function rightAnchor(value:Object):ComponentBuilder
+    {
+        layoutElementNature.rightAnchor(value);
 
         return this;
     }
 
     public function bottom(value:Object):ComponentBuilder
     {
-        layoutElementMixin.bottom(value);
+        layoutElementNature.bottom(value);
+
+        return this;
+    }
+
+    public function bottomAnchor(value:Object):ComponentBuilder
+    {
+        layoutElementNature.bottomAnchor(value);
 
         return this;
     }
 
     public function horizontalCenter(value:Object):ComponentBuilder
     {
-        layoutElementMixin.horizontalCenter(value);
+        layoutElementNature.horizontalCenter(value);
+
+        return this;
+    }
+
+    public function horizontalCenterAnchor(value:Object):ComponentBuilder
+    {
+        layoutElementNature.horizontalCenterAnchor(value);
 
         return this;
     }
 
     public function verticalCenter(value:Object):ComponentBuilder
     {
-        layoutElementMixin.verticalCenter(value);
+        layoutElementNature.verticalCenter(value);
+
+        return this;
+    }
+
+    public function verticalCenterAnchor(value:Object):ComponentBuilder
+    {
+        layoutElementNature.verticalCenterAnchor(value);
 
         return this;
     }
 
     public function includeInLayout(value:Object):ComponentBuilder
     {
-        layoutElementMixin.includeInLayout(value);
+        layoutElementNature.includeInLayout(value);
 
         return this;
     }
@@ -266,7 +333,7 @@ public class FeathersComponentBuilder extends FeathersBuilder implements Compone
 
     public function set(property:String, value:Object):ComponentBuilder
     {
-        PropertySetter.set(this.instance, property, value);
+        PropertySetter.set(_instance, property, value);
 
         return this;
     }

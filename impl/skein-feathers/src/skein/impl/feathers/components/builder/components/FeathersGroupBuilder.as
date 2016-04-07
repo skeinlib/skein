@@ -12,6 +12,8 @@ import feathers.core.FeathersControl;
 import feathers.layout.AnchorLayout;
 import feathers.layout.VerticalLayout;
 
+import skein.components.builder.components.GroupBuilder;
+
 import skein.components.builder.components.ChildrenBuilder;
 import skein.components.builder.components.GroupBuilder;
 import skein.components.builder.mixins.ComponentMixin;
@@ -49,13 +51,13 @@ public class FeathersGroupBuilder extends FeathersBuilder implements GroupBuilde
 
         this.host = host;
 
-        new VerticalLayout().hasOwnProperty("gap");
+        new VerticalLayout().hasOwnProperty("gap");// TODO ?
 
         this.createInstance(generator);
 
         this.spriteMixin = new FeathersSpriteNature(this.instance as Sprite);
         this.componentMixin = new FeathersComponentNature(this.instance);
-        this.layoutElementMixin = new FeathersLayoutElementNature(this.instance);
+        this.layoutElementNature = new FeathersLayoutElementNature(this.instance);
         this.eventDispatcherMixin = new FeathersEventDispatcherNature(this.instance);
         this.elementContainerMixin = new FeathersElementContainerMixin(this.instance);
     }
@@ -74,7 +76,7 @@ public class FeathersGroupBuilder extends FeathersBuilder implements GroupBuilde
 
     private var componentMixin:ComponentMixin;
 
-    private var layoutElementMixin:LayoutElementMixin;
+    private var layoutElementNature:LayoutElementMixin;
 
     private var eventDispatcherMixin:EventDispatcherMixin;
     
@@ -104,7 +106,7 @@ public class FeathersGroupBuilder extends FeathersBuilder implements GroupBuilde
     override protected function createInstance(generator:Class = null):void
     {
         this._instance = generator ? new generator() : new ScrollContainer();
-        Object(this.instance).layout = new AnchorLayout();
+//        Object(this.instance).layout = new AnchorLayout();// TODO: set layout explicitly
     }
 
     //--------------------------------------------------------------------------
@@ -112,6 +114,17 @@ public class FeathersGroupBuilder extends FeathersBuilder implements GroupBuilde
     //  Methods
     //
     //--------------------------------------------------------------------------
+
+    //------------------------------------
+    //  Methods: Object
+    //------------------------------------
+
+    public function set(property:String, value:Object):GroupBuilder
+    {
+        PropertySetter.set(_instance, property, value);
+        
+        return this;
+    }
 
     //------------------------------------
     //  Methods: Sprite
@@ -202,51 +215,80 @@ public class FeathersGroupBuilder extends FeathersBuilder implements GroupBuilde
     //  Methods: LayoutElement
     //-----------------------------------
 
+
     public function left(value:Object):GroupBuilder
     {
-        layoutElementMixin.left(value);
+        layoutElementNature.left(value);
+
+        return this;
+    }
+
+    public function leftAnchor(value:Object):GroupBuilder
+    {
+        layoutElementNature.leftAnchor(value);
 
         return this;
     }
 
     public function top(value:Object):GroupBuilder
     {
-        layoutElementMixin.top(value);
+        layoutElementNature.top(value);
+
+        return this;
+    }
+
+    public function topAnchor(value:Object):GroupBuilder
+    {
+        layoutElementNature.topAnchor(value);
 
         return this;
     }
 
     public function right(value:Object):GroupBuilder
     {
-        layoutElementMixin.right(value);
+        layoutElementNature.right(value);
+
+        return this;
+    }
+
+    public function rightAnchor(value:Object):GroupBuilder
+    {
+        layoutElementNature.rightAnchor(value);
 
         return this;
     }
 
     public function bottom(value:Object):GroupBuilder
     {
-        layoutElementMixin.bottom(value);
+        layoutElementNature.bottom(value);
+
+        return this;
+    }
+
+    public function bottomAnchor(value:Object):GroupBuilder
+    {
+        layoutElementNature.bottomAnchor(value);
 
         return this;
     }
 
     public function horizontalCenter(value:Object):GroupBuilder
     {
-        layoutElementMixin.horizontalCenter(value);
+        layoutElementNature.horizontalCenter(value);
 
         return this;
     }
 
     public function verticalCenter(value:Object):GroupBuilder
     {
-        layoutElementMixin.verticalCenter(value);
+        layoutElementNature.verticalCenter(value);
 
         return this;
     }
 
     public function includeInLayout(value:Object):GroupBuilder
     {
-        layoutElementMixin.includeInLayout(value);
+        layoutElementNature.includeInLayout(value);
 
         return this;
     }

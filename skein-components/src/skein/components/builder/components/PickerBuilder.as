@@ -68,16 +68,22 @@ public interface PickerBuilder extends Builder
     //-----------------------------------
 
     function left(value:Object):PickerBuilder;
+    function leftAnchor(value:Object):PickerBuilder;
 
     function top(value:Object):PickerBuilder;
+    function topAnchor(value:Object):PickerBuilder;
 
     function right(value:Object):PickerBuilder;
+    function rightAnchor(value:Object):PickerBuilder;
 
     function bottom(value:Object):PickerBuilder;
+    function bottomAnchor(value:Object):PickerBuilder;
 
     function horizontalCenter(value:Object):PickerBuilder;
+    function horizontalCenterAnchor(value:Object):PickerBuilder;
 
     function verticalCenter(value:Object):PickerBuilder;
+    function verticalCenterAnchor(value:Object):PickerBuilder;
 
     //-----------------------------------
     //  Methods: List

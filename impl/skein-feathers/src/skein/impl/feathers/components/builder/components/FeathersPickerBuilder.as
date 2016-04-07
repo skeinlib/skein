@@ -10,6 +10,8 @@ package skein.impl.feathers.components.builder.components
 import feathers.controls.PickerList;
 
 import skein.components.builder.components.PickerBuilder;
+
+import skein.components.builder.components.PickerBuilder;
 import skein.components.builder.mixins.ComponentMixin;
 import skein.components.builder.mixins.EventDispatcherMixin;
 import skein.components.builder.mixins.LayoutElementMixin;
@@ -41,7 +43,7 @@ public class FeathersPickerBuilder extends FeathersBuilder implements PickerBuil
         this.objectNature = new DefaultObjectNature(this.instance);
         this.spriteMixin = new FeathersSpriteNature(this.instance);
         this.componentMixin = new FeathersComponentNature(this.instance);
-        this.layoutElementMixin = new FeathersLayoutElementNature(this.instance);
+        this.layoutElementNature = new FeathersLayoutElementNature(this.instance);
         this.eventDispatcherMixin = new FeathersEventDispatcherNature(this.instance);
     }
 
@@ -61,7 +63,7 @@ public class FeathersPickerBuilder extends FeathersBuilder implements PickerBuil
 
     private var componentMixin:ComponentMixin;
 
-    private var layoutElementMixin:LayoutElementMixin;
+    private var layoutElementNature:LayoutElementMixin;
 
     private var eventDispatcherMixin:EventDispatcherMixin;
 
@@ -188,42 +190,84 @@ public class FeathersPickerBuilder extends FeathersBuilder implements PickerBuil
 
     public function left(value:Object):PickerBuilder
     {
-        layoutElementMixin.left(value);
+        layoutElementNature.left(value);
+
+        return this;
+    }
+
+    public function leftAnchor(value:Object):PickerBuilder
+    {
+        layoutElementNature.leftAnchor(value);
 
         return this;
     }
 
     public function top(value:Object):PickerBuilder
     {
-        layoutElementMixin.top(value);
+        layoutElementNature.top(value);
+
+        return this;
+    }
+
+    public function topAnchor(value:Object):PickerBuilder
+    {
+        layoutElementNature.topAnchor(value);
 
         return this;
     }
 
     public function right(value:Object):PickerBuilder
     {
-        layoutElementMixin.right(value);
+        layoutElementNature.right(value);
+
+        return this;
+    }
+
+    public function rightAnchor(value:Object):PickerBuilder
+    {
+        layoutElementNature.rightAnchor(value);
 
         return this;
     }
 
     public function bottom(value:Object):PickerBuilder
     {
-        layoutElementMixin.bottom(value);
+        layoutElementNature.bottom(value);
+
+        return this;
+    }
+
+    public function bottomAnchor(value:Object):PickerBuilder
+    {
+        layoutElementNature.bottomAnchor(value);
 
         return this;
     }
 
     public function horizontalCenter(value:Object):PickerBuilder
     {
-        layoutElementMixin.horizontalCenter(value);
+        layoutElementNature.horizontalCenter(value);
+
+        return this;
+    }
+
+    public function horizontalCenterAnchor(value:Object):PickerBuilder
+    {
+        layoutElementNature.horizontalCenterAnchor(value);
 
         return this;
     }
 
     public function verticalCenter(value:Object):PickerBuilder
     {
-        layoutElementMixin.verticalCenter(value);
+        layoutElementNature.verticalCenter(value);
+
+        return this;
+    }
+
+    public function verticalCenterAnchor(value:Object):PickerBuilder
+    {
+        layoutElementNature.verticalCenterAnchor(value);
 
         return this;
     }

@@ -10,6 +10,8 @@ package skein.impl.feathers.components.builder.components
 import feathers.controls.ImageLoader;
 
 import skein.components.builder.components.ImageBuilder;
+
+import skein.components.builder.components.ImageBuilder;
 import skein.components.builder.mixins.ComponentMixin;
 import skein.components.builder.mixins.EventDispatcherMixin;
 import skein.components.builder.mixins.LayoutElementMixin;
@@ -201,9 +203,17 @@ public class FeathersImageBuilder extends FeathersBuilder implements ImageBuilde
     //  Methods: LayoutElement
     //-----------------------------------
 
+
     public function left(value:Object):ImageBuilder
     {
         layoutElementNature.left(value);
+
+        return this;
+    }
+
+    public function leftAnchor(value:Object):ImageBuilder
+    {
+        layoutElementNature.leftAnchor(value);
 
         return this;
     }
@@ -215,6 +225,13 @@ public class FeathersImageBuilder extends FeathersBuilder implements ImageBuilde
         return this;
     }
 
+    public function topAnchor(value:Object):ImageBuilder
+    {
+        layoutElementNature.topAnchor(value);
+
+        return this;
+    }
+
     public function right(value:Object):ImageBuilder
     {
         layoutElementNature.right(value);
@@ -222,9 +239,23 @@ public class FeathersImageBuilder extends FeathersBuilder implements ImageBuilde
         return this;
     }
 
+    public function rightAnchor(value:Object):ImageBuilder
+    {
+        layoutElementNature.rightAnchor(value);
+
+        return this;
+    }
+
     public function bottom(value:Object):ImageBuilder
     {
         layoutElementNature.bottom(value);
+
+        return this;
+    }
+
+    public function bottomAnchor(value:Object):ImageBuilder
+    {
+        layoutElementNature.bottomAnchor(value);
 
         return this;
     }

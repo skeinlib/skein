@@ -18,6 +18,12 @@ public interface GroupBuilder extends Builder
     //--------------------------------------------------------------------------
 
     //-----------------------------------
+    //  Methods: Object
+    //-----------------------------------
+
+    function set(property:String, value:Object):GroupBuilder;
+
+    //-----------------------------------
     //  Methods: EventDispatcher
     //-----------------------------------
 
@@ -62,12 +68,16 @@ public interface GroupBuilder extends Builder
     //-----------------------------------
 
     function left(value:Object):GroupBuilder;
+    function leftAnchor(value:Object):GroupBuilder;
 
     function top(value:Object):GroupBuilder;
+    function topAnchor(value:Object):GroupBuilder;
 
     function right(value:Object):GroupBuilder;
+    function rightAnchor(value:Object):GroupBuilder;
 
     function bottom(value:Object):GroupBuilder;
+    function bottomAnchor(value:Object):GroupBuilder;
 
     function horizontalCenter(value:Object):GroupBuilder;
 

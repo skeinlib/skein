@@ -43,9 +43,11 @@ public class FeathersBuilder implements Builder
         var parent:DisplayObjectContainer =
             host as DisplayObjectContainer || this.host as DisplayObjectContainer;
 
+        this.build();
+
         parent.addChild(_instance);
 
-        return this.build();
+        return _instance;
     }
 
     protected function createInstance(generator:Class = null):void

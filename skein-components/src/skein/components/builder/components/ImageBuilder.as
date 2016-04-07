@@ -72,12 +72,16 @@ public interface ImageBuilder extends Builder
     //-----------------------------------
 
     function left(value:Object):ImageBuilder;
+    function leftAnchor(value:Object):ImageBuilder;
 
     function top(value:Object):ImageBuilder;
+    function topAnchor(value:Object):ImageBuilder;
 
     function right(value:Object):ImageBuilder;
+    function rightAnchor(value:Object):ImageBuilder;
 
     function bottom(value:Object):ImageBuilder;
+    function bottomAnchor(value:Object):ImageBuilder;
 
     function horizontalCenter(value:Object):ImageBuilder;
 

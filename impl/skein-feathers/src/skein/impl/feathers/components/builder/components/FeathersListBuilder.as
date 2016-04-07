@@ -10,6 +10,8 @@ package skein.impl.feathers.components.builder.components
 import feathers.controls.List;
 
 import skein.components.builder.components.ListBuilder;
+
+import skein.components.builder.components.ListBuilder;
 import skein.components.builder.mixins.ComponentMixin;
 import skein.components.builder.mixins.EventDispatcherMixin;
 import skein.components.builder.mixins.LayoutElementMixin;
@@ -38,7 +40,7 @@ public class FeathersListBuilder extends FeathersBuilder implements ListBuilder
 
         this.spriteMixin = new FeathersSpriteNature(this.instance);
         this.componentMixin = new FeathersComponentNature(this.instance);
-        this.layoutElementMixin = new FeathersLayoutElementNature(this.instance);
+        this.layoutElementNature = new FeathersLayoutElementNature(this.instance);
         this.eventDispatcherMixin = new FeathersEventDispatcherNature(this.instance);
     }
 
@@ -56,7 +58,7 @@ public class FeathersListBuilder extends FeathersBuilder implements ListBuilder
 
     private var componentMixin:ComponentMixin;
 
-    private var layoutElementMixin:LayoutElementMixin;
+    private var layoutElementNature:LayoutElementMixin;
 
     private var eventDispatcherMixin:EventDispatcherMixin;
 
@@ -197,49 +199,91 @@ public class FeathersListBuilder extends FeathersBuilder implements ListBuilder
 
     public function left(value:Object):ListBuilder
     {
-        layoutElementMixin.left(value);
+        layoutElementNature.left(value);
+
+        return this;
+    }
+
+    public function leftAnchor(value:Object):ListBuilder
+    {
+        layoutElementNature.leftAnchor(value);
 
         return this;
     }
 
     public function top(value:Object):ListBuilder
     {
-        layoutElementMixin.top(value);
+        layoutElementNature.top(value);
+
+        return this;
+    }
+
+    public function topAnchor(value:Object):ListBuilder
+    {
+        layoutElementNature.topAnchor(value);
 
         return this;
     }
 
     public function right(value:Object):ListBuilder
     {
-        layoutElementMixin.right(value);
+        layoutElementNature.right(value);
+
+        return this;
+    }
+
+    public function rightAnchor(value:Object):ListBuilder
+    {
+        layoutElementNature.rightAnchor(value);
 
         return this;
     }
 
     public function bottom(value:Object):ListBuilder
     {
-        layoutElementMixin.bottom(value);
+        layoutElementNature.bottom(value);
+
+        return this;
+    }
+
+    public function bottomAnchor(value:Object):ListBuilder
+    {
+        layoutElementNature.bottomAnchor(value);
 
         return this;
     }
 
     public function horizontalCenter(value:Object):ListBuilder
     {
-        layoutElementMixin.horizontalCenter(value);
+        layoutElementNature.horizontalCenter(value);
+
+        return this;
+    }
+
+    public function horizontalCenterAnchor(value:Object):ListBuilder
+    {
+        layoutElementNature.horizontalCenterAnchor(value);
 
         return this;
     }
 
     public function verticalCenter(value:Object):ListBuilder
     {
-        layoutElementMixin.verticalCenter(value);
+        layoutElementNature.verticalCenter(value);
+
+        return this;
+    }
+
+    public function verticalCenterAnchor(value:Object):ListBuilder
+    {
+        layoutElementNature.verticalCenterAnchor(value);
 
         return this;
     }
 
     public function includeInLayout(value:Object):ListBuilder
     {
-        layoutElementMixin.includeInLayout(value);
+        layoutElementNature.includeInLayout(value);
 
         return this;
     }

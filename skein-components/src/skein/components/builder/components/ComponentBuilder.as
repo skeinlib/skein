@@ -52,16 +52,22 @@ public interface ComponentBuilder extends Builder
     //-----------------------------------
 
     function left(value:Object):ComponentBuilder;
+    function leftAnchor(value:Object):ComponentBuilder;
 
     function top(value:Object):ComponentBuilder;
+    function topAnchor(value:Object):ComponentBuilder;
 
     function right(value:Object):ComponentBuilder;
+    function rightAnchor(value:Object):ComponentBuilder;
 
     function bottom(value:Object):ComponentBuilder;
+    function bottomAnchor(value:Object):ComponentBuilder;
 
     function horizontalCenter(value:Object):ComponentBuilder;
+    function horizontalCenterAnchor(value:Object):ComponentBuilder;
 
     function verticalCenter(value:Object):ComponentBuilder;
+    function verticalCenterAnchor(value:Object):ComponentBuilder;
 
     function includeInLayout(value:Object):ComponentBuilder;
 
