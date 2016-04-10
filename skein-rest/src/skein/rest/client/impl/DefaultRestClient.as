@@ -24,6 +24,7 @@ import skein.rest.cache.CacheClient;
 import skein.rest.client.RestClient;
 import skein.rest.client.extras.Downloader;
 import skein.rest.client.extras.Uploader;
+import skein.rest.client.impl.URLLoadersQueue;
 import skein.rest.client.impl.extras.DownloaderHandler;
 import skein.rest.client.impl.extras.UploaderHandler;
 import skein.rest.core.Config;
@@ -69,7 +70,7 @@ public class DefaultRestClient implements RestClient
     protected var _path:String;
     protected var _pathParams:Array;
 
-    protected var loader:URLLoader;
+    internal var loader:URLLoader;
 
     internal var request:URLRequest;
 
@@ -620,7 +621,7 @@ public class DefaultRestClient implements RestClient
             receiveStubData();
         }
 
-        Log.i("skein-rest", "*STUB*" + request.method.toUpperCase() + ":" + request.url + ":" + (request.data || ""));
+        Log.i("skein-rest", URLLoadersQueue.name(loader) + " *STUB* " + request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
     }
 
     private function doLoad():void
@@ -640,7 +641,7 @@ public class DefaultRestClient implements RestClient
                     }
                     else // not yet in cache
                     {
-                        Log.i("skein-rest", request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
+                        Log.i("skein-rest", URLLoadersQueue.name(loader) + " " + request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
                         loader.load(request);
                     }
                 });
@@ -654,14 +655,14 @@ public class DefaultRestClient implements RestClient
                         request.requestHeaders = request.requestHeaders.concat(response.headers);
                     }
 
-                    Log.i("skein-rest", request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
+                    Log.i("skein-rest", URLLoadersQueue.name(loader) + " " + request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
                     loader.load(request);
                 });
             }
         }
         else
         {
-            Log.i("skein-rest", request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
+            Log.i("skein-rest", URLLoadersQueue.name(loader) + " " + request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
             loader.load(request);
         }
     }
@@ -672,7 +673,7 @@ public class DefaultRestClient implements RestClient
         {
             request.url = formURL();
 
-            Log.i("skein-rest", request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
+            Log.i("skein-rest", URLLoadersQueue.name(loader) + " " + request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
             loader.load(request);
 
             return true;
@@ -721,8 +722,12 @@ public class DefaultRestClient implements RestClient
                 // ignore any error
             }
 
-            // false indicates that this loader was removed previously, this
-            // means that it is shared loader and we don't own it
+            /* If URLLoadersQueue.free() returns false it indicates that
+             * the loader was already removed from Queue it means that this
+             * loader is shared between DefaultRestClients instances. That's
+             * because we can't reuse this loader here, because it is already
+             * reused by other DefaultRestClient instance.
+             */
             if (!URLLoadersQueue.free(loader))
             {
                 // remove reference to URLLoader as it is shared instance
@@ -883,19 +888,19 @@ public class DefaultRestClient implements RestClient
             {
                 _cache.find(request, function(response:Object):void
                 {
-                    notifyResult(response.data, responseCode);
+                    notifyResult(response ? response.data : null, responseCode); // TODO: If data for unmodified response is not found in cache?
 
                     callback();
                 });
             }
             else
             {
+                notifyResult(data, responseCode);
+
                 _cache.keep(request, data, headers, function(value:*=undefined):void
                 {
                     callback();
                 });
-
-                notifyResult(data, responseCode);
             }
         }
         else

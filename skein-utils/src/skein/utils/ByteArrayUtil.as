@@ -11,24 +11,31 @@ import flash.utils.ByteArray;
 
 public class ByteArrayUtil
 {
-    public static function compare(array1:ByteArray, array2:ByteArray):Boolean
+    public static function compare(ba1:ByteArray, ba2:ByteArray):Boolean
     {
-        if (array1 == null && array2 == null) return true;
+        if (ba1 == null && ba2 == null) return true;
 
-        if (array1 == null || array2 == null) return false;
+        if (ba1 == null || ba2 == null) return false;
 
-        if (array1.length != array2.length) return false;
+        if (ba1.length != ba2.length) return false;
 
-        var n:uint = array1.length;
-        while(array1.position < n)
+        while (ba1.bytesAvailable)
         {
-            var byte1:int = array1.readByte();
-            var byte2:int = array2.readByte();
-
-            if (byte1 != byte2) return false;
+            if (!compareBytes(ba1, ba2, 32))
+            {
+                return false;
+            }
         }
 
         return true;
+    }
+
+    private static function compareBytes(ba1:ByteArray, ba2:ByteArray, length:int):Boolean
+    {
+        var string1:String = ba1.readUTFBytes(Math.max(ba1.bytesAvailable, length));
+        var string2:String = ba2.readUTFBytes(Math.max(ba2.bytesAvailable, length));
+
+        return string1 == string2;
     }
 }
 }

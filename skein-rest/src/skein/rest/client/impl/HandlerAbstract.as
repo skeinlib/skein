@@ -11,6 +11,8 @@ import flash.net.URLRequestHeader;
 import flash.utils.ByteArray;
 
 import skein.core.skein_internal;
+import skein.rest.client.impl.URLLoadersQueue;
+import skein.rest.client.impl.URLLoadersQueue;
 import skein.rest.core.HeaderHandler;
 import skein.rest.errors.DataProcessingError;
 import skein.rest.logger.Log;
@@ -119,7 +121,7 @@ public class HandlerAbstract
 
     protected function result(data:Object):void
     {
-        Log.i("skein-rest", client.request.method.toUpperCase() + " " + client.request.url + " " + responseCode + " <- " + (data is ByteArray ? "%BINARY_DATA%" : data));
+        Log.i("skein-rest", URLLoadersQueue.name(client.loader) + " " + client.request.method.toUpperCase() + " " + client.request.url + " " + responseCode + " <- " + (data is ByteArray ? "%BINARY_DATA%" : data));
 
         // indicates if result callback was called before an exception occurred
         var wasHandlerCalledBeforeError:Boolean = false;
@@ -166,7 +168,7 @@ public class HandlerAbstract
 
     protected function error(data:Object):void
     {
-        Log.e("skein-rest", client.request.method.toUpperCase() + " " + client.request.url + " " + responseCode + " <- " + (data is ByteArray ? "%BINARY_DATA%" : data));
+        Log.e("skein-rest", URLLoadersQueue.name(client.loader) + " " + client.request.method.toUpperCase() + " " + client.request.url + " " + responseCode + " <- " + (data is ByteArray ? "%BINARY_DATA%" : data));
 
         client.decodeError(data, handleError);
     }

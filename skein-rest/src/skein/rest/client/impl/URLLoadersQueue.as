@@ -8,6 +8,8 @@ import flash.net.URLRequest;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
+import skein.rest.core.Config;
+
 import skein.utils.ByteArrayUtil;
 
 public class URLLoadersQueue
@@ -16,8 +18,13 @@ public class URLLoadersQueue
 
     private static const requests:Dictionary = new Dictionary();
 
+    private static const names:Dictionary = new Dictionary(true); // don't keep loader strongly here
+
     public static function find(request:URLRequest):URLLoader
     {
+        if (!Config.sharedInstance().useQueue)
+            return null;
+
         for (var i:int = queue.length; i > 0; i--)
         {
             var loader:URLLoader = queue[i - 1];
@@ -33,6 +40,13 @@ public class URLLoadersQueue
 
     public static function keep(request:URLRequest, loader:URLLoader):void
     {
+        if (!Config.sharedInstance().useQueue)
+        {
+            names[loader] = getNextSerialName();
+
+            return;
+        }
+
         if (queue.indexOf(loader) == -1)
         {
             queue.push(loader);
@@ -43,15 +57,24 @@ public class URLLoadersQueue
 
     /**
      * Removes specified loader from queue and returns <code>true</code> if the
-     * loader was in queue.
+     * loader was in queue. If queue is disabled in config, this method always
+     * returns <code>true</code>.
      *
      * @param loader An URLLoader instance to be removed from queue.
      * @return <code>true</code> if specified loader was in queue and has been
-     * successfully removed, or <code>false</code> if queue doesn't contain the
-     * loader.
+     * successfully removed or Queue is disabled in Config, or <code>false</code>
+     * if queue doesn't contain the loader.
      */
     public static function free(loader:URLLoader):Boolean
     {
+        if (!Config.sharedInstance().useQueue)
+        {
+            names[loader] = null;
+            delete names[loader];
+
+            return true;
+        }
+
         if (queue.indexOf(loader) != -1)
         {
             queue.splice(queue.indexOf(loader), 1);
@@ -65,6 +88,11 @@ public class URLLoadersQueue
         {
             return false;
         }
+    }
+
+    public static function name(loader:URLLoader):String
+    {
+        return names[loader] || "xxxx";
     }
 
     private static function compare(r1:URLRequest, r2:URLRequest):Boolean
@@ -92,6 +120,22 @@ public class URLLoadersQueue
         }
 
         return result;
+    }
+
+    private static var _serialNumber:int = 0;
+
+    private static function getNextSerialName():String
+    {
+        _serialNumber = _serialNumber + 1;
+
+        if (_serialNumber > 9999)
+        {
+            _serialNumber = 0;
+        }
+
+        var zeros:String = "0000";
+
+        return zeros.substr(0, zeros.length - String(_serialNumber).length) + String(_serialNumber);
     }
 }
 }

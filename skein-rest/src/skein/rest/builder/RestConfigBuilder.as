@@ -62,7 +62,7 @@ public class RestConfigBuilder
         return this;
     }
 
-    public function fixKnownIssues():RestConfigBuilder
+    public function fixKnownIssues(value:Boolean=true):RestConfigBuilder
     {
         Config.sharedInstance().setFixKnownIssues(true);
 
@@ -76,6 +76,13 @@ public class RestConfigBuilder
         return this;
     }
 
+    public function useQueue(value:Object):RestConfigBuilder
+    {
+        PropertySetter.set(Config.sharedInstance(), "useQueue", value);
+
+        return this;
+    }
+    
     public function build():ConfigBuilder
     {
         return config;

@@ -130,6 +130,9 @@ public class DefaultCacheClient implements CacheClient
             {
                 if (head.headers.cacheControl.noStore)
                 {
+                    if (callback != null)
+                        callback(null);
+                    
                     return false;
                 }
             }
@@ -138,8 +141,13 @@ public class DefaultCacheClient implements CacheClient
 
             return storage.keep(url, new Response(head, data), callback);
         }
+        else
+        {
+            if (callback != null)
+                callback(null);
 
-        return false;
+            return false;
+        }
     }
 
     public function drop(request:URLRequest):void

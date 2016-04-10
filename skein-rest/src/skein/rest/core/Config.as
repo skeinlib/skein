@@ -244,10 +244,29 @@ public class Config extends EventDispatcher
     }
 
     //-----------------------------------
+    //  useQueue
+    //-----------------------------------
+
+    private var _useQueue:Boolean = true;
+
+    [Bindable(event="useQueueChanged")]
+    public function get useQueue():Boolean
+    {
+        return _useQueue;
+    }
+
+    public function set useQueue(value:Boolean):void
+    {
+        if (_useQueue == value) return;
+        _useQueue = value;
+        dispatchEvent(new Event("useQueueChanged"));
+    }
+
+    //-----------------------------------
     //  useCache
     //-----------------------------------
 
-    private var _useCache:Boolean;
+    private var _useCache:Boolean = false;
 
     [Bindable(event="useCacheChanged")]
     public function get useCache():Boolean
