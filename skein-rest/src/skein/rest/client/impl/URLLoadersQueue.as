@@ -18,7 +18,7 @@ public class URLLoadersQueue
 
     private static const requests:Dictionary = new Dictionary();
 
-    private static const names:Dictionary = new Dictionary(true); // don't keep loader strongly here
+    private static const serials:Dictionary = new Dictionary(true); // don't keep loader strongly here
 
     public static function find(request:URLRequest):URLLoader
     {
@@ -42,8 +42,7 @@ public class URLLoadersQueue
     {
         if (!Config.sharedInstance().useQueue)
         {
-            names[loader] = getNextSerialName();
-
+            serials[loader] = getNextSerialName();
             return;
         }
 
@@ -52,6 +51,8 @@ public class URLLoadersQueue
             queue.push(loader);
 
             requests[loader] = request;
+
+            serials[loader] = getNextSerialName();
         }
     }
 
@@ -69,9 +70,9 @@ public class URLLoadersQueue
     {
         if (!Config.sharedInstance().useQueue)
         {
-            names[loader] = null;
-            delete names[loader];
-
+            serials[loader] = null;
+            delete serials[loader];
+            
             return true;
         }
 
@@ -81,6 +82,9 @@ public class URLLoadersQueue
 
             requests[loader] = null;
             delete requests[loader];
+
+            serials[loader] = null;
+            delete serials[loader];
 
             return true;
         }
@@ -92,7 +96,7 @@ public class URLLoadersQueue
 
     public static function name(loader:URLLoader):String
     {
-        return names[loader] || "xxxx";
+        return serials[loader] || "xxxx";
     }
 
     private static function compare(r1:URLRequest, r2:URLRequest):Boolean
