@@ -16,6 +16,7 @@ import flash.net.URLRequest;
 import flash.net.URLRequestHeader;
 import flash.net.URLRequestMethod;
 import flash.net.URLVariables;
+import flash.system.Capabilities;
 import flash.utils.ByteArray;
 import flash.utils.Timer;
 
@@ -148,7 +149,8 @@ public class DefaultRestClient implements RestClient
 
     public function addParam(key:String, value:Object, defaultValue:Object = null):RestClient
     {
-        value = value || defaultValue;
+        if (value === null || value === "")
+            value = defaultValue;
 
         if (value != null)
         {
@@ -472,7 +474,7 @@ public class DefaultRestClient implements RestClient
 
     public function del(data:Object = null):Object
     {
-        if (Config.sharedInstance().fixKnownIssues)
+        if (data == null && Config.sharedInstance().fixKnownIssues && Capabilities.version.substr(0, 3) == "AND")
         {
             // fixes issue with empty BODY for DELETE method on Android platform
 
