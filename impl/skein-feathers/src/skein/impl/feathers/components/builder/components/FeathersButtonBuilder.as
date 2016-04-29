@@ -252,7 +252,7 @@ public class FeathersButtonBuilder extends FeathersBuilder implements ButtonBuil
         layoutElementNature.bottomAnchor(value);
 
         return this;
-    }    
+    }
 
     public function horizontalCenter(value:Object):ButtonBuilder
     {
@@ -261,9 +261,23 @@ public class FeathersButtonBuilder extends FeathersBuilder implements ButtonBuil
         return this;
     }
 
+    public function horizontalCenterAnchor(value:Object):ButtonBuilder
+    {
+        layoutElementNature.horizontalCenterAnchor(value);
+
+        return this;
+    }
+
     public function verticalCenter(value:Object):ButtonBuilder
     {
         layoutElementNature.verticalCenter(value);
+
+        return this;
+    }
+
+    public function verticalCenterAnchor(value:Object):ButtonBuilder
+    {
+        layoutElementNature.verticalCenterAnchor(value);
 
         return this;
     }

@@ -76,8 +76,10 @@ public interface ButtonBuilder extends Builder
     function bottomAnchor(value:Object):ButtonBuilder;
 
     function horizontalCenter(value:Object):ButtonBuilder;
+    function horizontalCenterAnchor(value:Object):ButtonBuilder;
 
     function verticalCenter(value:Object):ButtonBuilder;
+    function verticalCenterAnchor(value:Object):ButtonBuilder;
 
     function includeInLayout(value:Object):ButtonBuilder;
 
