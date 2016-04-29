@@ -1,7 +1,55 @@
 # skein-rest
+skein-rest is an HTTP client written in ActionScript 3.0
+
+## Features
+
+ - [x] Fluent interface
+ - [x] Queue of loaders
+ - [x] Cache
+
+## Dependencies
+
+Being a part of skein library skein-rest depends on:
+
+ * [skein-core](https://github.com/skeinlib/skein/master/skein-core) a glue library that connects parts of skein
+ * [skein-utils](https://github.com/skeinlib/skein/master/skein-core) contains utility classes
+
+These dependencies are merged into code during compilation and you can use only one `rest-skein.swc` file in your project.
+
+## Overview
+
+There is a `rest()` package-level function that return instance of `RestClient`,
+current version 1.0 contains only one implementation of this interface it is a
+`DefaultRestClient`, but you can change the implementation to your own in
+[config](TBA). The `DefaultRestClient` wraps around `URLLoader` class, it is
+responsible to configure loader, create and set up `URLRequest` instance and
+handler loader's events. In this way we can say that skein-rest is just a wrapper
+around standard `URLLoader` class that simplifies work with it. But it also
+contains loader Queue implementation and Caching system that improves performance
+and some other features.
+
+## Usage
+
+You use `rest()` package function to form HTTP request and handle the result:
+
+```as3
+rest("https://example.com/api/employees/{0}", employeeId) //
+    .addHeader("Authorization", "basic-auth-string") // add request header
+    .contentType("application/xml") // set request content-type
+    .addParam("fullInfo", true) // add URL parameters
+    .decoder(employeeEncoder) // function that parses recevied data
+    .result(resultHandler) // function called after parsing is complete and takes parsed object
+    .error(errorHandler) // handles error
+.get();
+```
+=======
+
 Rest Client for ActionScript 3.0 with fluent interface. In fact this library is a wrapper for standard `URLLoader`.
 
 ## Dependencies
+
+Being a part of skein library skein-rest depends on:
+
  * [skein-core](https://github.com/skeinlib/skein/skein-core)
 
 ### Supported HTTP Methods
