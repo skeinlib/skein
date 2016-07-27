@@ -149,8 +149,13 @@ public class DefaultRestClient implements RestClient
 
     public function addParam(key:String, value:Object, defaultValue:Object = null):RestClient
     {
-        if (value === null || value === "")
-            value = defaultValue;
+        if (!value)
+        {
+            if (!(value is Boolean) && !(value is Number && !isNaN(value as Number)))
+            {
+                value = defaultValue;
+            }
+        }
 
         if (value != null)
         {
@@ -474,7 +479,7 @@ public class DefaultRestClient implements RestClient
 
     public function del(data:Object = null):Object
     {
-        if (data == null && Config.sharedInstance().fixKnownIssues && Capabilities.version.substr(0, 3) == "AND")
+        if (data != null && Config.sharedInstance().fixKnownIssues && Capabilities.version.substr(0, 3) == "AND")
         {
             // fixes issue with empty BODY for DELETE method on Android platform
 
