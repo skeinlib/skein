@@ -108,9 +108,23 @@ public class FeathersLabelBuilder extends FeathersBuilder implements LabelBuilde
         return this;
     }
 
+    public function maxWidth(value:Object):LabelBuilder
+    {
+        spriteMixin.maxWidth(value);
+
+        return this;
+    }
+
     public function height(value:Object):LabelBuilder
     {
         spriteMixin.height(value);
+
+        return this;
+    }
+
+    public function maxHeight(value:Object):LabelBuilder
+    {
+        spriteMixin.maxHeight(value);
 
         return this;
     }

@@ -63,16 +63,22 @@ public interface TextBuilder extends Builder
     //-----------------------------------
 
     function left(value:Object):TextBuilder;
+    function leftAnchor(value:Object):TextBuilder;
 
     function top(value:Object):TextBuilder;
+    function topAnchor(value:Object):TextBuilder;
 
     function right(value:Object):TextBuilder;
+    function rightAnchor(value:Object):TextBuilder;
 
     function bottom(value:Object):TextBuilder;
+    function bottomAnchor(value:Object):TextBuilder;
 
     function horizontalCenter(value:Object):TextBuilder;
+    function horizontalCenterAnchor(value:Object):TextBuilder;
 
     function verticalCenter(value:Object):TextBuilder;
+    function verticalCenterAnchor(value:Object):TextBuilder;
 
     //-----------------------------------
     //  Methods: Text

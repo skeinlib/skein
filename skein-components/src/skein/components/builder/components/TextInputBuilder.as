@@ -80,8 +80,10 @@ public interface TextInputBuilder extends Builder
     function bottomAnchor(value:Object):TextInputBuilder;
 
     function horizontalCenter(value:Object):TextInputBuilder;
+    function horizontalCenterAnchor(value:Object):TextInputBuilder;
 
     function verticalCenter(value:Object):TextInputBuilder;
+    function verticalCenterAnchor(value:Object):TextInputBuilder;
 
     function includeInLayout(value:Object):TextInputBuilder;
 

@@ -193,10 +193,22 @@ public class FeathersTextBuilder extends FeathersBuilder implements TextBuilder
 
         return this;
     }
+    public function leftAnchor(value:Object):TextBuilder
+    {
+        layoutElementNature.leftAnchor(value);
+
+        return this;
+    }
 
     public function top(value:Object):TextBuilder
     {
         layoutElementNature.top(value);
+
+        return this;
+    }
+    public function topAnchor(value:Object):TextBuilder
+    {
+        layoutElementNature.topAnchor(value);
 
         return this;
     }
@@ -207,10 +219,22 @@ public class FeathersTextBuilder extends FeathersBuilder implements TextBuilder
 
         return this;
     }
+    public function rightAnchor(value:Object):TextBuilder
+    {
+        layoutElementNature.rightAnchor(value);
+
+        return this;
+    }
 
     public function bottom(value:Object):TextBuilder
     {
         layoutElementNature.bottom(value);
+
+        return this;
+    }
+    public function bottomAnchor(value:Object):TextBuilder
+    {
+        layoutElementNature.bottomAnchor(value);
 
         return this;
     }
@@ -221,10 +245,22 @@ public class FeathersTextBuilder extends FeathersBuilder implements TextBuilder
 
         return this;
     }
+    public function horizontalCenterAnchor(value:Object):TextBuilder
+    {
+        layoutElementNature.horizontalCenterAnchor(value);
+
+        return this;
+    }
 
     public function verticalCenter(value:Object):TextBuilder
     {
         layoutElementNature.verticalCenter(value);
+
+        return this;
+    }
+    public function verticalCenterAnchor(value:Object):TextBuilder
+    {
+        layoutElementNature.verticalCenterAnchor(value);
 
         return this;
     }

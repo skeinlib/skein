@@ -245,9 +245,23 @@ public class FeathersTextInputBuilder extends FeathersBuilder implements TextInp
         return this;
     }
 
+    public function horizontalCenterAnchor(value:Object):TextInputBuilder
+    {
+        layoutElementNature.horizontalCenterAnchor(value);
+
+        return this;
+    }
+
     public function verticalCenter(value:Object):TextInputBuilder
     {
         layoutElementNature.verticalCenter(value);
+
+        return this;
+    }
+
+    public function verticalCenterAnchor(value:Object):TextInputBuilder
+    {
+        layoutElementNature.verticalCenterAnchor(value);
 
         return this;
     }

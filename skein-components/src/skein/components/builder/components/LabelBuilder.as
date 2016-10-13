@@ -40,8 +40,10 @@ public interface LabelBuilder extends Builder
     function z(value:Object):LabelBuilder;
 
     function width(value:Object):LabelBuilder;
+    function maxWidth(value:Object):LabelBuilder;
 
     function height(value:Object):LabelBuilder;
+    function maxHeight(value:Object):LabelBuilder;
 
     function visible(value:Object):LabelBuilder;
 
