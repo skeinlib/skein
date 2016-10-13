@@ -31,6 +31,7 @@ import skein.rest.client.impl.extras.UploaderHandler;
 import skein.rest.core.Config;
 import skein.rest.core.Decoder;
 import skein.rest.core.Encoder;
+import skein.rest.core.ProgressTracker;
 import skein.rest.core.RestClientRegistry;
 import skein.rest.logger.Log;
 import skein.utils.StringUtil;
@@ -889,6 +890,8 @@ public class DefaultRestClient implements RestClient
 
     internal function handleResult(data:Object, responseCode:uint, headers:Array, callback:Function):void
     {
+        handleProgress(true);
+
         if (_useCache && _cache != null)
         {
             if (responseCode == 304) // NotModified
@@ -933,6 +936,8 @@ public class DefaultRestClient implements RestClient
 
     internal function handleError(info:Object, responseCode:uint):void
     {
+        handleProgress(true);
+
         notifyError(info, responseCode);
     }
 
@@ -945,6 +950,31 @@ public class DefaultRestClient implements RestClient
             else
                 errorCallback(info);
         }
+    }
+
+    internal function handleProgress(complete:Boolean, loaded:Number=NaN, total:Number=NaN):void
+    {
+        if (complete)
+        {
+            ProgressTracker.complete(this);
+        }
+        else
+        {
+            ProgressTracker.progress(this, loaded, total);
+
+            notifyProgress(loaded, total);
+        }
+
+        if (Config.sharedInstance().progressHandler != null)
+        {
+            Config.sharedInstance().progressHandler(ProgressTracker.loaded, ProgressTracker.total);
+        }
+    }
+
+    private function notifyProgress(loaded:Number, total:Number):void
+    {
+        if (progressCallback != null)
+            progressCallback(loaded, total);
     }
 }
 }

@@ -55,6 +55,13 @@ public class RestConfigBuilder
         return this;
     }
 
+    public function progressHandler(handler:Function):RestConfigBuilder
+    {
+        Config.setProgressHandler(handler);
+
+        return this;
+    }
+
     public function header(name:String, handler:Function):RestConfigBuilder
     {
         HeaderHandler.register(name, handler);

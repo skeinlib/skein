@@ -111,8 +111,7 @@ public class HandlerAbstract
 
     protected function progress(loaded:Number, total:Number):void
     {
-        if (client.progressCallback != null)
-            client.progressCallback(loaded, total);
+        client.handleProgress(false, loaded, total);
     }
 
     //-------------------------------------

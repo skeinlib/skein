@@ -61,6 +61,13 @@ public class Config extends EventDispatcher
         _errorHook = hook;
     }
 
+    private static var _progressHandler:Function;
+
+    skein_internal static function setProgressHandler(value:Function):void
+    {
+        _progressHandler = value;
+    }
+
     //--------------------------------------------------------------------------
     //
     //  Shared Instance
@@ -126,6 +133,15 @@ public class Config extends EventDispatcher
     public function get errorHook():Function
     {
         return _errorHook;
+    }
+
+    //-----------------------------------
+    //  progressHandler
+    //-----------------------------------
+
+    public function get progressHandler():Function
+    {
+        return _progressHandler;
     }
 
     //-----------------------------------
