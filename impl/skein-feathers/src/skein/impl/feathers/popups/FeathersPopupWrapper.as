@@ -13,6 +13,7 @@ import feathers.core.PopUpManager;
 import flash.events.Event;
 
 import flash.events.EventDispatcher;
+import flash.geom.Point;
 
 import skein.popups.*;
 import skein.popups.PopupWrapper;
@@ -213,6 +214,27 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
     }
 
     //----------------------------------
+    //	origin
+    //----------------------------------
+
+    private var _origin:Object;
+
+    [Bind(event="originChanged")]
+    public function get origin():Object
+    {
+        return _origin;
+    }
+
+    public function set origin(value:Object):void
+    {
+        if (value == _origin) return;
+
+        _origin = value;
+
+        dispatchEvent(new Event("originChanged"));
+    }
+
+    //----------------------------------
     //	popupProperties
     //----------------------------------
 
@@ -362,50 +384,56 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
 
         var stage:Stage = Starling.current.stage;
 
+        var origin:DisplayObject = _origin as DisplayObject;
+
+        var position:Point = origin ? origin.localToGlobal(new Point(0, 0)) : new Point(0, 0);
+        var width:Number = origin ? origin.width : stage.stageWidth;
+        var height:Number = origin ? origin.height : stage.stageHeight;
+
         switch (_position)
         {
             case PopupPosition.LEFT :
-                    child.x = 0
-                    child.y = 0;
-                    child.height = stage.stageHeight;
+                    child.x = position.x;
+                    child.y = position.y;
+                    child.height = height;
                 break;
 
             case PopupPosition.TOP :
-                    child.x = 0
-                    child.y = 0;
-                    child.width = stage.stageWidth;
+                child.x = position.x;
+                child.y = position.y;
+                child.width = width;
                 break;
 
             case PopupPosition.RIGHT :
-                    child.y = 0;
-                    child.height = stage.stageHeight;
+                    child.y = position.y;
+                    child.height = height;
 
                     if (child is IValidating)
                         IValidating(child).validate();
 
-                    child.x = stage.stageWidth - child.width;
+                    child.x = position.x + width - child.width;
                 break;
 
             case PopupPosition.BOTTOM :
-                    child.x = 0
-                    child.width = stage.stageWidth;
+                    child.x = position.x;
+                    child.width = width;
 
                     if (child.hasOwnProperty("maxHeight"))
                     {
-                        child["maxHeight"] = stage.stageHeight;
+                        child["maxHeight"] = height;
                     }
 
                     if (child is IValidating)
                         IValidating(child).validate();
 
-                    child.y = stage.stageHeight - child.height;
+                    child.y = position.y + height - child.height;
                 break;
 
             case PopupPosition.FILL :
-                    child.x = 0
-                    child.y = 0;
-                    child.width = stage.stageWidth;
-                    child.height = stage.stageHeight;
+                    child.x = position.x;
+                    child.y = position.y;
+                    child.width = width;
+                    child.height = height;
                 break;
         }
     }

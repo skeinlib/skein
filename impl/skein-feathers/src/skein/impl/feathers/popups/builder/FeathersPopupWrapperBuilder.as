@@ -66,6 +66,13 @@ public class FeathersPopupWrapperBuilder implements PopupWrapperBuilder
         return this;
     }
 
+    public function origin(value:Object):PopupWrapperBuilder
+    {
+        PropertySetter.set(wrapper, "origin", value);
+
+        return this;
+    }
+
     public function popupProperties(name:String, value:Object):PopupWrapperBuilder
     {
         PropertySetter.set(wrapper.popupProperties, name, value);

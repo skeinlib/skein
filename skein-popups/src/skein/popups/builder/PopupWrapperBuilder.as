@@ -23,6 +23,8 @@ public interface PopupWrapperBuilder
 
     function popup(value:Object):PopupWrapperBuilder;
 
+    function origin(value:Object):PopupWrapperBuilder;
+
     function popupProperties(name:String, value:Object):PopupWrapperBuilder;
 
     function onOpening(handler:Function, weak:Boolean = false):PopupWrapperBuilder;

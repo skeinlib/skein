@@ -32,6 +32,9 @@ public interface PopupWrapper
     function get popup():Object;
     function set popup(value:Object):void
 
+    function get origin():Object;
+    function set origin(value:Object):void
+
     function get popupProperties():Object;
     function set popupProperties(value:Object):void;
 }
