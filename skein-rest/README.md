@@ -7,7 +7,7 @@ HTTP client written in ActionScript 3.0
  - [x] Loaders queue
  - [x] Friendly for large JSON/XML objects that culd be parsed asynchrounously (parsing should be done by your code)
  - [x] Cache in File System (AIR only ofcourse)
- - [x] Upload/download files
+ - [x] Download files
  - [x] Reusing responses (for two equal requests only one URLRequest will be used)
  - [x] Fully configurable (you can switch of all the features)
  - [x] Easy extensibility
@@ -201,5 +201,17 @@ The `xNoticeHandler` will be called everytime when `X-Notice` header is recevied
 
 **WARNING:** This feature available only for AIR al long as [HTTP_RESPONSE_STATUS](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/events/HTTPStatusEvent.html#HTTP_RESPONSE_STATUS) available only for AIR.
 
-### Features
-TBD
+### Other Features
+
+#### Loaders queue and reusing responses
+
+This feature is added for saving network resourses, when there are two or more identical requests (same url, same HTTP method, same caching and authentication settings and same data) theh `RestClient` implementation will send only one request and reuse received response for all the request in way as normal response.
+
+**Defaults:** This feature is **enabled** by default, you can change this settings using `.useQueue()` method of the `RestConfig`
+
+#### Download files (AIR only)
+
+Supports downloading file into `File` object 
+
+#### Caching
+
