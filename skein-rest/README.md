@@ -1,11 +1,16 @@
 # skein-rest
-skein-rest is an HTTP client written in ActionScript 3.0
+HTTP client written in ActionScript 3.0
 
 ## Features
 
  - [x] Fluent interface
- - [x] Queue of loaders
- - [x] Cache
+ - [x] Loaders queue
+ - [x] Friendly for large JSON/XML objects that culd be parsed asynchrounously (parsing should be done by your code)
+ - [x] Cache in File System (AIR only ofcourse)
+ - [x] Upload/download files
+ - [x] Reusing responses (for two equal requests only one URLRequest will be used)
+ - [x] Fully configurable (you can switch of all the features)
+ - [x] Easy extensibility
 
 ## Dependencies
 
@@ -16,96 +21,58 @@ Being a part of skein library skein-rest depends on:
 
 These dependencies are merged into code during compilation and you can use only one `rest-skein.swc` file in your project.
 
+## Objective
+
+A classic way for communication with server-side through HTTP in AS3 using URLLoader is verbose, you have to write a lot of code for listening events from the URLLoader. Also the event model is one of most common causes of memory leaks, because it is so easy to forget add corresponded `removeEventListener` method, or add listener to `capture` phase and remove it from `target` one. So the main goal of `skein-rest` is to reduce code when woking with HTTP from AS3 projects and prevent mistakes with event listeners, but it also have some other benefits as caching or reusing responses.
+
 ## Overview
 
-There is a `rest()` package-level function that return instance of `RestClient`,
-current version 1.0 contains only one implementation of this interface it is a
-`DefaultRestClient`, but you can change the implementation to your own in
-[config](TBA). The `DefaultRestClient` wraps around `URLLoader` class, it is
-responsible to configure loader, create and set up `URLRequest` instance and
-handler loader's events. In this way we can say that skein-rest is just a wrapper
-around standard `URLLoader` class that simplifies work with it. But it also
-contains loader Queue implementation and Caching system that improves performance
-and some other features.
-
-## Usage
-
-You use `rest()` package function to form HTTP request and handle the result:
-
-```as3
-rest("https://example.com/api/employees/{0}", employeeId) //
-    .addHeader("Authorization", "basic-auth-string") // add request header
-    .contentType("application/xml") // set request content-type
-    .addParam("fullInfo", true) // add URL parameters
-    .decoder(employeeEncoder) // function that parses recevied data
-    .result(resultHandler) // function called after parsing is complete and takes parsed object
-    .error(errorHandler) // handles error
-.get();
-```
-=======
-
-Rest Client for ActionScript 3.0 with fluent interface. In fact this library is a wrapper for standard `URLLoader`.
-
-## Dependencies
-
-Being a part of skein library skein-rest depends on:
-
- * [skein-core](https://github.com/skeinlib/skein/skein-core)
-
-### Supported HTTP Methods
-
-Four HTTP methods are supported: `GET`, `POST`, `PUT` and `DELETE` throught corresponded RestClient's metods: `get():void`, `post(data:Object=null):void`, `put(data:Object=null):void` and `del(data:Object=null)`.
+An HTTP client for AS3 projects supports four HTTP methods: `GET`, `POST`, `PUT` and `DELETE`. There are two usage aspects of this library, first is configuration that you usualy make once and second is requesting the data.
 
 ### Configuration
 
+For configuration you use `RestConfig` implementation that is available from `Rest` class as follow:
+
 ```as3
 Rest.config()
-    .rest("http://eaxmple.com/rest/api")
-        .accessToken("access-token")
-    .configure();
+    .auth()
+        .basic()
+            .username(get(me, "username"))
+            .password(get(me, "password"))
+        .build()
+    .build()
+    .rest()
+        .url("http://example.com/rest/api")
+        .useCache(false)
+        .useQueue(true)
+    .build()
+    .logger()
+        .level(Log.DEBUG)
+    .build();
 ```
 
-You pass a root URL of the API to the `rest()` function, library stores it so you can omit it for next usage. 
-If you pass your acces-token to the `accessToken()` method it will be used for all requests, but you can specify other for concrete request.
+As you can see it allows you to configure authorization through `auth()` method, REST API through `rest()` method and logging. Note that configuration step is complete optional, it just help you to write less code during data requesting phase.
 
-### Usage
+### Data requesting
 
-Next gets Employee by id:
+For make a request you use implementation of `RestClient` contract, that is available for you from `rest()` package level method, like this:
 
 ```as3
 rest("/employees/{0}", employeeId)
-    .addHeader("Authorization", "basic-auth-string") // add request header
-    .contentType("application/xml") // set request content-type 
+    .contentType("application/xml") // set request content-type
     .addParam("fullInfo", true) // add URL parameters
-    .decoder(employeeEncoder) // function that parses recevied data 
-    .result(resultHandler) // function called after parsing is complete and takes parsed object
-    .error(errorHandler) // handles error
-.get();
-```
-    
-The result URL for this request will be like this:
-
-`http://exaple.com/rest/api` + `/employees/{employeeId}` + `?` + `fullInfo=true` + `&` + `access_token={acces-token}`
-
-#### Request Headers
-
-The request headers could be specified for concrete request through ``RestClient.addHeader(name:String, value:Object)` method:
-
-```as3
-rest("/employees/{0}", employeeId)
-    .addHeader("Authorization", "basic-auth")
-.get();
+    .result(resultHandler) // function called after parsing response takes Object instance as argument
+    .error(errorHandler) // error handler received Error object
+.post(employeeAsXML);
 ```
 
-#### ContentType
+In this example you can see that `rest()` takes not full path to the endpoint, it is because it will get first part from the config. This is common usage of the skein-rest library, it aslo supports other configuration methods that will be discussed below but usual this is enough, even more by default it uses `application/json` mime-type for request so in most cases you ommit `.contentType("application/xml")` line.
 
-The `RestClient.contentType(value:String)` method allows to specify content-type header for concrete request. 
+### Configuration methods
 
-**Defaults:** RestClient uses `application/json` as default value for all requests.
-    
 #### URL Params
 
-The URL parameters coul be added like this:
+The URL parameters coul be added through `.addParam(key:String, value:Object)` method, like `fullInfo` in the next example:
 
 ```as3
 rest("/employees/{0}", employeeId)
@@ -113,17 +80,43 @@ rest("/employees/{0}", employeeId)
 .get();
 ```
 
-This produces next URL `http://example.com/rest/api/employees/{employeeId}?fullInfo=true`
+This produces next URL `http://example.com/rest/api/employees/{EMPLOYEE_ID_VALUE}?fullInfo=true`
 
-Uou can override default (specified during configuration) acces-token:
-    
+#### Access Token
+
+You usualy use `.accessToken(value:String, key:String)` method during configuration that is shared between all requests, in this situation you might want to remove passing access token param to some endpoint, or override its name or you don't configure access token globally and want to pass it, in all this situations you use `.accessToken()` configuration method, like this: 
+
 ```as3
 rest("/employees/{0}", employeeId)
     .accessToken("some-other-token", "accessToken")
 .get()
 ```
 
-Note that `accessToken(value:String, key:String="access_token"):void` defines value as first param, when `addParam(key:String, value:Object):void` define it as second. It makes possible to specify accessToken shorter, if parameter name is default value `access_token`.
+**WARNING:** the `accessToken(value:String, key:String="access_token"):void` method defines value as first param, when `addParam(key:String, value:Object):void` define it as second. It makes possible to specify accessToken shorter, if parameter name is default value `access_token`.
+
+#### ContentType
+
+The `.contentType(value:String)` configuration method allows to specify content-type header for concrete request:
+
+```as3
+rest("/employees/{0}", employeeId)
+    .contentType("application/xml")
+.post(employeeAsXML);
+```
+
+Here you pass employee as XML document to server to update it, to help server understand that incoming data is XML you use `.contentType("application/xml")`.
+
+**Defaults:** DefaultRestClient implementation uses `application/json` as default value for all requests.
+    
+#### Request Headers
+
+The request headers could be specified for concrete request through `.addHeader(name:String, value:Object)` method:
+
+```as3
+rest("/employees/{0}", employeeId)
+    .addHeader("Authorization", "basic-auth")
+.get();
+```
 
 #### Encoder/Decoder
 
@@ -135,25 +128,68 @@ rest("/employees")
     .decoder(employeeDecoder)
 .post(new Employee());
 ```
-    
-#### Handlers
 
-The next four handlers are suported: 
+When you specify custom encoder or decoder you take responsibility to serialize data. The functions passsed here should have next signatures `encoder(data:Object, callback:Function)` and `decoder(data:Object, callback:Function)` encoder takes AS3 object as argument when decoder takes data received from server the signature for callback is `function(object:Object):void`. Each of them, after serialization task is done should call `callback` function and provide it with obtained value. For example `employeeEncoder` should be implemented like this:
 
 ```as3
-rest("/employees/{0}", employeeId)
-    .result(completeHandler)
-    .error(errorHandler)
-    .progress(progressHandler)
-    .staus(statusHandler)
-.get();
+function employeeEncoder(employee:Employee, callback:Function):void
+{
+    var dto:Object = 
+    {
+        id : employee.id,
+        name : employe.displayName
+    }
+    
+    callback(dto)
+}
+```
+and `employeeDecoder`:
+
+```as3
+function employeeDecoder(jsonString:String, callback:Function):void
+{
+    var json:Object = JSON.parse(jsonString)
+    
+    var employee = new Employee()
+    employee.id = json.id;
+    employee.displayName = json.name; 
+    
+    callback(callback)
+}
 ```
 
-The result handler's signature is `resultHandler(data:Object, code:int):void`. Similarly error handler's singature is `errorHandler(error:Error, code:int):void`. The second argument for both these handlers is *optional*, it means you can define your handler with one argument only. The status handler's signature is `statusHandler(code:int):void` the `code` for all of these handlers is response code received from server. The last progress hander's signature is `progressHandler(bytesLoaded:Number, bytesTotal:Number):void`
+**NOTE:** as these methods takes callbacks to transmit their job, the serialization could be done asynchrounous, `RestClient` will wait until `callback` is called so you can add serialization of very large JSON w/o degradation UI performance.
+
+#### Handlers
+
+The `RestClient` implementation provides four handlers that you can use:
+
+ * `.result()` for success responses, handler should have `function(data:Object, code:int):void` or `function(data:Object):void` or just `function():void`  signature
+ * `.error()` for any error occurs, handler has `function(error:Error, code:int):void` or `function(error:Error):void` signature
+ * `.progress()` for progress notifications, hanler has `function(bytesLoaded:Number, bytesTotal:Number):void` signature
+ * `.status()` for handling HTTP status codes, handler's signature is `function(code:int):void`
+
+You might like to use promises for handling error and result here, for example method for retrieving list of employees could look like:
+
+```as3
+public function getCannabinoids():Promise
+{
+    var deferred:Deferred = new Deferred();
+
+    rest("/employees")
+        .result(deferred.resolve)
+        .error(deferred.reject)
+    .get();
+
+    return deferred.promise;
+}
+```
+
+as you can see signatures of `Deferred` object are compatible with skein-rest.
 
 #### Response Headers
 
-You can define a handler for response header:
+You can also define a handler for response headers like this:
 
 ```as3
 rest("/employees/{0}", employeeId)
@@ -161,6 +197,9 @@ rest("/employees/{0}", employeeId)
 .get();
 ```
 
-The `xNoticeHandler` will be called everytime when `RestClient` recevies `X-Notice` header in response. The handler's signature is `xNoticeHandler(header:URLRequestHeader):void;`.
+The `xNoticeHandler` will be called everytime when `X-Notice` header is recevied in response. The handler's signature is `function(header:URLRequestHeader):void;`.
 
-**Note:** This feature available only for AIR al long as [HTTP_RESPONSE_STATUS](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/events/HTTPStatusEvent.html#HTTP_RESPONSE_STATUS) available only for AIR.
+**WARNING:** This feature available only for AIR al long as [HTTP_RESPONSE_STATUS](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/events/HTTPStatusEvent.html#HTTP_RESPONSE_STATUS) available only for AIR.
+
+### Features
+TBD
