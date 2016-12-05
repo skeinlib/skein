@@ -169,10 +169,10 @@ The `RestClient` implementation provides four handlers that you can use:
  * `.progress()` for progress notifications, hanler has `function(bytesLoaded:Number, bytesTotal:Number):void` signature
  * `.status()` for handling HTTP status codes, handler's signature is `function(code:int):void`
 
-You might like to use promises for handling error and result here, for example method for retrieving list of employees could look like:
+You might like to use [as3-promises](https://github.com/CodeCatalyst/promise-as3) for handling error and result here, for example method for retrieving list of employees could look like:
 
 ```as3
-public function getCannabinoids():Promise
+public function getEmployee():Promise
 {
     var deferred:Deferred = new Deferred();
 
@@ -185,7 +185,7 @@ public function getCannabinoids():Promise
 }
 ```
 
-as you can see signatures of `Deferred` object are compatible with skein-rest.
+then you use it as usual `service.getEmployee().then(fillEmployeeForm)`, as you can see signatures of `Deferred` object are compatible with skein-rest.
 
 #### Response Headers
 
