@@ -12,7 +12,7 @@ package skein.rest.utils
 
  Adobe Systems Incorporated grants to you a perpetual, worldwide, non-exclusive,
  no-charge, royalty-free, irrevocable copyright license, to reproduce,
- prepare derivative works of, publicly display, publicly perform, and
+ prepare derivative works of, publicly flashx.display, publicly perform, and
  distribute this source code and such derivative works in source or
  object code form without any attribution requirements.
 
@@ -321,6 +321,54 @@ public class DateUtil
         {
             return h;
         }
+    }
+
+    public static function getMonth(d:Date):String
+    {
+        var result:String = (d.month + 1).toString();
+
+        if (result.length == 1)
+        {
+            result = "0" + result;
+        }
+
+        return result;
+    }
+
+    public static function getFullHour(d:Date):String
+    {
+        var result:String = d.hours.toString();
+
+        if (result.length == 1)
+        {
+            result = "0" + result;
+        }
+
+        return result;
+    }
+
+    public static function getMinutes(d:Date):String
+    {
+        var result:String = d.minutes.toString();
+
+        if (result.length == 1)
+        {
+            result = "0" + result;
+        }
+
+        return result;
+    }
+
+    public static function getSeconds(d:Date):String
+    {
+        var result:String = d.seconds.toString();
+
+        if (result.length == 1)
+        {
+            result = "0" + result;
+        }
+
+        return result;
     }
 
     /**

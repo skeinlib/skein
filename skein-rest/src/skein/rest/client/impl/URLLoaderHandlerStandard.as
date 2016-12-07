@@ -14,6 +14,7 @@ import flash.events.IOErrorEvent;
 import flash.events.ProgressEvent;
 import flash.events.SecurityErrorEvent;
 import flash.net.URLLoader;
+import flash.utils.ByteArray;
 
 import skein.core.skein_internal;
 import skein.rest.client.impl.HandlerAbstract;
@@ -88,7 +89,14 @@ public class URLLoaderHandlerStandard extends HandlerAbstract implements URLLoad
 
     internal function errorHandler(event:ErrorEvent):void
     {
-        error(_loader.data);
+        if (_loader.data is ByteArray && ByteArray(_loader.data).length == 0)
+        {
+            error(new Error(event.text, event.errorID));
+        }
+        else
+        {
+            error(_loader.data);
+        }
     }
 
     internal function statusHandler(event:HTTPStatusEvent):void
