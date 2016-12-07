@@ -287,6 +287,70 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
         }
     }
 
+    //----------------------------------
+    //	paddingLeft
+    //----------------------------------
+
+    private var _paddingLeft:Number = 0;
+
+    public function get paddingLeft():Number
+    {
+        return _paddingLeft;
+    }
+
+    public function set paddingLeft(value:Number):void
+    {
+        _paddingLeft = value;
+    }
+
+    //----------------------------------
+    //	paddingTop
+    //----------------------------------
+
+    private var _paddingTop:Number = 0;
+
+    public function get paddingTop():Number
+    {
+        return _paddingTop;
+    }
+
+    public function set paddingTop(value:Number):void
+    {
+        _paddingTop = value;
+    }
+
+    //----------------------------------
+    //	paddingRight
+    //----------------------------------
+
+    private var _paddingRight:Number = 0;
+
+    public function get paddingRight():Number
+    {
+        return _paddingRight;
+    }
+
+    public function set paddingRight(value:Number):void
+    {
+        _paddingRight = value;
+    }
+
+    //----------------------------------
+    //	paddingBottom
+    //----------------------------------
+
+    private var _paddingBottom:Number = 0;
+
+    public function get paddingBottom():Number
+    {
+        return _paddingBottom;
+    }
+
+    public function set paddingBottom(value:Number):void
+    {
+        _paddingBottom = value;
+    }
+
     //--------------------------------------------------------------------------
     //
     //	Properties: feathers
@@ -393,25 +457,25 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
         switch (_position)
         {
             case PopupPosition.LEFT :
-                    child.x = position.x;
-                    child.y = position.y;
-                    child.height = height;
+                    child.x = position.x - _paddingLeft;
+                    child.y = position.y - _paddingTop;
+                    child.height = height - _paddingTop - _paddingBottom;
                 break;
 
             case PopupPosition.TOP :
-                child.x = position.x;
-                child.y = position.y;
-                child.width = width;
+                child.x = position.x - _paddingLeft;
+                child.y = position.y - _paddingTop;
+                child.width = width - _paddingLeft - _paddingRight;
                 break;
 
             case PopupPosition.RIGHT :
-                    child.y = position.y;
-                    child.height = height;
+                    child.y = position.y - _paddingLeft;
+                    child.height = height - _paddingTop - _paddingBottom;
 
                     if (child is IValidating)
                         IValidating(child).validate();
 
-                    child.x = position.x + width - child.width;
+                    child.x = position.x + width + _paddingLeft - child.width - _paddingRight;
                 break;
 
             case PopupPosition.BOTTOM :
@@ -420,20 +484,20 @@ public class FeathersPopupWrapper extends EventDispatcher implements PopupWrappe
 
                     if (child.hasOwnProperty("maxHeight"))
                     {
-                        child["maxHeight"] = height;
+                        child["maxHeight"] = height - _paddingTop - _paddingBottom;
                     }
 
                     if (child is IValidating)
                         IValidating(child).validate();
 
-                    child.y = position.y + height - child.height;
+                    child.y = position.y + height + _paddingTop - child.height - _paddingBottom;
                 break;
 
             case PopupPosition.FILL :
-                    child.x = position.x;
-                    child.y = position.y;
-                    child.width = width;
-                    child.height = height;
+                    child.x = position.x - _paddingLeft;
+                    child.y = position.y - _paddingTop;
+                    child.width = width - _paddingLeft - _paddingRight;
+                    child.height = height - _paddingTop - _paddingBottom;
                 break;
         }
     }

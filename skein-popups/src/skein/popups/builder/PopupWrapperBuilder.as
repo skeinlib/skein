@@ -25,7 +25,14 @@ public interface PopupWrapperBuilder
 
     function origin(value:Object):PopupWrapperBuilder;
 
+    function overlayFactory(value:Object):PopupWrapperBuilder;
+
     function popupProperties(name:String, value:Object):PopupWrapperBuilder;
+
+    function paddingLeft(value:Object):PopupWrapperBuilder;
+    function paddingTop(value:Object):PopupWrapperBuilder;
+    function paddingRight(value:Object):PopupWrapperBuilder;
+    function paddingBottom(value:Object):PopupWrapperBuilder;
 
     function onOpening(handler:Function, weak:Boolean = false):PopupWrapperBuilder;
 

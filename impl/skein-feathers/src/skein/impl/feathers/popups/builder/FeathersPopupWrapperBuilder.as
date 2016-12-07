@@ -73,9 +73,44 @@ public class FeathersPopupWrapperBuilder implements PopupWrapperBuilder
         return this;
     }
 
+    public function overlayFactory(value:Object):PopupWrapperBuilder
+    {
+        PropertySetter.set(wrapper, "overlayFactory", value);
+
+        return this;
+    }
+
     public function popupProperties(name:String, value:Object):PopupWrapperBuilder
     {
         PropertySetter.set(wrapper.popupProperties, name, value);
+
+        return this;
+    }
+
+    public function paddingLeft(value:Object):PopupWrapperBuilder
+    {
+        PropertySetter.set(wrapper, "paddingLeft", value);
+
+        return this;
+    }
+
+    public function paddingTop(value:Object):PopupWrapperBuilder
+    {
+        PropertySetter.set(wrapper, "paddingTop", value);
+
+        return this;
+    }
+
+    public function paddingRight(value:Object):PopupWrapperBuilder
+    {
+        PropertySetter.set(wrapper, "paddingRight", value);
+
+        return this;
+    }
+
+    public function paddingBottom(value:Object):PopupWrapperBuilder
+    {
+        PropertySetter.set(wrapper, "paddingBottom", value);
 
         return this;
     }

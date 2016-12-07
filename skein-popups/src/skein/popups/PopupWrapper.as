@@ -37,5 +37,17 @@ public interface PopupWrapper
 
     function get popupProperties():Object;
     function set popupProperties(value:Object):void;
+
+    function get paddingLeft():Number;
+    function set paddingLeft(value:Number):void;
+
+    function get paddingTop():Number;
+    function set paddingTop(value:Number):void;
+
+    function get paddingRight():Number;
+    function set paddingRight(value:Number):void;
+
+    function get paddingBottom():Number;
+    function set paddingBottom(value:Number):void;
 }
 }
