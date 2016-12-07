@@ -266,10 +266,23 @@ public class FeathersImageBuilder extends FeathersBuilder implements ImageBuilde
 
         return this;
     }
+    public function horizontalCenterAnchor(value:Object):ImageBuilder
+    {
+        layoutElementNature.horizontalCenterAnchor(value);
+
+        return this;
+    }
 
     public function verticalCenter(value:Object):ImageBuilder
     {
         layoutElementNature.verticalCenter(value);
+
+        return this;
+    }
+
+    public function verticalCenterAnchor(value:Object):ImageBuilder
+    {
+        layoutElementNature.verticalCenterAnchor(value);
 
         return this;
     }
@@ -331,6 +344,8 @@ public class FeathersImageBuilder extends FeathersBuilder implements ImageBuilde
 
     public function scaleMode(value:Object):ImageBuilder
     {
+        PropertySetter.set(this.instance, "scaleMode", value);
+
         return this;
     }
 

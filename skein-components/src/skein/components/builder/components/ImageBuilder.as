@@ -84,8 +84,10 @@ public interface ImageBuilder extends Builder
     function bottomAnchor(value:Object):ImageBuilder;
 
     function horizontalCenter(value:Object):ImageBuilder;
+    function horizontalCenterAnchor(value:Object):ImageBuilder;
 
     function verticalCenter(value:Object):ImageBuilder;
+    function verticalCenterAnchor(value:Object):ImageBuilder;
 
     function includeInLayout(value:Object):ImageBuilder;
 
