@@ -367,6 +367,13 @@ public class FeathersTextInputBuilder extends FeathersBuilder implements TextInp
         return this;
     }
 
+    public function returnKeyLabel(value:Object):TextInputBuilder
+    {
+        PropertySetter.set(this.instance.textEditorProperties, "returnKeyLabel", value);
+
+        return this;
+    }
+
     public function softKeyboardType(value:Object):TextInputBuilder
     {
         PropertySetter.set(this.instance.textEditorProperties, "softKeyboardType", value);
