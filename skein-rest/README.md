@@ -11,6 +11,7 @@ HTTP client written in ActionScript 3.0
  - [x] Reusing responses (for two equal requests only one URLRequest will be used)
  - [x] Fully configurable (you can switch of all the features)
  - [x] Easy extensibility
+ - [x] Stub response result
 
 ## Dependencies
 
@@ -215,3 +216,16 @@ Supports downloading file into `File` object
 
 #### Caching
 
+TBA
+
+#### Stub response data
+
+With skein-rest you don't need to wait when service is done on the server-side, you can stubbing response data in one line:
+
+```as3
+rest("/employees/{0}", employeeId)
+    .stub('{"id" : "123e4567-e89b-12d3-a456-426655440000", "firstName" : "John", "lastName" : "Doe", "email" : "john@example.com"}')
+.get();
+```
+
+First argument `value` of the method `.stub(value:Object, delay:uint = 0)` could be a stub data or function that produces stub data, if you pass a function it shoud take no arguments and produce a value. The second argument is `delay` in milliseconds before firing stub response.
