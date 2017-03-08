@@ -76,5 +76,27 @@ public class ArrayUtil
 
         return result;
     }
+
+    public static function difference(array1:Array, array2:Array):Array
+    {
+        if (same(array1, array2)) return [];
+
+        var result:Array = [];
+
+        var maxArray:Array = array1.length > array2.length ? array1 : array2;
+        var minArray:Array = maxArray == array1 ? array2 : array1;
+
+        for (var i:uint = 0, n:uint = maxArray.length; i < n; i++)
+        {
+            var item:Object = maxArray[i];
+
+            if (minArray.indexOf(item) == -1)
+            {
+                result.push(item)
+            }
+        }
+
+        return result;
+    }
 }
 }
