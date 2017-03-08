@@ -167,6 +167,7 @@ public class HandlerAbstract
 
     protected function error(data:Object):void
     {
+        Log.e("skein-rest", URLLoadersQueue.name(client.loader) + " " + client.request.method.toUpperCase() + " " + client.request.url + (client.request.data ? " -> " + client.request.data : ""));
         Log.e("skein-rest", URLLoadersQueue.name(client.loader) + " " + client.request.method.toUpperCase() + " " + client.request.url + " " + responseCode + " <- " + (data is ByteArray ? "%BINARY_DATA%" : data));
 
         client.decodeError(data, handleError);
