@@ -7,7 +7,10 @@
  */
 package skein.utils
 {
+import flash.display.Shape;
+import flash.events.Event;
 import flash.events.TimerEvent;
+import flash.utils.Dictionary;
 import flash.utils.Timer;
 
 public class DelayUtil
@@ -80,5 +83,72 @@ public class DelayUtil
         stretches.push({"callback":callback, "timer":timer, "args":args});
     }
 
+    // callLater
+
+    private static var _callLaterDisplayObject:Shape;
+    private static var _callLaterIsListeningForRender:Boolean;
+
+    private static var _callLaterQueue:Vector.<Function> = new <Function>[];
+    private static var _callLaterDict:Dictionary = new Dictionary(true);
+
+    public static function callLater(callback:Function):void
+    {
+        if (callback == null)
+            return;
+
+        if (_callLaterDict[callback])
+            return;
+
+        _callLaterQueue[_callLaterQueue.length] = callback;
+        _callLaterDict[callback] = true;
+
+        if (_callLaterDisplayObject == null)
+            _callLaterDisplayObject = new Shape();
+
+        if (!_callLaterIsListeningForRender)
+        {
+            _callLaterIsListeningForRender = true;
+            _callLaterDisplayObject.addEventListener(Event.ENTER_FRAME, _callLaterDisplayObjectRenderHandler);
+        }
+    }
+
+    private static function _callLaterDisplayObjectRenderHandler(event:Event):void
+    {
+        _callLaterDisplayObject.removeEventListener(Event.ENTER_FRAME, _callLaterDisplayObjectRenderHandler);
+        _callLaterIsListeningForRender = false;
+
+        var queue:Vector.<Function> = _callLaterQueue.concat();
+        _callLaterQueue.length = 0;
+
+        for (var i:int = 0; i < queue.length; i++)
+        {
+            var obj:Function = queue[i];
+
+            queue[i].apply(null)
+        }
+    }
 }
+}
+
+class DelayedCall
+{
+    function DelayedCall(method:Function, args:Array)
+    {
+        super();
+
+        _method = method;
+        _args = args;
+    }
+
+    private var _method:Function;
+    public function get method():Function
+    {
+        return _method;
+    }
+
+    private var _args:Array;
+    public function get args():Array
+    {
+        return _args;
+    }
 }
