@@ -663,6 +663,7 @@ public class DefaultRestClient implements RestClient
                         request.requestHeaders = request.requestHeaders.concat(response.headers);
                     }
 
+                    // TODO(dev) should it be "else" here?
                     Log.i("skein-rest", URLLoadersQueue.name(loader) + " " + request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
                     loader.load(request);
                 });
