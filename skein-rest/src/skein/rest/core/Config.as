@@ -54,17 +54,18 @@ public class Config extends EventDispatcher
         _implementations[contract] = implementation;
     }
 
-    private static var _errorHook:Function;
+    private static var _resultHook: Function;
+    skein_internal static function setResultHook(hook: Function): void {
+        _resultHook = _errorHook;
+    }
 
-    skein_internal static function setErrorHook(hook:Function):void
-    {
+    private static var _errorHook:Function;
+    skein_internal static function setErrorHook(hook:Function):void {
         _errorHook = hook;
     }
 
     private static var _progressHandler:Function;
-
-    skein_internal static function setProgressHandler(value:Function):void
-    {
+    skein_internal static function setProgressHandler(value:Function):void {
         _progressHandler = value;
     }
 
@@ -124,6 +125,15 @@ public class Config extends EventDispatcher
     public function set rest(value:String):void
     {
         _rest = value;
+    }
+
+    //-----------------------------------
+    //  resultHook
+    //-----------------------------------
+
+    public function get resultHook():Function
+    {
+        return _resultHook;
     }
 
     //-----------------------------------
@@ -203,18 +213,14 @@ public class Config extends EventDispatcher
     //-----------------------------------
 
     private var _username:String;
-
     /** Basic Authorization username */
-    public function get username():String
-    {
+    public function get username():String {
         return _username;
     }
-
-    public function set username(value:String):void
-    {
+    public function set username(value:String):void {
         if (_username == value) return;
         _username = value;
-        updateBasicAuthorization();
+        updateAuthorization()
     }
 
     //-----------------------------------
@@ -222,40 +228,47 @@ public class Config extends EventDispatcher
     //-----------------------------------
 
     private var _password:String;
-
     /** Basic Authorization password */
-    public function get password():String
-    {
+    public function get password():String {
         return _password;
     }
-
-    public function set password(value:String):void
-    {
+    public function set password(value:String):void {
         if (_password == value) return;
         _password = value;
-        updateBasicAuthorization();
+        updateAuthorization()
     }
 
     //-----------------------------------
-    //  basicAuthorization
+    //  token
     //-----------------------------------
 
-    private var _basicAuthorization:String = null;
-
-    public function get basicAuthorization():String
-    {
-        return _basicAuthorization;
+    private var _token: String;
+    /** Bearer Authentication token */
+    public function get token(): String {
+        return _token;
+    }
+    public function set token(value: String): void {
+        if (value == _token) return;
+        _token = value;
+        updateAuthorization();
     }
 
-    private function updateBasicAuthorization():void
-    {
-        if (_username && _password)
-        {
-            _basicAuthorization = "Basic " + Base64.encode(_username + ":" + _password);
-        }
-        else
-        {
-            _basicAuthorization = null;
+    //-----------------------------------
+    //  bearerAuthorization
+    //-----------------------------------
+
+    private var _authorization: String;
+    public function get authorization(): String {
+        return _authorization;
+    }
+
+    private function updateAuthorization(): void {
+        if (_token) {
+            _authorization = "Bearer " + _token;
+        } else if (_username && _password) {
+            _authorization = "Basic " + Base64.encode(_username + ":" + _password);
+        } else {
+            _authorization = null;
         }
     }
 

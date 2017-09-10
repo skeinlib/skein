@@ -102,7 +102,7 @@ public class DefaultRestClient implements RestClient
 
     protected function get path():String
     {
-        if (_path.indexOf("http") == 0 || _path.indexOf("file") == 0 || _path.indexOf("app-storage") == 0)
+        if (_path.indexOf("http") == 0 || _path.indexOf("file") == 0 || _path.indexOf("app") == 0)
         {
             return StringUtil.substitute(_path, _pathParams);
         }
@@ -297,6 +297,19 @@ public class DefaultRestClient implements RestClient
     public function decoder(value:Function):RestClient
     {
         _decoder = value;
+
+        return this;
+    }
+
+    //------------------------------------
+    //  resultHook
+    //------------------------------------
+
+    internal var resultInterceptor:Function = Config.sharedInstance().errorHook;
+
+    public function resultHook(hook:Function):RestClient
+    {
+        resultInterceptor = hook;
 
         return this;
     }
@@ -534,9 +547,9 @@ public class DefaultRestClient implements RestClient
         if (_headers != null)
             request.requestHeaders = request.requestHeaders.concat(_headers);
         
-        if (Config.sharedInstance().basicAuthorization)
+        if (Config.sharedInstance().authorization)
         {
-            request.requestHeaders = request.requestHeaders.concat(new URLRequestHeader("Authorization", Config.sharedInstance().basicAuthorization));
+            request.requestHeaders = request.requestHeaders.concat(new URLRequestHeader("Authorization", Config.sharedInstance().authorization));
         }
 
         if (!isNaN(_timeout) && Object(request).hasOwnProperty("idleTimeout"))
@@ -789,6 +802,7 @@ public class DefaultRestClient implements RestClient
         _encoder = null;
         _decoder = null;
 
+        resultInterceptor = Config.sharedInstance().resultHook;
         errorInterceptor = Config.sharedInstance().errorHook;
 
         resultCallback = null;

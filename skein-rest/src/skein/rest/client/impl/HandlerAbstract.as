@@ -138,7 +138,7 @@ public class HandlerAbstract
                     }
                     else
                     {
-                        handleResult(value);
+                        handleResult(data, value);
                     }
                 });
         }
@@ -153,9 +153,13 @@ public class HandlerAbstract
         }
     }
 
-    protected function handleResult(value:Object):void
+    protected function handleResult(rawData:Object, decodedValue:Object):void
     {
-        client.handleResult(value, responseCode, responseHeaders, function():void
+        if (client.resultInterceptor != null) {
+            client.resultInterceptor(rawData);
+        }
+
+        client.handleResult(decodedValue, responseCode, responseHeaders, function():void
         {
             dispose();
         });

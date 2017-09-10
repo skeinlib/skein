@@ -31,6 +31,10 @@ public class AuthConfigBuilder
         return new AuthBasicConfigBuilder(this);
     }
 
+    public function bearer(): AuthBearerConfigBuilder {
+        return new AuthBearerConfigBuilder(this);
+    }
+
     public function build():ConfigBuilder
     {
         Config.skein_internal::auth(url);

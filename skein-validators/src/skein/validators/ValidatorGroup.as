@@ -12,6 +12,7 @@ import flash.events.EventDispatcher;
 
 import skein.validators.core.ValidatorProxy;
 import skein.validators.events.ValidationEvent;
+import skein.validators.events.ValidatorGroupEvent;
 
 public class ValidatorGroup extends EventDispatcher
 {
@@ -21,8 +22,8 @@ public class ValidatorGroup extends EventDispatcher
     //
     //--------------------------------------------------------------------------
 
-    public function ValidatorGroup()
-    {
+    public function ValidatorGroup() {
+        super();
     }
 
     //--------------------------------------------------------------------------
@@ -45,8 +46,8 @@ public class ValidatorGroup extends EventDispatcher
     //  isValid
     //-------------------------------------
 
-    public function get isValid():Boolean
-    {
+    [Bindable(event="validationChange")]
+    public function get isValid():Boolean {
         return !invalid || invalid.length == 0;
     }
 
@@ -55,15 +56,11 @@ public class ValidatorGroup extends EventDispatcher
     //-------------------------------------
 
     private var _enabled:Boolean = true;
-
     [Bindable(event="enabledChanged")]
-    public function get enabled():Boolean
-    {
+    public function get enabled():Boolean {
         return _enabled;
     }
-
-    public function set enabled(value:Boolean):void
-    {
+    public function set enabled(value:Boolean):void {
         if (_enabled == value) return;
         _enabled = value;
         dispatchEvent(new Event("enabledChanged"));
@@ -75,69 +72,69 @@ public class ValidatorGroup extends EventDispatcher
     //
     //--------------------------------------------------------------------------
 
-    public function addValidator(validator:Object):void
-    {
-        if (validator != null)
-        {
+    public function addValidator(validator:Validator):void {
+        if (validator != null) {
+            validator.addEventListener(ValidationEvent.VALID, validator_validHandler);
+            validator.addEventListener(ValidationEvent.INVALID, validator_invalidHandler);
+
             validators.push(validator);
         }
     }
 
-    public function validate(silentValidation:Boolean=false):Boolean
-    {
-        invalid.length = 0;
+    public function validate(silentValidation:Boolean=false):Boolean {
+        clearInvalids();
 
-        if (enabled)
-        {
+        if (enabled) {
             doValidate(silentValidation);
         }
 
         return isValid;
     }
 
-    public function reset():void
-    {
+    public function reset():void {
         invalid.length = 0;
 
-        for each (var validator:Validator in validators)
-        {
+        for each (var validator:Validator in validators) {
             validator.dispatchEvent(new ValidationEvent(ValidationEvent.VALID));
         }
     }
 
-    private function doValidate(silentValidation:Boolean):void
-    {
-        for each (var validator:Validator in validators)
-        {
+    private function doValidate(silentValidation:Boolean):void {
+        for each (var validator:Validator in validators) {
             var result:ValidationEvent = validator.validate(null, silentValidation);
-
-            if (result.results && result.results.length > 0)
-            {
-                addInvalid(validator);
-            }
         }
     }
 
-    private function addInvalid(validator:Object):void
-    {
-        if (invalid.indexOf(validator) == -1)
-        {
+    private function addInvalid(validator:Validator):void {
+        if (invalid.indexOf(validator) == -1) {
             invalid.push(validator);
-
-            // TODO: dispatch validity change
+            dispatchEvent(new ValidatorGroupEvent(ValidatorGroupEvent.VALIDATION_CHANGE, isValid));
         }
     }
 
-    private function removeInvalid(validator:Object):void
-    {
+    private function removeInvalid(validator:Validator):void {
         var index:int = invalid.indexOf(validator);
-
-        if (index != -1)
-        {
+        if (index != -1) {
             invalid.splice(index, 1);
-
-            // TODO: dispatch validity change
+            dispatchEvent(new ValidatorGroupEvent(ValidatorGroupEvent.VALIDATION_CHANGE, isValid));
         }
+    }
+
+    private function clearInvalids(): void {
+        if (invalid.length > 0) {
+            invalid.length = 0;
+            dispatchEvent(new ValidatorGroupEvent(ValidatorGroupEvent.VALIDATION_CHANGE, isValid));
+        }
+    }
+
+    // Event handlers
+
+    private function validator_validHandler(event: Event): void {
+        removeInvalid(event.target as Validator);
+    }
+
+    private function validator_invalidHandler(event: Event): void {
+        addInvalid(event.target as Validator);
     }
 }
 }

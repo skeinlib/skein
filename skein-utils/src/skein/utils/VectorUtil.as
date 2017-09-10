@@ -5,6 +5,17 @@ package skein.utils
 {
 public class VectorUtil
 {
+    public static function copy(from: *, to: *): void {
+        if (from == null) {
+            return;
+        }
+
+        for (var i:int = 0; i < from.length; i++)
+        {
+            to[i] = from[i];
+        }
+    }
+
     public static function toArray(vector:*):Array
     {
         if (vector == null) return null;
@@ -19,14 +30,8 @@ public class VectorUtil
         return result;
     }
 
-    public static function fromArray(array:Array, vector:*):void
-    {
-        if (array == null) return;
-
-        for (var i:int = 0; i < array.length; i++)
-        {
-            vector[i] = array[i];
-        }
+    public static function fromArray(array:Array, vector:*):void {
+        copy(array, vector);
     }
 
     public static function equals(vector1:*, vector2:*):Boolean
@@ -70,7 +75,7 @@ public class VectorUtil
             }
             else
             {
-                found = vector2.some(function(value2:*, index:int, array:Array):Boolean
+                found = vector2.some(function(value2:*, index:int, vector:*):Boolean
                 {
                     return comparator(value1, value2);
                 });
@@ -80,6 +85,26 @@ public class VectorUtil
         }
 
         return true;
+    }
+
+    public static function difference(vector1:*, vector2:*, result:*):void
+    {
+        if (same(vector1, vector2)) {
+            return;
+        }
+
+        var maxVector:* = vector1.length > vector2.length ? vector1 : vector2;
+        var minVector:* = maxVector == vector1 ? vector2 : vector1;
+
+        for (var i:uint = 0, n:uint = maxVector.length; i < n; i++)
+        {
+            var item:Object = maxVector[i];
+
+            if (minVector.indexOf(item) == -1)
+            {
+                result.push(item)
+            }
+        }
     }
 }
 }

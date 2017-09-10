@@ -30,6 +30,7 @@ public interface RestClient
     function encoder(value:Function):RestClient;
     function decoder(value:Function):RestClient;
 
+    function resultHook(hook:Function):RestClient;
     function errorHook(hook:Function):RestClient;
 
     function progress(handler:Function):RestClient;

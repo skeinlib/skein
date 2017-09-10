@@ -48,6 +48,11 @@ public class RestConfigBuilder
         return this;
     }
 
+    public function resultHook(hook: Function): RestConfigBuilder {
+        Config.setResultHook(hook);
+        return this;
+    }
+
     public function errorHook(hook:Function):RestConfigBuilder
     {
         Config.setErrorHook(hook);

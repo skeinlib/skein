@@ -41,8 +41,7 @@ public class SubscriberGroup
     //  Methods: Public API
     //--------------------------------------
 
-    public function init():void
-    {
+    public function init():void {
         registerSubscribers();
     }
 
@@ -50,58 +49,15 @@ public class SubscriberGroup
     //  Methods: Internal
     //--------------------------------------
 
-    private function registerSubscribers():void
-    {
-        for each (var subscriber:Subscriber in subscribers)
-        {
+    private function registerSubscribers():void {
+        for each (var subscriber:Subscriber in subscribers) {
             subscriber.addEventListener(SubscriberEvent.LISTENER_CHANGE, subscriber_listenerChangeHandler);
             subscriber.addEventListener(SubscriberEvent.VALIDATOR_CHANGE, subscriber_validatorChangeHandler);
-//
-//            bind(setter(this, "listenerChange"), get(subscriber, "listener"));
-//            bind(setter(this, "validatorChange"), get(subscriber, "validator"));
+
+            subscriber.validator.addEventListener(ValidationEvent.VALID, validationResultHandler);
+            subscriber.validator.addEventListener(ValidationEvent.INVALID, validationResultHandler);
         }
     }
-
-//    private var listenerCount:uint;
-//
-//    public function listenerChange(listener:Object):void
-//    {
-//        if (listener != null)
-//        {
-//            listenerCount++;
-//        }
-//
-//        if (listenerCount == subscribers.length && validatorCount == subscribers.length)
-//        {
-//            initSubscribers();
-//        }
-//    }
-//
-//    private var validatorCount:uint;
-//
-//    public function validatorChange(validator:Validator):void
-//    {
-//        if (validator != null)
-//        {
-//            validatorCount++;
-//        }
-//
-//        if (validatorCount == subscribers.length && listenerCount == subscribers.length)
-//        {
-//            initSubscribers();
-//        }
-//    }
-//
-//    private function initSubscribers():void
-//    {
-//        for each (var subscriber:Subscriber in subscribers)
-//        {
-//            if (subscriber.listener != null)
-//            {
-//                registerValidationEvents(subscriber.validator);
-//            }
-//        }
-//    }
 
     private function getSubscriberByValidator(validator:Validator):Subscriber
     {
@@ -124,17 +80,6 @@ public class SubscriberGroup
 
         return null;
     }
-
-//    private function subscribeControl(listener:Object):void
-//    {
-//
-//    }
-//
-//    private function registerValidationEvents(validator:Validator):void
-//    {
-//        validator.addEventListener(ValidationEvent.VALID, validationResultHandler);
-//        validator.addEventListener(ValidationEvent.INVALID, validationResultHandler);
-//    }
 
     //--------------------------------------------------------------------------
     //
