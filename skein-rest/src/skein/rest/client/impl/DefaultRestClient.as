@@ -302,14 +302,27 @@ public class DefaultRestClient implements RestClient
     }
 
     //------------------------------------
-    //  resultHook
+    //  beforeResultHook
     //------------------------------------
 
-    internal var resultInterceptor:Function = Config.sharedInstance().errorHook;
+    internal var beforeResultInterceptor:Function = Config.sharedInstance().beforeResultHook;
 
-    public function resultHook(hook:Function):RestClient
+    public function beforeResultHook(hook:Function):RestClient
     {
-        resultInterceptor = hook;
+        beforeResultInterceptor = hook;
+
+        return this;
+    }
+
+    //------------------------------------
+    //  afterResultHook
+    //------------------------------------
+
+    internal var afterResultInterceptor:Function = Config.sharedInstance().afterResultHook;
+
+    public function afterResultHook(hook:Function):RestClient
+    {
+        afterResultInterceptor = hook;
 
         return this;
     }
@@ -802,7 +815,8 @@ public class DefaultRestClient implements RestClient
         _encoder = null;
         _decoder = null;
 
-        resultInterceptor = Config.sharedInstance().resultHook;
+        beforeResultInterceptor = Config.sharedInstance().beforeResultHook;
+        afterResultInterceptor = Config.sharedInstance().afterResultHook;
         errorInterceptor = Config.sharedInstance().errorHook;
 
         resultCallback = null;

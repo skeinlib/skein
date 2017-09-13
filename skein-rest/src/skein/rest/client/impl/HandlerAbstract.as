@@ -155,12 +155,16 @@ public class HandlerAbstract
 
     protected function handleResult(rawData:Object, decodedValue:Object):void
     {
-        if (client.resultInterceptor != null) {
-            client.resultInterceptor(rawData);
+        if (client.beforeResultInterceptor != null) {
+            client.beforeResultInterceptor(rawData);
         }
 
         client.handleResult(decodedValue, responseCode, responseHeaders, function():void
         {
+            if (client.afterResultInterceptor) {
+                client.afterResultInterceptor(rawData);
+            }
+
             dispose();
         });
     }

@@ -1,4 +1,4 @@
 package skein.rest
 {
-    public const SKEIN_REST_VERSION:String = "1.0.7";
+    public const SKEIN_REST_VERSION:String = "1.0.8";
 }

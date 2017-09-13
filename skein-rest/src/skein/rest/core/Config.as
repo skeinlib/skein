@@ -54,9 +54,14 @@ public class Config extends EventDispatcher
         _implementations[contract] = implementation;
     }
 
-    private static var _resultHook: Function;
-    skein_internal static function setResultHook(hook: Function): void {
-        _resultHook = _errorHook;
+    private static var _beforeResultHook: Function;
+    skein_internal static function setBeforeResultHook(hook: Function): void {
+        _beforeResultHook = hook;
+    }
+
+    private static var _afterResultHook: Function;
+    public static function setAfterResultHook(hook: Function): void {
+        _afterResultHook = hook;
     }
 
     private static var _errorHook:Function;
@@ -128,12 +133,21 @@ public class Config extends EventDispatcher
     }
 
     //-----------------------------------
-    //  resultHook
+    //  beforeResultHook
     //-----------------------------------
 
-    public function get resultHook():Function
+    public function get beforeResultHook():Function
     {
-        return _resultHook;
+        return _beforeResultHook;
+    }
+
+    //-----------------------------------
+    //  afterResultHook
+    //-----------------------------------
+
+    public function get afterResultHook():Function
+    {
+        return _afterResultHook;
     }
 
     //-----------------------------------
