@@ -9,6 +9,7 @@ package skein.rest.core
 {
 import skein.rest.core.coding.DefaultCoding;
 import skein.rest.core.coding.JSONCoding;
+import skein.rest.core.coding.MultipartFormCoding;
 import skein.rest.core.coding.WWWFormCoding;
 
 public class Encoder
@@ -23,6 +24,10 @@ public class Encoder
 
             case "application/x-www-form-urlencoded" :
                 return WWWFormCoding.encode;
+                break;
+
+            case "multipart/form-data":
+                return MultipartFormCoding.encode;
                 break;
 
             default :

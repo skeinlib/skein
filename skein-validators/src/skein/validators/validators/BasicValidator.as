@@ -5,24 +5,25 @@
  * Time: 10:51 AM
  * To change this template use File | Settings | File Templates.
  */
-package skein.validators.validators
-{
+package skein.validators.validators {
 import flash.events.EventDispatcher;
+import flash.utils.Dictionary;
+
+import skein.utils.DelayUtil;
 
 import skein.validators.Validator;
 import skein.validators.data.ValidationResult;
 import skein.validators.events.ValidationEvent;
 
-public class BasicValidator extends EventDispatcher implements Validator
-{
+public class BasicValidator extends EventDispatcher implements Validator {
+
     //--------------------------------------------------------------------------
     //
     //  Constructor
     //
     //--------------------------------------------------------------------------
 
-    public function BasicValidator()
-    {
+    public function BasicValidator() {
         super();
     }
 
@@ -36,15 +37,11 @@ public class BasicValidator extends EventDispatcher implements Validator
     //  source
     //-------------------------------------
 
-    private var _source:Object;
-
-    public function get source():Object
-    {
+    private var _source: Object;
+    public function get source(): Object {
         return _source;
     }
-
-    public function set source(value:Object):void
-    {
+    public function set source(value: Object): void {
         removeTriggerEvent();
 
         _source = value;
@@ -56,15 +53,11 @@ public class BasicValidator extends EventDispatcher implements Validator
     //  property
     //-------------------------------------
 
-    private var _property:String;
-
-    public function get property():String
-    {
+    private var _property: String;
+    public function get property(): String {
         return _property;
     }
-
-    public function set property(value:String):void
-    {
+    public function set property(value: String): void {
         removeTriggerEvent();
 
         _property = value;
@@ -76,23 +69,16 @@ public class BasicValidator extends EventDispatcher implements Validator
     //  triggerEvent
     //-------------------------------------
 
-    private var _triggerEvent:String = null;
-
-    public function get triggerEvent():String
-    {
-        if (_triggerEvent == null)
-        {
-            if (_property != null)
-            {
+    private var _triggerEvent: String = null;
+    public function get triggerEvent(): String {
+        if (_triggerEvent == null) {
+            if (_property != null) {
                 return _property + "Changed";
             }
         }
-
         return _triggerEvent;
     }
-
-    public function set triggerEvent(value:String):void
-    {
+    public function set triggerEvent(value: String): void {
         removeTriggerEvent();
 
         _triggerEvent = value;
@@ -104,15 +90,11 @@ public class BasicValidator extends EventDispatcher implements Validator
     //  required
     //-------------------------------------
 
-    private var _required:Boolean = true;
-
-    public function get required():Boolean
-    {
+    private var _required: Boolean = true;
+    public function get required(): Boolean {
         return _required;
     }
-
-    public function set required(value:Boolean):void
-    {
+    public function set required(value: Boolean): void {
         _required = value;
     }
 
@@ -120,15 +102,11 @@ public class BasicValidator extends EventDispatcher implements Validator
     //  silence
     //-------------------------------------
 
-    private var _silent:Boolean = false;
-
-    public function get silent():Boolean
-    {
+    private var _silent: Boolean = false;
+    public function get silent(): Boolean {
         return _silent;
     }
-
-    public function set silent(value:Boolean):void
-    {
+    public function set silent(value: Boolean): void {
         _silent = value;
     }
 
@@ -136,16 +114,30 @@ public class BasicValidator extends EventDispatcher implements Validator
     //  requiredFieldError
     //-------------------------------------
 
-    private var _requiredFieldError:String = "This is a required field.";
-
-    public function get requiredFieldError():String
-    {
+    private var _requiredFieldError: String = "This is a required field.";
+    public function get requiredFieldError(): String {
         return _requiredFieldError;
     }
-
-    public function set requiredFieldError(value:String):void
-    {
+    public function set requiredFieldError(value: String): void {
         _requiredFieldError = value;
+    }
+
+    //-------------------------------------
+    //  serverValidationFunction
+    //-------------------------------------
+
+    private var _serverValidationFunction: Function;
+    /**
+     * A function used for remote validation, valid signature is
+     * `function(value: Object, callback: Function): void` where `value` is
+     * value for validation and callback receives optional `error` param like
+     * `function (error: Error = null): void`.
+     */
+    public function get serverValidationFunction(): Function {
+        return _serverValidationFunction;
+    }
+    public function set serverValidationFunction(value: Function): void {
+        _serverValidationFunction = value;
     }
 
     //--------------------------------------------------------------------------
@@ -154,23 +146,22 @@ public class BasicValidator extends EventDispatcher implements Validator
     //
     //--------------------------------------------------------------------------
 
-    public function validate(value:Object = null, silentValidation:Boolean = false):ValidationEvent
-    {
+    public function validate(value: Object = null, silentValidation: Boolean = false): ValidationEvent {
         value = value || getValueFormSource();
 
-        var event:ValidationEvent;
+        var event: ValidationEvent;
 
-        if (required)
-        {
-            var results:Array = doValidation(value);
+        if (required) {
+            var results: Array = doValidation(value);
 
-            if (results && results.length > 0)
+            if (results && results.length > 0) {
                 event = new ValidationEvent(ValidationEvent.INVALID, results);
-            else
+            } else {
                 event = new ValidationEvent(ValidationEvent.VALID);
+                DelayUtil.stretchToTimeout(200, validateOnServerIfRequired, value, silentValidation);
+            }
         }
-        else
-        {
+        else {
             event = new ValidationEvent(ValidationEvent.VALID);
         }
 
@@ -180,11 +171,10 @@ public class BasicValidator extends EventDispatcher implements Validator
         return event;
     }
 
-    protected function doValidation(value:Object):Array
-    {
-        var results:Array = [];
+    protected function doValidation(value: Object): Array {
+        var results: Array = [];
 
-        var result:ValidationResult = validateRequiredField(value);
+        var result: ValidationResult = validateRequiredField(value);
 
         if (result)
             results.push(result);
@@ -192,12 +182,9 @@ public class BasicValidator extends EventDispatcher implements Validator
         return results;
     }
 
-    private function validateRequiredField(value:Object):ValidationResult
-    {
-        if (_required)
-        {
-            if (!value)
-            {
+    private function validateRequiredField(value: Object): ValidationResult {
+        if (_required) {
+            if (!value) {
                 return new ValidationResult(true, _requiredFieldError);
             }
         }
@@ -206,13 +193,38 @@ public class BasicValidator extends EventDispatcher implements Validator
     }
 
     //----------------------------------
+    //  Methods: Server validation
+    //----------------------------------
+
+    protected var currentServerValidationValue: Object = null;
+
+    protected function validateOnServerIfRequired(value: Object, silentValidation: Boolean = false): void {
+        if (_serverValidationFunction != null) {
+            currentServerValidationValue = value;
+            _serverValidationFunction(value, function(error: Error = null): void {
+                if (value == currentServerValidationValue) {
+                    currentServerValidationValue = null;
+                    var event: ValidationEvent;
+                    if (error) {
+                        event = new ValidationEvent(ValidationEvent.INVALID, [new ValidationResult(true, error.message)]);
+                    } else {
+                        event = new ValidationEvent(ValidationEvent.VALID);
+                    }
+                    if (!silentValidation || event.type == ValidationEvent.VALID) {
+                        dispatchEvent(event);
+                    }
+                }
+            });
+        }
+    }
+
+
+    //----------------------------------
     //  Methods: internal
     //----------------------------------
 
-    private function getValueFormSource():Object
-    {
-        if (_source && _property)
-        {
+    private function getValueFormSource(): Object {
+        if (_source && _property) {
             return _source[_property];
         }
 
@@ -223,22 +235,18 @@ public class BasicValidator extends EventDispatcher implements Validator
     //  Methods: trigger
     //----------------------------------
 
-    private function addTriggerEvent():void
-    {
-        var trigger:Object = _source;
+    private function addTriggerEvent(): void {
+        var trigger: Object = _source;
 
-        if (trigger && triggerEvent)
-        {
+        if (trigger && triggerEvent) {
             trigger.addEventListener(triggerEvent, triggerHandler);
         }
     }
 
-    private function removeTriggerEvent():void
-    {
-        var trigger:Object = _source;
+    private function removeTriggerEvent(): void {
+        var trigger: Object = _source;
 
-        if (trigger && triggerEvent)
-        {
+        if (trigger && triggerEvent) {
             trigger.removeEventListener(triggerEvent, triggerHandler);
         }
     }
@@ -249,8 +257,7 @@ public class BasicValidator extends EventDispatcher implements Validator
     //
     //--------------------------------------------------------------------------
 
-    private function triggerHandler(event:Object):void
-    {
+    private function triggerHandler(event: Object): void {
         validate(null, _silent);
     }
 

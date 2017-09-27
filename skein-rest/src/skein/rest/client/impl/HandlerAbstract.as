@@ -145,10 +145,11 @@ public class HandlerAbstract
         catch (error:Error)
         {
             // ignore the result already handled
-            if (!wasHandlerCalledBeforeError)
-            {
+            if (!wasHandlerCalledBeforeError) {
                 trace(error);
                 handleError(new DataProcessingError("An incorrect or invalid data was received."));
+            } else {
+                Log.w("skein-rest", "Error during handling result: " + error);
             }
         }
     }

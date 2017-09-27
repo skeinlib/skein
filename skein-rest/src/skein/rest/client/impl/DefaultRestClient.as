@@ -573,9 +573,13 @@ public class DefaultRestClient implements RestClient
         if (data != null)
         {
             encodeRequest(data,
-                function(data:Object):void
+                function(data:Object, contentType: String = null):void
                 {
                     request.data = data;
+
+                    if (contentType != null) {
+                        request.contentType = contentType;
+                    }
 
                     load();
                 }
@@ -629,6 +633,8 @@ public class DefaultRestClient implements RestClient
 
     private function doStub():void
     {
+        Log.i("skein-rest", URLLoadersQueue.name(loader) + " *STUB* " + request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
+
         var receiveStubData:Function = function():void
         {
             loader.data = stubValue is Function ? (stubValue as Function).apply() : stubValue;
@@ -654,8 +660,6 @@ public class DefaultRestClient implements RestClient
         {
             receiveStubData();
         }
-
-        Log.i("skein-rest", URLLoadersQueue.name(loader) + " *STUB* " + request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
     }
 
     private function doLoad():void

@@ -13,8 +13,11 @@ public class WWWFormCoding
     {
         var pairs:Array = [];
 
-        for (var property:String in data)
-        {
+        if ("toJSON" in data) {
+            data = data.toJSON(undefined);
+        }
+
+        for (var property:String in data) {
             pairs.push(property + "=" + data[property]);
         }
 
