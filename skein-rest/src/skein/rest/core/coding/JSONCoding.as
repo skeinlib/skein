@@ -18,16 +18,7 @@ public class JSONCoding
     {
         var data:Object;
 
-        try
-        {
-            data = JSON.parse(json);
-        }
-        catch(error:Error)
-        {
-            trace("[skein-rest] JSONCoding:", error);
-
-            data = json;
-        }
+        data = JSON.parse(json);
 
         callback(data);
     }

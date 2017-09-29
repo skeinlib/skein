@@ -15,6 +15,7 @@ import skein.rest.client.impl.URLLoadersQueue;
 import skein.rest.client.impl.URLLoadersQueue;
 import skein.rest.core.HeaderHandler;
 import skein.rest.errors.DataProcessingError;
+import skein.rest.errors.UnknownServerError;
 import skein.rest.logger.Log;
 
 use namespace skein_internal;
@@ -123,14 +124,14 @@ public class HandlerAbstract
         Log.i("skein-rest", URLLoadersQueue.name(client.loader) + " " + client.request.method.toUpperCase() + " " + client.request.url + " " + responseCode + " <- " + (data is ByteArray ? "%BINARY_DATA%" : data));
 
         // indicates if result callback was called before an exception occurred
-        var wasHandlerCalledBeforeError:Boolean = false;
+        var isDataSerializedSuccessfully:Boolean = false;
 
         try
         {
             client.decodeResult(data,
                 function(value:Object):void
                 {
-                    wasHandlerCalledBeforeError = true;
+                    isDataSerializedSuccessfully = true;
 
                     if (value is Error)
                     {
@@ -144,12 +145,11 @@ public class HandlerAbstract
         }
         catch (error:Error)
         {
-            // ignore the result already handled
-            if (!wasHandlerCalledBeforeError) {
+            if (isDataSerializedSuccessfully) {
+                Log.e("skein-rest", "Error during handling result: " + error + ". Please fix this issue as it may cause unexpected behaviour.");
+            } else {
                 trace(error);
                 handleError(new DataProcessingError("An incorrect or invalid data was received."));
-            } else {
-                Log.w("skein-rest", "Error during handling result: " + error);
             }
         }
     }
@@ -179,7 +179,19 @@ public class HandlerAbstract
         Log.e("skein-rest", URLLoadersQueue.name(client.loader) + " " + client.request.method.toUpperCase() + " " + client.request.url + (client.request.data ? " -> " + client.request.data : ""));
         Log.e("skein-rest", URLLoadersQueue.name(client.loader) + " " + client.request.method.toUpperCase() + " " + client.request.url + " " + responseCode + " <- " + (data is ByteArray ? "%BINARY_DATA%" : data));
 
-        client.decodeError(data, handleError);
+        var isErrorSerializedSuccessfully: Boolean = false;
+        try {
+            client.decodeError(data, function (info: Object): void {
+                isErrorSerializedSuccessfully = true;
+                handleError(info);
+            });
+        } catch (error: Error) {
+            if (isErrorSerializedSuccessfully) {
+                Log.e("skein-rest", "Error during handling error: " + error + ". Please fix this issue as it may cause unexpected behaviour.");
+            } else {
+                handleError(new UnknownServerError("An error message received from server could not be parsed."));
+            }
+        }
     }
 
     protected function handleError(info:Object):void

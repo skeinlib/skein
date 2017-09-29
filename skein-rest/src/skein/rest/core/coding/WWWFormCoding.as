@@ -28,22 +28,13 @@ public class WWWFormCoding
     {
         var data:Object = {};
 
-        try
+        var pairs:Array = encoded.split("&");
+
+        for each (var string:String in pairs)
         {
-            var pairs:Array = encoded.split("&");
+            var pair:Array = string.split("=");
 
-            for each (var string:String in pairs)
-            {
-                var pair:Array = string.split("=");
-
-                data[pair[0]] = pair[1];
-            }
-        }
-        catch (error:Error)
-        {
-            trace("[skein-rest] WWWFormCoding:", error);
-
-            data = encoded;
+            data[pair[0]] = pair[1];
         }
 
         callback(data);
