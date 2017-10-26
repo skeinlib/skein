@@ -17,6 +17,7 @@ import skein.rest.core.HeaderHandler;
 import skein.rest.errors.DataProcessingError;
 import skein.rest.errors.UnknownServerError;
 import skein.rest.logger.Log;
+import skein.utils.StringUtil;
 
 use namespace skein_internal;
 public class HandlerAbstract
@@ -176,8 +177,13 @@ public class HandlerAbstract
 
     protected function error(data:Object):void
     {
-        Log.e("skein-rest", URLLoadersQueue.name(client.loader) + " " + client.request.method.toUpperCase() + " " + client.request.url + (client.request.data ? " -> " + client.request.data : ""));
-        Log.e("skein-rest", URLLoadersQueue.name(client.loader) + " " + client.request.method.toUpperCase() + " " + client.request.url + " " + responseCode + " <- " + (data is ByteArray ? "%BINARY_DATA%" : data));
+        Log.e("skein-rest", StringUtil.substitute("{0} {1} {2}{3} <- {4} {5}",
+            URLLoadersQueue.name(client.loader),
+            client.request.method.toUpperCase(),
+            client.request.url,
+            client.request.data ? " -> " + client.request.data : "",
+            responseCode,
+            data is ByteArray ? "%BINARY_DATA%" : data));
 
         var isErrorSerializedSuccessfully: Boolean = false;
         try {
