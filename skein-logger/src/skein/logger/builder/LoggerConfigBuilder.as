@@ -1,15 +1,15 @@
 /**
  * Created by Max Rozdobudko on 10/20/15.
  */
-package skein.rest.builder
+package skein.logger.builder
 {
 import skein.core.PropertySetter;
 import skein.core.skein_internal;
-import skein.rest.core.Config;
-import skein.rest.logger.Logger;
-import skein.rest.logger.LoggerAppender;
-import skein.rest.logger.impl.SimpleLoggerLayout;
-import skein.rest.logger.impl.TraceLoggerAppender;
+import skein.logger.Logger;
+import skein.logger.LoggerAppender;
+import skein.logger.core.Config;
+import skein.logger.impl.SimpleLoggerLayout;
+import skein.logger.impl.TraceLoggerAppender;
 
 use namespace skein_internal;
 
@@ -21,11 +21,10 @@ public class LoggerConfigBuilder
     //
     //--------------------------------------------------------------------------
 
-    public function LoggerConfigBuilder(parent:ConfigBuilder)
-    {
+    public function LoggerConfigBuilder(tag: String) {
         super();
 
-        this.parent = parent;
+        _tag = tag;
     }
 
     //--------------------------------------------------------------------------
@@ -34,7 +33,7 @@ public class LoggerConfigBuilder
     //
     //--------------------------------------------------------------------------
 
-    private var parent:ConfigBuilder;
+    private var _tag: String;
 
     //--------------------------------------------------------------------------
     //
@@ -46,10 +45,8 @@ public class LoggerConfigBuilder
     //  setImplementation
     //------------------------------------
 
-    public function setImplementation(value:Class):LoggerConfigBuilder
-    {
-        Config.setImplementation(Logger, value);
-
+    public function setImplementation(value:Class):LoggerConfigBuilder {
+        Config.setImplementationForTag(_tag, Logger, value);
         return this;
     }
 
@@ -57,10 +54,8 @@ public class LoggerConfigBuilder
     //  level
     //------------------------------------
 
-    public function level(value:Object):LoggerConfigBuilder
-    {
-        PropertySetter.set(Config.sharedInstance(), "logLevel", value);
-
+    public function level(value:Object):LoggerConfigBuilder {
+        PropertySetter.set(Config.logLevelForTag(_tag), "logLevel", value);
         return this;
     }
 
@@ -68,17 +63,12 @@ public class LoggerConfigBuilder
     //  appender
     //------------------------------------
 
-    public function appender(value:LoggerAppender):LoggerConfigBuilder
-    {
-        if (_appenders == null)
-        {
+    public function appender(value:LoggerAppender):LoggerConfigBuilder {
+        if (_appenders == null) {
             _appenders = new <LoggerAppender>[value];
-        }
-        else
-        {
+        } else {
             _appenders.push(value);
         }
-
         return this;
     }
 
@@ -87,11 +77,8 @@ public class LoggerConfigBuilder
     //------------------------------------
 
     private var _appenders:Vector.<LoggerAppender> = new <LoggerAppender>[new TraceLoggerAppender(new SimpleLoggerLayout())];
-
-    public function appenders(value:Vector.<LoggerAppender>):LoggerConfigBuilder
-    {
+    public function appenders(value:Vector.<LoggerAppender>):LoggerConfigBuilder {
         _appenders = value;
-
         return this;
     }
 
@@ -99,11 +86,8 @@ public class LoggerConfigBuilder
     //  build
     //------------------------------------
 
-    public function build():ConfigBuilder
-    {
-        Config.sharedInstance().retainLoggerAppenders(_appenders);
-
-        return parent;
+    public function build(): void {
+        Config.retainLoggerAppendersForTag(_tag, _appenders);
     }
 }
 }

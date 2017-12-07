@@ -1,8 +1,10 @@
 /**
  * Created by Max Rozdobudko on 10/20/15.
  */
-package skein.rest.logger
+package skein.logger
 {
+import skein.rest.logger.*;
+
 public interface Logger
 {
     function get appenders():Vector.<LoggerAppender>;

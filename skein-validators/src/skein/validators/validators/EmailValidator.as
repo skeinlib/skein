@@ -36,16 +36,29 @@ public class EmailValidator extends BasicValidator
     //
     //--------------------------------------------------------------------------
 
-    private var _incorrectEmailError:String = "Wrong email address.";
+    //-------------------------------------
+    //  incorrectEmailError
+    //-------------------------------------
 
-    public function get incorrectEmailError():String
-    {
+    private var _incorrectEmailError:String = "Wrong email address.";
+    public function get incorrectEmailError():String {
         return _incorrectEmailError;
     }
 
-    public function set incorrectEmailError(value:String):void
-    {
+    public function set incorrectEmailError(value:String):void {
         _incorrectEmailError = value;
+    }
+
+    //-------------------------------------
+    //  emailRegexp
+    //-------------------------------------
+
+    private var _emailRegexp: RegExp;
+    public function get emailRegexp(): RegExp {
+        return _emailRegexp || EMAIL_REGEXP;
+    }
+    public function set emailRegexp(value: RegExp): void {
+        _emailRegexp = value;
     }
 
     //--------------------------------------------------------------------------
@@ -74,12 +87,11 @@ public class EmailValidator extends BasicValidator
     {
         var results:Array = [];
 
-        if (required)
-        {
-            if (!EMAIL_REGEXP.test(String(value)))
-            {
+        if (required) {
+            if (!emailRegexp.test(String(value))) {
                 results.push(new ValidationResult(true, incorrectEmailError))
             }
+            emailRegexp.lastIndex = 0;
         }
 
         return results;

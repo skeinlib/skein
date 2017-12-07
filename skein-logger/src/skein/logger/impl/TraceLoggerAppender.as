@@ -1,11 +1,11 @@
 /**
  * Created by Max Rozdobudko on 10/20/15.
  */
-package skein.rest.logger.impl
+package skein.logger.impl
 {
-import skein.rest.logger.LogEvent;
-import skein.rest.logger.LoggerAppender;
-import skein.rest.logger.LoggerLayout;
+import skein.logger.LogEvent;
+import skein.logger.LoggerAppender;
+import skein.logger.LoggerLayout;
 
 public class TraceLoggerAppender implements LoggerAppender
 {

@@ -16,7 +16,7 @@ import skein.rest.client.impl.URLLoadersQueue;
 import skein.rest.core.HeaderHandler;
 import skein.rest.errors.DataProcessingError;
 import skein.rest.errors.UnknownServerError;
-import skein.rest.logger.Log;
+import skein.logger.Log;
 import skein.utils.StringUtil;
 
 use namespace skein_internal;

@@ -1,7 +1,7 @@
 /**
  * Created by Max Rozdobudko on 10/20/15.
  */
-package skein.rest.logger
+package skein.logger
 {
 public class LogEvent
 {

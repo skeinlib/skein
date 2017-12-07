@@ -1,4 +1,4 @@
 package skein.core
 {
-    public namespace skein_internal = "http://mobitile.com/skein";
+    public namespace skein_internal = "https://github.com/skeinlib/skein";
 }

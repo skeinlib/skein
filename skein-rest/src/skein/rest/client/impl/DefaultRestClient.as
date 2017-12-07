@@ -33,7 +33,8 @@ import skein.rest.core.Decoder;
 import skein.rest.core.Encoder;
 import skein.rest.core.ProgressTracker;
 import skein.rest.core.RestClientRegistry;
-import skein.rest.logger.Log;
+import skein.logger.Log;
+import skein.utils.StringSubstituteArguments;
 import skein.utils.StringUtil;
 
 use namespace skein_internal;
@@ -97,7 +98,12 @@ public class DefaultRestClient implements RestClient
     public function init(path:String, params:Array):void
     {
         _path = path;
-        _pathParams = params;
+
+        if (params.length == 1 && params[0] is StringSubstituteArguments) {
+            _pathParams = StringSubstituteArguments(params[0]).value;
+        } else {
+            _pathParams = params;
+        }
     }
 
     protected function get path():String

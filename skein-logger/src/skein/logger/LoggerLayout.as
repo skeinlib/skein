@@ -1,7 +1,7 @@
 /**
  * Created by Max Rozdobudko on 10/21/15.
  */
-package skein.rest.logger
+package skein.logger
 {
 public interface LoggerLayout
 {

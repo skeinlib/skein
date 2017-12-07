@@ -34,6 +34,10 @@ public class StringUtil
         return str;
     }
 
+    public static function substituteWithArguments(str: String, args: StringSubstituteArguments): String {
+        return substitute(str, args.value);
+    }
+
     public static function trim(str:String):String
     {
         if (str == null) return '';

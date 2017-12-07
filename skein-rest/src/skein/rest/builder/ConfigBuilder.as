@@ -8,6 +8,7 @@
 package skein.rest.builder
 {
 import skein.core.skein_internal;
+import skein.logger.builder.LoggerConfigBuilder;
 import skein.rest.client.RestClient;
 import skein.rest.core.Config;
 
@@ -42,9 +43,9 @@ public class ConfigBuilder
         return this;
     }
 
-    public function logger():LoggerConfigBuilder
+    public function logger():LoggerConfigBuilderWrapper
     {
-        return new LoggerConfigBuilder(this);
+        return new LoggerConfigBuilderWrapper(this, new LoggerConfigBuilder("skein-rest"));
     }
 
     public function setImplementation(contract:Class, implementation:Class):ConfigBuilder

@@ -1,10 +1,10 @@
 /**
  * Created by Max Rozdobudko on 10/21/15.
  */
-package skein.rest.logger.impl
+package skein.logger.impl
 {
-import skein.rest.logger.LogEvent;
-import skein.rest.logger.LoggerLayout;
+import skein.logger.LogEvent;
+import skein.logger.LoggerLayout;
 
 public class SimpleLoggerLayout implements LoggerLayout
 {
