@@ -6,7 +6,7 @@
         <dependencies target-player="27.0">
           <entries>
             <entry module-name="skein-core" build-configuration-name="skein-core">
-              <dependency linkage="Merged" />
+              <dependency linkage="External" />
             </entry>
           </entries>
           <sdk name="27.0.0" />

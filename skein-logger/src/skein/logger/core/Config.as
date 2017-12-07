@@ -9,6 +9,8 @@ import skein.logger.Log;
 import skein.logger.Logger;
 import skein.logger.LoggerAppender;
 import skein.logger.impl.DefaultLogger;
+import skein.logger.impl.SimpleLoggerLayout;
+import skein.logger.impl.TraceLoggerAppender;
 
 use namespace skein_internal;
 
@@ -68,6 +70,9 @@ public class Config {
     skein_internal static function releaseLoggerAppenders(tag: String):Vector.<LoggerAppender> {
         var result:Vector.<LoggerAppender> = _loggerAppenders[tag];
         _loggerAppenders[tag] = null;
+        if (result == null && result.length == 0) {
+            result = new <LoggerAppender>[new TraceLoggerAppender(new SimpleLoggerLayout())];
+        }
         return result;
     }
     skein_internal static function retainLoggerAppendersForTag(tag: String, value:Vector.<LoggerAppender>):void {

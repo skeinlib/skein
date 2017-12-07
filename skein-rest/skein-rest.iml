@@ -12,7 +12,7 @@
               <dependency linkage="External" />
             </entry>
             <entry module-name="skein-logger" build-configuration-name="skein-logger">
-              <dependency linkage="Merged" />
+              <dependency linkage="External" />
             </entry>
           </entries>
           <sdk name="27.0.0" />

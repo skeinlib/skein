@@ -1,4 +1,4 @@
 package skein.logger
 {
-public const SKEIN_LOGGER_VERSION:String = "1.0";
+public const SKEIN_LOGGER_VERSION:String = "1.0.1";
 }
