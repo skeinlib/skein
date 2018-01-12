@@ -3,7 +3,7 @@
   <component name="FlexBuildConfigurationManager" active="skein-binding">
     <configurations>
       <configuration name="skein-binding" pure-as="true" output-type="Library" output-file="skein-binding-1.0.0.swc" output-folder="$MODULE_DIR$/../bin">
-        <dependencies target-player="27.0">
+        <dependencies target-player="25.0">
           <entries>
             <entry module-name="skein-core" build-configuration-name="skein-core">
               <dependency linkage="Merged" />
