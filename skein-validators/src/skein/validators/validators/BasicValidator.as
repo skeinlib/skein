@@ -29,6 +29,14 @@ public class BasicValidator extends EventDispatcher implements Validator {
 
     //--------------------------------------------------------------------------
     //
+    //  Variables
+    //
+    //--------------------------------------------------------------------------
+
+    private var currentValidationResults: Array = [];
+
+    //--------------------------------------------------------------------------
+    //
     //  Properties
     //
     //--------------------------------------------------------------------------
@@ -140,6 +148,10 @@ public class BasicValidator extends EventDispatcher implements Validator {
         _serverValidationFunction = value;
     }
 
+    private function get supportsServerValidation(): Boolean {
+        return _serverValidationFunction != null;
+    }
+
     //--------------------------------------------------------------------------
     //
     //  Methods
@@ -156,9 +168,19 @@ public class BasicValidator extends EventDispatcher implements Validator {
 
             if (results && results.length > 0) {
                 event = new ValidationEvent(ValidationEvent.INVALID, results);
+                currentValidationResults = results;
             } else {
-                event = new ValidationEvent(ValidationEvent.VALID);
-                DelayUtil.stretchToTimeout(200, validateOnServerIfRequired, value, silentValidation);
+                if (supportsServerValidation) {
+                    if (currentValidationResults && currentValidationResults.length > 0) {
+                        event = new ValidationEvent(ValidationEvent.INVALID, currentValidationResults);
+                    } else {
+                        event = new ValidationEvent(ValidationEvent.VALID);
+                    }
+                    DelayUtil.stretchToTimeout(200, validateOnServerIfRequired, value, silentValidation);
+                } else {
+                    event = new ValidationEvent(ValidationEvent.VALID);
+                    currentValidationResults.length = 0;
+                }
             }
         }
         else {
@@ -206,8 +228,10 @@ public class BasicValidator extends EventDispatcher implements Validator {
                     currentServerValidationValue = null;
                     var event: ValidationEvent;
                     if (error) {
-                        event = new ValidationEvent(ValidationEvent.INVALID, [new ValidationResult(true, error.message)]);
+                        currentValidationResults = [new ValidationResult(true, error.message)];
+                        event = new ValidationEvent(ValidationEvent.INVALID, currentValidationResults.concat());
                     } else {
+                        currentValidationResults.length = 0;
                         event = new ValidationEvent(ValidationEvent.VALID);
                     }
                     if (!silentValidation || event.type == ValidationEvent.VALID) {
