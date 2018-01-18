@@ -148,7 +148,7 @@ public class BasicValidator extends EventDispatcher implements Validator {
         _serverValidationFunction = value;
     }
 
-    private function get supportsServerValidation(): Boolean {
+    public function get supportsServerValidation(): Boolean {
         return _serverValidationFunction != null;
     }
 
@@ -182,8 +182,7 @@ public class BasicValidator extends EventDispatcher implements Validator {
                     currentValidationResults.length = 0;
                 }
             }
-        }
-        else {
+        } else {
             event = new ValidationEvent(ValidationEvent.VALID);
         }
 
@@ -220,7 +219,9 @@ public class BasicValidator extends EventDispatcher implements Validator {
 
     protected var currentServerValidationValue: Object = null;
 
-    protected function validateOnServerIfRequired(value: Object, silentValidation: Boolean = false): void {
+    public function validateOnServerIfRequired(value: Object = null, silentValidation: Boolean = false): void {
+        value = value || getValueFormSource();
+
         if (_serverValidationFunction != null) {
             currentServerValidationValue = value;
             _serverValidationFunction(value, function(error: Error = null): void {

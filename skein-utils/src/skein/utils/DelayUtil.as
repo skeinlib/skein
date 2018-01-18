@@ -27,18 +27,47 @@ public class DelayUtil
         );
     }
 
-    public static function delayToTimeout(timeout:uint, callback:Function, ...args):void
-    {
-        var timer:Timer = new Timer(timeout, 1);
-        timer.addEventListener(TimerEvent.TIMER_COMPLETE,
-                function handler(e:Object):void
-                {
-                    timer.removeEventListener(TimerEvent.TIMER_COMPLETE, handler);
+    private static var timeouts: Vector.<Function> = new <Function>[];
+    private static function nextTimeoutId(): int {
+        for (var i: int = 0, n:int = timeouts.length; i < n; i++) {
+            if (timeouts[i] == null) {
+                return i;
+            }
+        }
+        return timeouts.length;
+    }
 
-                    callback.apply(null, args);
-                }
-        );
+    public static function delayToTimeout(timeout:uint, callback:Function, ...args): int
+    {
+        var timeoutId: int = nextTimeoutId();
+
+        var release: Function = function(): void {
+            timer.removeEventListener(TimerEvent.TIMER_COMPLETE, handler);
+            if (timer.running) {
+                timer.stop();
+            }
+        };
+
+        timeouts[timeoutId] = release;
+
+        var handler: Function = function (e: Object) {
+            releaseTimeout(timeoutId);
+            callback.apply(null, args);
+        };
+
+        var timer:Timer = new Timer(timeout, 1);
+        timer.addEventListener(TimerEvent.TIMER_COMPLETE, handler);
         timer.start();
+
+        return timeoutId;
+    }
+
+    public static function releaseTimeout(id: int): void {
+        var release: Function = timeouts[id];
+        if (release != null) {
+            release();
+            timeouts[id] = null;
+        }
     }
 
     private static var stretches:Array = [];
