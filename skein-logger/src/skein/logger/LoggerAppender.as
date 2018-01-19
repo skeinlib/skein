@@ -3,7 +3,6 @@
  */
 package skein.logger
 {
-import skein.rest.logger.*;
 
 public interface LoggerAppender
 {
