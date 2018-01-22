@@ -3,7 +3,7 @@
   <component name="FlexBuildConfigurationManager" active="skein-validators">
     <configurations>
       <configuration name="skein-validators" pure-as="true" output-type="Library" output-file="skein-validators.swc" output-folder="$MODULE_DIR$/../bin">
-        <dependencies target-player="25.0">
+        <dependencies target-player="28.0">
           <entries>
             <entry module-name="skein-binding" build-configuration-name="skein-binding">
               <dependency linkage="Merged" />
@@ -15,7 +15,7 @@
               <dependency linkage="Merged" />
             </entry>
           </entries>
-          <sdk name="27.0.0" />
+          <sdk name="Air_28.0.0.125" />
         </dependencies>
         <compiler-options />
         <packaging-air-desktop />
@@ -30,7 +30,7 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="27.0.0" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="jdk" jdkName="Air_28.0.0.125" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="skein-binding" exported="" />
     <orderEntry type="module" module-name="skein-core" exported="" />
