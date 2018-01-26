@@ -14,7 +14,7 @@ public class SimpleLoggerLayout implements LoggerLayout
 
     public function format(event:LogEvent):Object
     {
-        return "[" + event.tag + "] " + event.level + ": " + event.message;
+        return "[" + event.tag + "] " + event.levelForDisplay + ": " + event.message;
     }
 }
 }

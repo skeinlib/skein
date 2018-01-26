@@ -69,18 +69,7 @@ public class Log
 
     private static function log(level:uint, tag:String, message:Object):void {
         if (LoggerRegistry.getLogger(tag) != null) {
-            LoggerRegistry.getLogger(tag).log(new LogEvent(tag, levelToString(level), message));
-        }
-    }
-
-    private static function levelToString(level:uint):String {
-
-        switch (level) {
-            case DEBUG : return "DEBUG"; break;
-            case INFO : return "INFO"; break;
-            case WARN : return "WARN"; break;
-            case ERROR : return "ERROR"; break;
-            default : return "UNKNOWN"; break;
+            LoggerRegistry.getLogger(tag).log(new LogEvent(tag, level, message));
         }
     }
 }

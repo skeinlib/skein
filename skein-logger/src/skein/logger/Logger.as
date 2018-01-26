@@ -3,8 +3,6 @@
  */
 package skein.logger
 {
-import skein.rest.logger.*;
-
 public interface Logger
 {
     function get appenders():Vector.<LoggerAppender>;

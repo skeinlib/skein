@@ -36,7 +36,7 @@ public class LoggerConfigBuilderWrapper {
     //------------------------------------
 
     public function appender(value:LoggerAppender):LoggerConfigBuilderWrapper {
-        _builder.level(value);
+        _builder.appender(value);
         return this;
     }
 
