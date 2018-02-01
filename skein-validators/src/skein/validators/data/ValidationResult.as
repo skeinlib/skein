@@ -20,5 +20,11 @@ public class ValidationResult
     public var isError:Boolean;
 
     public var errorMessage:String;
+
+    public function equals(that: ValidationResult): Boolean {
+        if (that == null) return false;
+
+        return this.isError == that.isError && this.errorMessage == that.errorMessage;
+    }
 }
 }

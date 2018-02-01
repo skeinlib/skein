@@ -14,6 +14,7 @@ import skein.utils.DelayUtil;
 import skein.validators.Validator;
 import skein.validators.data.ValidationResult;
 import skein.validators.events.ValidationEvent;
+import skein.validators.utils.ValidationResultUtil;
 
 public class BasicValidator extends EventDispatcher implements Validator {
 
@@ -163,6 +164,8 @@ public class BasicValidator extends EventDispatcher implements Validator {
 
         var event: ValidationEvent;
 
+        var oldValidationResults: Array = currentValidationResults;
+
         if (required) {
             var results: Array = doValidation(value);
 
@@ -186,7 +189,7 @@ public class BasicValidator extends EventDispatcher implements Validator {
             event = new ValidationEvent(ValidationEvent.VALID);
         }
 
-        if (!silentValidation || event.type == ValidationEvent.VALID)
+        if (!silentValidation || event.type == ValidationEvent.VALID || (oldValidationResults.length > 0 && !ValidationResultUtil.same(currentValidationResults, oldValidationResults)))
             dispatchEvent(event);
 
         return event;
