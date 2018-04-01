@@ -19,13 +19,15 @@ import flash.net.URLVariables;
 import flash.system.Capabilities;
 import flash.utils.ByteArray;
 import flash.utils.Timer;
+import flash.utils.getDefinitionByName;
+import flash.utils.getQualifiedClassName;
 
 import skein.core.skein_internal;
+import skein.logger.Log;
 import skein.rest.cache.CacheClient;
 import skein.rest.client.RestClient;
 import skein.rest.client.extras.Downloader;
 import skein.rest.client.extras.Uploader;
-import skein.rest.client.impl.URLLoadersQueue;
 import skein.rest.client.impl.extras.DownloaderHandler;
 import skein.rest.client.impl.extras.UploaderHandler;
 import skein.rest.core.Config;
@@ -33,7 +35,7 @@ import skein.rest.core.Decoder;
 import skein.rest.core.Encoder;
 import skein.rest.core.ProgressTracker;
 import skein.rest.core.RestClientRegistry;
-import skein.logger.Log;
+import skein.rest.core.coding.DefaultCoding;
 import skein.utils.StringSubstituteArguments;
 import skein.utils.StringUtil;
 
@@ -527,7 +529,7 @@ public class DefaultRestClient implements RestClient
         return loader;
     }
 
-    public function download(to:Object):void
+    public function download(to: Object, method: String = "GET", data: Object = null): void
     {
         downloadTo = to;
 
@@ -535,8 +537,12 @@ public class DefaultRestClient implements RestClient
 
         new DownloaderHandler(this).handle(downloader);
 
-        request = new URLRequest(formURL());
+        createRequest(method, data, function(): void {
+            doDownload();
+        });
+    }
 
+    private function doDownload(): void {
         downloader.download(request, downloadTo);
     }
 
@@ -548,7 +554,7 @@ public class DefaultRestClient implements RestClient
 
         new UploaderHandler(this).handle(uploader);
 
-        request = new URLRequest(formURL());
+        request = new URLRequest(createURL());
 
         uploader.upload(uploadFrom, request, getRequestContentType(uploadFrom), _fields);
     }
@@ -557,44 +563,11 @@ public class DefaultRestClient implements RestClient
     //  loader
     //------------------------------------
 
-    private function send(method:String, data:Object = null):void
-    {
-        request = new URLRequest(formURL());
-        request.method = method;
-        request.contentType = _contentType;
+    private function send(method:String, data:Object = null):void {
 
-        if (_headers != null)
-            request.requestHeaders = request.requestHeaders.concat(_headers);
-        
-        if (Config.sharedInstance().authorization)
-        {
-            request.requestHeaders = request.requestHeaders.concat(new URLRequestHeader("Authorization", Config.sharedInstance().authorization));
-        }
-
-        if (!isNaN(_timeout) && Object(request).hasOwnProperty("idleTimeout"))
-        {
-            request["idleTimeout"] = _timeout;
-        }
-
-        if (data != null)
-        {
-            encodeRequest(data,
-                function(data:Object, contentType: String = null):void
-                {
-                    request.data = data;
-
-                    if (contentType != null) {
-                        request.contentType = contentType;
-                    }
-
-                    load();
-                }
-            );
-        }
-        else
-        {
+        createRequest(method, data, function(): void {
             load();
-        }
+        });
     }
 
     private function load():void
@@ -716,7 +689,7 @@ public class DefaultRestClient implements RestClient
     {
         if (loader != null && request != null)
         {
-            request.url = formURL();
+            request.url = createURL();
 
             Log.i("skein-rest", URLLoadersQueue.name(loader) + " " + request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
             loader.load(request);
@@ -725,14 +698,14 @@ public class DefaultRestClient implements RestClient
         }
         else if (downloader != null && downloadTo != null && request != null)
         {
-            request.url = formURL();
+            request.url = createURL();
             downloader.download(request, downloadTo);
 
             return true;
         }
         else if (uploader != null && uploadFrom != null && request != null)
         {
-            request.url = formURL();
+            request.url = createURL();
             uploader.upload(uploadFrom, request, getRequestContentType(uploadFrom), _fields);
 
             return true;
@@ -743,7 +716,7 @@ public class DefaultRestClient implements RestClient
 
     public function url():String
     {
-        return formURL();
+        return createURL();
     }
 
     //--------------------------------------------------------------------------
@@ -847,48 +820,83 @@ public class DefaultRestClient implements RestClient
         RestClientRegistry.reuse(this);
     }
 
-//    private function formHost()
-
-    private function formURL():String
+    private function createURL():String
     {
         var urlParams:String = encodeParams();
 
         return urlParams ? path + "?" + urlParams : path;
     }
 
-    private function encodeRequest(data:Object, callback:Function):void
-    {
-        if (_encoder != null)
-        {
-            _encoder(data, callback);
+    private function createRequest(method: String, data: Object = null, callback: Function = null): void {
+
+        request = new URLRequest(createURL());
+        request.method = method;
+        request.contentType = _contentType;
+
+        if (_headers != null)
+            request.requestHeaders = request.requestHeaders.concat(_headers);
+
+        if (Config.sharedInstance().authorization) {
+            var found: Boolean = (_headers || []).some(function(item: Object, ...rest): Boolean {
+                return item is URLRequestHeader && URLRequestHeader(item).name == "Authorization";
+            });
+
+            if (!found) {
+                request.requestHeaders = request.requestHeaders.concat(new URLRequestHeader("Authorization", Config.sharedInstance().authorization));
+            }
         }
-        else
-        {
+
+        if (!isNaN(_timeout) && Object(request).hasOwnProperty("idleTimeout")) {
+            request["idleTimeout"] = _timeout;
+        }
+
+        if (data != null) {
+            encodeRequest(data,
+                function(data:Object, contentType: String = null):void {
+                    request.data = data;
+
+                    if (contentType != null) {
+                        request.contentType = contentType;
+                    }
+
+                    if (callback != null) {
+                        callback();
+                    }
+                }
+            );
+        } else {
+            if (callback != null) {
+                callback();
+            }
+        }
+    }
+
+    private function encodeRequest(data: Object, callback: Function): void {
+        if (_encoder != null) {
+            _encoder(data, callback);
+        } else {
             Encoder.forType(getRequestContentType(data))(data, callback);
         }
     }
 
-    internal function decodeResult(data:Object, callback:Function):void
-    {
-        if (_decoder)
-        {
-            _decoder(data, callback);
-        }
-        else if (!data)
-        {
-            if (callback.length == 1)
-                callback(data);
-            else
-                callback();
-        }
-        else
-        {
-            Decoder.forType(getResponseContentType())(data, callback);
-        }
+    internal function decodeResult(data: Object, callback: Function): void {
+        getDecoder(data)(data, callback);
     }
 
-    internal function decodeError(info:Object, callback:Function):void
-    {
+    private function getDecoder(data: Object): Function {
+        if (_decoder != null) {
+            return _decoder;
+        }
+        if (getQualifiedClassName(data) == "flash.filesystem::File") {
+            return DefaultCoding.decode;
+        }
+        if (data == null) {
+            return DefaultCoding.decode;
+        }
+        return Decoder.forType(getResponseContentType());
+    }
+
+    internal function decodeError(info:Object, callback:Function):void {
         Decoder.forType(getResponseContentType())(info, callback);
     }
 

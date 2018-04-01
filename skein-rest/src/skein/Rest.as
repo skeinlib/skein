@@ -11,9 +11,8 @@ import skein.rest.builder.ConfigBuilder;
 
 public class Rest
 {
-    public static function config():ConfigBuilder
-    {
-        return new ConfigBuilder();
+    public static function config(key: String = null):ConfigBuilder {
+        return new ConfigBuilder(key);
     }
 }
 }

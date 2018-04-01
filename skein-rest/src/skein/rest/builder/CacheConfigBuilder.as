@@ -10,28 +10,21 @@ use namespace skein_internal;
 
 public class CacheConfigBuilder
 {
-    public function CacheConfigBuilder(parent:ConfigBuilder)
-    {
+    public function CacheConfigBuilder(parent: ConfigBuilder) {
         super();
-
         this.parent = parent;
     }
 
-    private var parent:ConfigBuilder;
+    private var parent: ConfigBuilder;
 
     private var ignoreParams:Array = [];
-
-    public function ignoreParam(value:String):CacheConfigBuilder
-    {
+    public function ignoreParam(value:String): CacheConfigBuilder {
         ignoreParams.push(value);
-
         return this;
     }
 
-    public function build():ConfigBuilder
-    {
+    public function build(): ConfigBuilder {
         Config.sharedInstance().setCacheIgnoreParams(ignoreParams);
-
         return parent;
     }
 }

@@ -7,7 +7,6 @@
  */
 package skein.rest.client.extras.upload
 {
-import skein.rest.client.extras.upload.UploadWriter;
 import skein.rest.core.Config;
 
 public class UploadFactory

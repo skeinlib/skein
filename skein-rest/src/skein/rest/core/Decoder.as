@@ -13,21 +13,14 @@ import skein.rest.core.coding.WWWFormCoding;
 
 public class Decoder
 {
-    public static function forType(contentType:String):Function
-    {
-        switch (contentType)
-        {
+    public static function forType(contentType: String): Function {
+        switch (contentType) {
             case "application/json" :
                 return JSONCoding.decode;
-                break;
-
             case "application/x-www-form-urlencoded" :
                 return WWWFormCoding.decode;
-                break;
-
             default :
                 return DefaultCoding.decode;
-            break;
         }
     }
 }

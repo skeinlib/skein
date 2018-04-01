@@ -2,7 +2,7 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="skein-logger">
     <configurations>
-      <configuration name="skein-logger" pure-as="true" output-type="Library" output-file="skein-logger.swc" output-folder="$MODULE_DIR$/../../../potbotics/ryah/out/production/skein-logger">
+      <configuration name="skein-logger" pure-as="true" output-type="Library" output-file="skein-logger.swc" output-folder="$MODULE_DIR$/../bin">
         <dependencies target-player="27.0">
           <entries>
             <entry module-name="skein-core" build-configuration-name="skein-core">

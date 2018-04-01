@@ -54,7 +54,7 @@ public interface RestClient
     function put(data:Object = null):Object;
     function del(data:Object = null):Object;
 
-    function download(to:Object):void;
+    function download(to:Object, method: String = "GET", data: Object = null):void;
     function upload(from:Object):void;
 
     function url():String;
