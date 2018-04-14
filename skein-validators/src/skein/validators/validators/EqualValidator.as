@@ -33,14 +33,10 @@ public class EqualValidator extends BasicValidator
     //----------------------------------------
 
     private var _mismatchError:String = "The entered value is mismatched with expected.";
-
-    public function get mismatchError():String
-    {
+    public function get mismatchError():String {
         return _mismatchError;
     }
-
-    public function set mismatchError(value:String):void
-    {
+    public function set mismatchError(value:String):void {
         _mismatchError = value;
     }
 
@@ -49,15 +45,23 @@ public class EqualValidator extends BasicValidator
     //----------------------------------------
 
     private var _expectedValue:Object;
-
-    public function get expectedValue():Object
-    {
+    public function get expectedValue():Object {
         return _expectedValue;
     }
-
-    public function set expectedValue(value:Object):void
-    {
+    public function set expectedValue(value:Object):void {
         _expectedValue = value;
+    }
+
+    //----------------------------------------
+    //  expectedProperty
+    //----------------------------------------
+
+    private var _expectedProperty: String;
+    public function get expectedProperty(): String {
+        return _expectedProperty;
+    }
+    public function set expectedProperty(value: String): void {
+        _expectedProperty = value;
     }
 
     //--------------------------------------------------------------------------
@@ -70,10 +74,11 @@ public class EqualValidator extends BasicValidator
     {
         var results:Array = super.doValidation(value);
 
-        if (results.length > 0)
+        if (results.length > 0) {
             return results;
-        else
+        } else {
             return validateEquals(value);
+        }
     }
 
     //--------------------------------------------------------------------------
@@ -82,13 +87,25 @@ public class EqualValidator extends BasicValidator
     //
     //--------------------------------------------------------------------------
 
+    private function getExpectedValue(): Object {
+        if (_expectedValue) {
+            return _expectedValue;
+        }
+
+        if (_expectedProperty && source.hasOwnProperty(_expectedProperty)) {
+            return source[_expectedProperty];
+        }
+
+        return null;
+    }
+
     private function validateEquals(value:Object):Array
     {
         var results:Array = [];
 
         if (required)
         {
-            if (value != _expectedValue)
+            if (value != getExpectedValue())
                 results.push(new ValidationResult(true, mismatchError))
         }
 
