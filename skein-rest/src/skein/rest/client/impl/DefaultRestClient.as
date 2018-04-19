@@ -287,25 +287,29 @@ public class DefaultRestClient implements RestClient
     //  encoder
     //------------------------------------
 
-    private var _encoder:Function;
-
-    public function encoder(value:Function):RestClient
-    {
+    private var _encoder: Function;
+    public function encoder(value: Function): RestClient {
         _encoder = value;
-
         return this;
     }
-
-    private var _decoder:Function;
 
     //------------------------------------
     //  decoder
     //------------------------------------
 
-    public function decoder(value:Function):RestClient
-    {
+    private var _decoder: Function;
+    public function decoder(value: Function): RestClient {
         _decoder = value;
+        return this;
+    }
 
+    //------------------------------------
+    //  errorDecoder
+    //------------------------------------
+
+    public var _errorDecoder: Function;
+    public function errorDecoder(value: Function): RestClient {
+        _errorDecoder = value;
         return this;
     }
 
@@ -313,12 +317,9 @@ public class DefaultRestClient implements RestClient
     //  beforeResultHook
     //------------------------------------
 
-    internal var beforeResultInterceptor:Function = Config.sharedInstance().beforeResultHook;
-
-    public function beforeResultHook(hook:Function):RestClient
-    {
+    internal var beforeResultInterceptor: Function = Config.sharedInstance().beforeResultHook;
+    public function beforeResultHook(hook: Function): RestClient {
         beforeResultInterceptor = hook;
-
         return this;
     }
 
@@ -326,12 +327,9 @@ public class DefaultRestClient implements RestClient
     //  afterResultHook
     //------------------------------------
 
-    internal var afterResultInterceptor:Function = Config.sharedInstance().afterResultHook;
-
-    public function afterResultHook(hook:Function):RestClient
-    {
+    internal var afterResultInterceptor: Function = Config.sharedInstance().afterResultHook;
+    public function afterResultHook(hook: Function):RestClient {
         afterResultInterceptor = hook;
-
         return this;
     }
 
@@ -880,12 +878,16 @@ public class DefaultRestClient implements RestClient
     }
 
     internal function decodeResult(data: Object, callback: Function): void {
-        getDecoder(data)(data, callback);
+        getDecoderForDataWithPreferred(data, _decoder)(data, callback);
     }
 
-    private function getDecoder(data: Object): Function {
-        if (_decoder != null) {
-            return _decoder;
+    internal function decodeError(info:Object, callback:Function):void {
+        getDecoderForDataWithPreferred(info, _errorDecoder)(info, callback);
+    }
+
+    private function getDecoderForDataWithPreferred(data: Object, preferredDecoder: Function): Function {
+        if (preferredDecoder != null) {
+            return preferredDecoder;
         }
         if (getQualifiedClassName(data) == "flash.filesystem::File") {
             return DefaultCoding.decode;
@@ -894,10 +896,6 @@ public class DefaultRestClient implements RestClient
             return DefaultCoding.decode;
         }
         return Decoder.forType(getResponseContentType());
-    }
-
-    internal function decodeError(info:Object, callback:Function):void {
-        Decoder.forType(getResponseContentType())(info, callback);
     }
 
     private function encodeParams():String
