@@ -881,8 +881,13 @@ public class DefaultRestClient implements RestClient
         getDecoderForDataWithPreferred(data, _decoder)(data, callback);
     }
 
-    internal function decodeError(info:Object, callback:Function):void {
-        getDecoderForDataWithPreferred(info, _errorDecoder)(info, callback);
+    internal function decodeError(info:Object, responseCode: int, callback:Function):void {
+        var decoder: Function = getDecoderForDataWithPreferred(info, _errorDecoder || Config.sharedInstance().errorDecoder);
+        if (decoder.length == 3) {
+            decoder(info, responseCode, callback);
+        } else {
+            decoder(info, callback);
+        }
     }
 
     private function getDecoderForDataWithPreferred(data: Object, preferredDecoder: Function): Function {

@@ -28,9 +28,9 @@ public class Config extends EventDispatcher
     //
     //--------------------------------------------------------------------------
 
-    private static var _auth:String;
+    private static var _auth: String;
 
-    skein_internal static function auth(value:String):void
+    skein_internal static function auth(value: String):void
     {
         _auth = value;
     }
@@ -56,13 +56,18 @@ public class Config extends EventDispatcher
         _afterResultHook = hook;
     }
 
-    private static var _errorHook:Function;
-    skein_internal static function setErrorHook(hook:Function):void {
+    private static var _errorHook: Function;
+    skein_internal static function setErrorHook(hook: Function):void {
         _errorHook = hook;
     }
 
-    private static var _progressHandler:Function;
-    skein_internal static function setProgressHandler(value:Function):void {
+    private static var _errorDecoder: Function;
+    skein_internal static function setErrorDecoder(decoder: Function):void {
+        _errorDecoder = decoder;
+    }
+
+    private static var _progressHandler: Function;
+    skein_internal static function setProgressHandler(value: Function):void {
         _progressHandler = value;
     }
 
@@ -103,8 +108,7 @@ public class Config extends EventDispatcher
     //  auth
     //-----------------------------------
 
-    public function get auth():String
-    {
+    public function get auth(): String {
         return _auth;
     }
 
@@ -112,15 +116,11 @@ public class Config extends EventDispatcher
     //  rest
     //-----------------------------------
 
-    private var _rest:String;
-
-    public function get rest():String
-    {
+    private var _rest: String;
+    public function get rest(): String {
         return _rest;
     }
-
-    public function set rest(value:String):void
-    {
+    public function set rest(value: String):void {
         _rest = value;
     }
 
@@ -128,8 +128,7 @@ public class Config extends EventDispatcher
     //  beforeResultHook
     //-----------------------------------
 
-    public function get beforeResultHook():Function
-    {
+    public function get beforeResultHook(): Function {
         return _beforeResultHook;
     }
 
@@ -137,8 +136,7 @@ public class Config extends EventDispatcher
     //  afterResultHook
     //-----------------------------------
 
-    public function get afterResultHook():Function
-    {
+    public function get afterResultHook(): Function {
         return _afterResultHook;
     }
 
@@ -146,17 +144,23 @@ public class Config extends EventDispatcher
     //  errorHook
     //-----------------------------------
 
-    public function get errorHook():Function
-    {
+    public function get errorHook(): Function {
         return _errorHook;
+    }
+
+    //-----------------------------------
+    //  errorDecoder
+    //-----------------------------------
+
+    public function get errorDecoder(): Function {
+        return _errorDecoder;
     }
 
     //-----------------------------------
     //  progressHandler
     //-----------------------------------
 
-    public function get progressHandler():Function
-    {
+    public function get progressHandler(): Function {
         return _progressHandler;
     }
 
@@ -165,14 +169,10 @@ public class Config extends EventDispatcher
     //-----------------------------------
 
     private var _fixKnownIssues:Boolean;
-
-    public function get fixKnownIssues():Boolean
-    {
+    public function get fixKnownIssues():Boolean {
         return _fixKnownIssues;
     }
-
-    skein_internal function setFixKnownIssues(value:Boolean):void
-    {
+    skein_internal function setFixKnownIssues(value:Boolean):void {
         _fixKnownIssues = value;
     }
 
@@ -180,15 +180,15 @@ public class Config extends EventDispatcher
     //  accessToken
     //-----------------------------------
 
-    private var _accessToken:String = null;
+    private var _accessToken: String = null;
 
     [Bindable(event="accessTokenChanged")]
-    public function get accessToken():String
+    public function get accessToken(): String
     {
         return _accessToken;
     }
 
-    public function set accessToken(value:String):void
+    public function set accessToken(value: String):void
     {
         if (_accessToken == value) return;
         _accessToken = value;
@@ -199,15 +199,15 @@ public class Config extends EventDispatcher
     //  accessTokenKey
     //-----------------------------------
 
-    private var _accessTokenKey:String = "access_token";
+    private var _accessTokenKey: String = "access_token";
 
     [Bindable(event="accessTokenKeyChanged")]
-    public function get accessTokenKey():String
+    public function get accessTokenKey(): String
     {
         return _accessTokenKey;
     }
 
-    public function set accessTokenKey(value:String):void
+    public function set accessTokenKey(value: String):void
     {
         if (_accessTokenKey == value) return;
         _accessTokenKey = value;
@@ -218,12 +218,12 @@ public class Config extends EventDispatcher
     //  username
     //-----------------------------------
 
-    private var _username:String;
+    private var _username: String;
     /** Basic Authorization username */
-    public function get username():String {
+    public function get username(): String {
         return _username;
     }
-    public function set username(value:String):void {
+    public function set username(value: String):void {
         if (_username == value) return;
         _username = value;
         updateAuthorization()
@@ -233,12 +233,12 @@ public class Config extends EventDispatcher
     //  password
     //-----------------------------------
 
-    private var _password:String;
+    private var _password: String;
     /** Basic Authorization password */
-    public function get password():String {
+    public function get password(): String {
         return _password;
     }
-    public function set password(value:String):void {
+    public function set password(value: String):void {
         if (_password == value) return;
         _password = value;
         updateAuthorization()

@@ -187,7 +187,7 @@ public class HandlerAbstract
 
         var isErrorSerializedSuccessfully: Boolean = false;
         try {
-            client.decodeError(data, function (info: Object): void {
+            client.decodeError(data, responseCode, function (info: Object): void {
                 isErrorSerializedSuccessfully = true;
                 handleError(info);
             });

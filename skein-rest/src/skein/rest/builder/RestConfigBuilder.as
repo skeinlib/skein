@@ -16,8 +16,7 @@ use namespace skein_internal;
 
 public class RestConfigBuilder
 {
-    public function RestConfigBuilder(config:ConfigBuilder, url:String = null)
-    {
+    public function RestConfigBuilder(config: ConfigBuilder, url: String = null) {
         super();
 
         this.config = config;
@@ -25,26 +24,20 @@ public class RestConfigBuilder
         PropertySetter.set(Config.sharedInstance(), "rest", url);
     }
 
-    private var config:ConfigBuilder;
+    private var config: ConfigBuilder;
 
-    public function url(value:Object):RestConfigBuilder
-    {
+    public function url(value: Object): RestConfigBuilder {
         PropertySetter.set(Config.sharedInstance(), "rest", value);
-
         return this;
     }
 
-    public function accessTokenKey(value:String):RestConfigBuilder
-    {
+    public function accessTokenKey(value:String): RestConfigBuilder {
         PropertySetter.set(Config.sharedInstance(), "accessTokenKey", value);
-
         return this;
     }
 
-    public function accessToken(value:Object):RestConfigBuilder
-    {
+    public function accessToken(value: Object): RestConfigBuilder {
         PropertySetter.set(Config.sharedInstance(), "accessToken", value);
-
         return this;
     }
 
@@ -58,50 +51,42 @@ public class RestConfigBuilder
         return this;
     }
 
-    public function errorHook(hook:Function):RestConfigBuilder
-    {
+    public function errorHook(hook: Function): RestConfigBuilder {
         Config.setErrorHook(hook);
-
         return this;
     }
 
-    public function progressHandler(handler:Function):RestConfigBuilder
-    {
+    public function errorDecoder(decoder: Function): RestConfigBuilder {
+        Config.setErrorDecoder(decoder);
+        return this;
+    }
+
+    public function progressHandler(handler: Function): RestConfigBuilder {
         Config.setProgressHandler(handler);
-
         return this;
     }
 
-    public function header(name:String, handler:Function):RestConfigBuilder
-    {
+    public function header(name:String, handler: Function): RestConfigBuilder {
         HeaderHandler.register(name, handler);
-
         return this;
     }
 
-    public function fixKnownIssues(value:Boolean=true):RestConfigBuilder
-    {
+    public function fixKnownIssues(value: Boolean=true): RestConfigBuilder {
         Config.sharedInstance().setFixKnownIssues(true);
-
         return this;
     }
 
-    public function useCache(value:Object):RestConfigBuilder
-    {
+    public function useCache(value: Object): RestConfigBuilder {
         PropertySetter.set(Config.sharedInstance(), "useCache", value);
-
         return this;
     }
 
-    public function useQueue(value:Object):RestConfigBuilder
-    {
+    public function useQueue(value: Object): RestConfigBuilder {
         PropertySetter.set(Config.sharedInstance(), "useQueue", value);
-
         return this;
     }
     
-    public function build():ConfigBuilder
-    {
+    public function build():ConfigBuilder {
         return config;
     }
 }
