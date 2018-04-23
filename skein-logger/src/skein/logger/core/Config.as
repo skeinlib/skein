@@ -70,7 +70,7 @@ public class Config {
     skein_internal static function releaseLoggerAppenders(tag: String):Vector.<LoggerAppender> {
         var result:Vector.<LoggerAppender> = _loggerAppenders[tag];
         _loggerAppenders[tag] = null;
-        if (result == null && result.length == 0) {
+        if (result == null || result.length == 0) {
             result = new <LoggerAppender>[new TraceLoggerAppender(new SimpleLoggerLayout())];
         }
         return result;

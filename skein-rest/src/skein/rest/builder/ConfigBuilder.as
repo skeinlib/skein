@@ -26,15 +26,15 @@ public class ConfigBuilder
         return _key;
     }
 
-    public function auth(url:String = null):AuthConfigBuilder {
+    public function auth(url: String = null): AuthConfigBuilder {
         return new AuthConfigBuilder(this, url);
     }
 
-    public function rest(url:String = null):RestConfigBuilder {
+    public function rest(url: Object = null): RestConfigBuilder {
         return new RestConfigBuilder(this, url);
     }
 
-    public function cache():CacheConfigBuilder {
+    public function cache(): CacheConfigBuilder {
         return new CacheConfigBuilder(this);
     }
 
@@ -42,7 +42,7 @@ public class ConfigBuilder
         return new LoggerConfigBuilderWrapper(this, new LoggerConfigBuilder("skein-rest"));
     }
 
-    public function client(implementation:Class): ConfigBuilder {
+    public function client(implementation: Class): ConfigBuilder {
         Config.setImplementation(RestClient, implementation);
         return this;
     }

@@ -16,7 +16,7 @@ use namespace skein_internal;
 
 public class RestConfigBuilder
 {
-    public function RestConfigBuilder(config: ConfigBuilder, url: String = null) {
+    public function RestConfigBuilder(config: ConfigBuilder, url: Object) {
         super();
 
         this.config = config;
