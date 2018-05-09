@@ -57,6 +57,16 @@ public class HandlerAbstract
     //
     //--------------------------------------------------------------------------
 
+    public function isSuccessResponseCode(code: int): Boolean {
+        if (code <= 0) {
+            // meaning default or unset value, we pass true here as this check
+            // could be performed in a result handler.
+            return true;
+        }
+
+        return responseCode >= 200 && responseCode < 300;
+    }
+
     protected function dispose():void
     {
         client.free()

@@ -20,16 +20,15 @@ import skein.rest.client.impl.HandlerAbstract;
 
 import skein.rest.core.HeaderHandler;
 
-public class URLLoaderHandlerExtended extends HandlerAbstract implements URLLoaderHandler
-{
+public class URLLoaderHandlerExtended extends HandlerAbstract implements URLLoaderHandler {
+
     //--------------------------------------------------------------------------
     //
     //  Constructor
     //
     //--------------------------------------------------------------------------
 
-    public function URLLoaderHandlerExtended(client:DefaultRestClient)
-    {
+    public function URLLoaderHandlerExtended(client:DefaultRestClient) {
         super(client);
     }
 
@@ -47,8 +46,7 @@ public class URLLoaderHandlerExtended extends HandlerAbstract implements URLLoad
     //
     //--------------------------------------------------------------------------
 
-    public function handle(loader:URLLoader):void
-    {
+    public function handle(loader:URLLoader):void {
         _loader = loader;
 
         _loader.addEventListener(Event.COMPLETE, resultHandler);
@@ -65,8 +63,7 @@ public class URLLoaderHandlerExtended extends HandlerAbstract implements URLLoad
     //
     //--------------------------------------------------------------------------
 
-    override protected function dispose():void
-    {
+    override protected function dispose():void {
         super.dispose();
 
         _loader.removeEventListener(Event.COMPLETE, resultHandler);
@@ -85,35 +82,27 @@ public class URLLoaderHandlerExtended extends HandlerAbstract implements URLLoad
     //
     //--------------------------------------------------------------------------
 
-    private function resultHandler(event:Event):void
-    {
-        if (responseCode >= 200 && responseCode < 300) // result
-        {
+    protected function resultHandler(event:Event):void {
+        if (isSuccessResponseCode(responseCode)) {
             result(_loader.data);
-        }
-        else // error
-        {
+        } else {
             error(_loader.data)
         }
     }
 
-    private function errorHandler(event:ErrorEvent):void
-    {
+    protected function errorHandler(event:ErrorEvent):void {
         error(_loader.data);
     }
 
-    private function statusHandler(event:HTTPStatusEvent):void
-    {
+    protected function statusHandler(event:HTTPStatusEvent):void {
         status(event.status);
     }
 
-    private function responseStatusHandler(event:HTTPStatusEvent):void
-    {
+    protected function responseStatusHandler(event:HTTPStatusEvent):void {
         headers(event.responseHeaders);
     }
 
-    private  function progressHandler(event:ProgressEvent):void
-    {
+    protected function progressHandler(event:ProgressEvent):void {
         progress(event.bytesLoaded, event.bytesTotal);
     }
 }

@@ -19,16 +19,15 @@ import flash.utils.ByteArray;
 import skein.core.skein_internal;
 import skein.rest.client.impl.HandlerAbstract;
 
-public class URLLoaderHandlerStandard extends HandlerAbstract implements URLLoaderHandler
-{
+public class URLLoaderHandlerStandard extends HandlerAbstract implements URLLoaderHandler {
+
     //--------------------------------------------------------------------------
     //
     //  Constructor
     //
     //--------------------------------------------------------------------------
 
-    public function URLLoaderHandlerStandard(client:DefaultRestClient)
-    {
+    public function URLLoaderHandlerStandard(client:DefaultRestClient) {
         super(client);
     }
 
@@ -46,8 +45,7 @@ public class URLLoaderHandlerStandard extends HandlerAbstract implements URLLoad
     //
     //--------------------------------------------------------------------------
 
-    public function handle(loader:URLLoader):void
-    {
+    public function handle(loader:URLLoader):void {
         _loader = loader;
 
         _loader.addEventListener(Event.COMPLETE, resultHandler);
@@ -63,8 +61,7 @@ public class URLLoaderHandlerStandard extends HandlerAbstract implements URLLoad
     //
     //--------------------------------------------------------------------------
 
-    override protected function dispose():void
-    {
+    override protected function dispose():void {
         super.dispose();
 
         _loader.removeEventListener(Event.COMPLETE, resultHandler);
@@ -82,30 +79,27 @@ public class URLLoaderHandlerStandard extends HandlerAbstract implements URLLoad
     //
     //--------------------------------------------------------------------------
 
-    private function resultHandler(event:Event):void
-    {
-        result(_loader.data);
+    protected function resultHandler(event:Event):void {
+        if (isSuccessResponseCode(responseCode)) {
+            result(_loader.data);
+        } else {
+            error(_loader.data)
+        }
     }
 
-    internal function errorHandler(event:ErrorEvent):void
-    {
-        if (_loader.data is ByteArray && ByteArray(_loader.data).length == 0)
-        {
+    protected function errorHandler(event:ErrorEvent):void {
+        if (_loader.data is ByteArray && ByteArray(_loader.data).length == 0) {
             error(new Error(event.text, event.errorID));
-        }
-        else
-        {
+        } else {
             error(_loader.data);
         }
     }
 
-    internal function statusHandler(event:HTTPStatusEvent):void
-    {
+    protected function statusHandler(event:HTTPStatusEvent):void {
         status(event.status);
     }
 
-    internal function progressHandler(event:ProgressEvent):void
-    {
+    protected function progressHandler(event:ProgressEvent):void {
         progress(event.bytesLoaded, event.bytesTotal);
     }
 }
