@@ -16,7 +16,9 @@ import flash.net.URLRequest;
 import flash.net.URLRequestHeader;
 import flash.net.URLRequestMethod;
 import flash.net.URLVariables;
+import flash.system.ApplicationDomain;
 import flash.system.Capabilities;
+import flash.system.LoaderContext;
 import flash.utils.ByteArray;
 import flash.utils.Timer;
 import flash.utils.getDefinitionByName;
@@ -656,8 +658,7 @@ public class DefaultRestClient implements RestClient
                     }
                     else // not yet in cache
                     {
-                        Log.i("skein-rest", URLLoadersQueue.name(loader) + " " + request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
-                        loader.load(request);
+                        doLoadFromResource();
                     }
                 });
             }
@@ -671,16 +672,19 @@ public class DefaultRestClient implements RestClient
                     }
 
                     // TODO(dev) should it be "else" here?
-                    Log.i("skein-rest", URLLoadersQueue.name(loader) + " " + request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
-                    loader.load(request);
+                    doLoadFromResource();
                 });
             }
         }
         else
         {
-            Log.i("skein-rest", URLLoadersQueue.name(loader) + " " + request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
-            loader.load(request);
+            doLoadFromResource();
         }
+    }
+
+    private function doLoadFromResource(): void {
+        Log.i("skein-rest", URLLoadersQueue.name(loader) + " " + request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
+        loader.load(request);
     }
 
     skein_internal function retry():Boolean
@@ -689,8 +693,7 @@ public class DefaultRestClient implements RestClient
         {
             request.url = createURL();
 
-            Log.i("skein-rest", URLLoadersQueue.name(loader) + " " + request.method.toUpperCase() + " " + request.url + (request.data ? " -> " + request.data : ""));
-            loader.load(request);
+            doLoadFromResource();
 
             return true;
         }
