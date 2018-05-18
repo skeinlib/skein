@@ -14,10 +14,11 @@ import flash.net.NetStream;
 import skein.core.skein_internal;
 import skein.tubes.controls.Broadcast;
 import skein.tubes.controls.Playback;
+import skein.tubes.controls.Posting;
 import skein.tubes.core.ConnectorRegistry;
 import skein.tubes.core.Connector;
 import skein.tubes.data.MediaSettings;
-import skein.tubes.controls.Share;
+import skein.tubes.controls.Giver;
 import skein.utils.delay.delayToEvent;
 
 use namespace skein_internal;
@@ -172,12 +173,12 @@ public class Tube extends EventDispatcher
     //  Methods: share
     //-------------------------------------
 
-    public function share(data:Object, index:Number):Share
+    public function share(data:Object, index:Number):Giver
     {
         if (_shares[index])
             return _shares[index];
 
-        var share:Share = _shares[index] = new Share(data, index, NaN);
+        var share:Giver = _shares[index] = new Giver(data, index, NaN);
 
         if (connector.connected)
         {
@@ -185,17 +186,33 @@ public class Tube extends EventDispatcher
         }
         else
         {
-            delayToEvent(connector, Event.CONNECT,
-                function(name:String):void
-                {
-                    share.setGroup(connector.group);
-                },
-                data, index);
+            delayToEvent(connector, Event.CONNECT, function(): void {
+                share.setGroup(connector.group);
+            });
         }
 
         return share;
     }
 
+    //-------------------------------------
+    //  Methods: posting
+    //-------------------------------------
+
+    protected var _posting: Posting;
+    public function get posting(): Posting {
+        if (_posting == null) {
+            _posting = new Posting();
+            if (connector.connected) {
+                _posting.setGroup(connector.group);
+            } else {
+                delayToEvent(connector, Event.CONNECT, function(): void {
+                    _posting.setGroup(connector.group);
+                });
+            }
+        }
+
+        return _posting;
+    }
 
     //--------------------------------------------------------------------------
     //

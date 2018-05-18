@@ -43,5 +43,9 @@ public class TubeBuilder
     {
         return tube.playback(name);
     }
+
+    public function build(): Tube {
+        return tube;
+    }
 }
 }

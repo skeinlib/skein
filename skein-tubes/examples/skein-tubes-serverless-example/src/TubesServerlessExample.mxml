@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<f:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+               xmlns:f="library://ns.feathersui.com/mxml"
+               theme="feathers.themes.MetalWorksMobileTheme" showStats="true">
+
+
+    <fx:Script>
+        <![CDATA[
+        import skein.Tubes;
+        import skein.tubes.Tube;
+        import skein.tubes.tubes;
+
+        private var tube: Tube;
+
+        private function setupHandler(): void {
+//            Tubes.config().server("rtmfp:").configure();
+            tube = tubes("messaging").build();
+
+            tube.posting.subscribe(function (message: Object, messageId: String): void {
+                outputTextArea.text += message + "\n";
+            });
+        }
+
+        private function sendHandler(): void {
+            if (tube.posting.post(messageInput.text)) {
+                messageInput.text = null;
+            }
+        }
+
+        ]]>
+    </fx:Script>
+
+    <f:layout>
+        <f:VerticalLayout horizontalAlign="center" gap="20" paddingTop="40" paddingBottom="40" paddingLeft="20" paddingRight="20" />
+    </f:layout>
+
+    <f:Button label="Setup" triggered="setupHandler()" />
+
+    <f:LayoutGroup>
+        <f:layoutData><f:VerticalLayoutData percentWidth="100"/></f:layoutData>
+        <f:layout><f:VerticalLayout gap="10"/></f:layout>
+        <f:TextArea id="outputTextArea">
+            <f:layoutData><f:VerticalLayoutData percentWidth="100"/></f:layoutData>
+        </f:TextArea>
+        <f:LayoutGroup>
+            <f:layoutData><f:VerticalLayoutData percentWidth="100"/></f:layoutData>
+            <f:layout><f:HorizontalLayout gap="10"/></f:layout>
+            <f:TextInput id="messageInput">
+                <f:layoutData><f:HorizontalLayoutData percentWidth="100"/></f:layoutData>
+            </f:TextInput>
+            <f:Button label="Send" triggered="sendHandler()" />
+        </f:LayoutGroup>
+    </f:LayoutGroup>
+
+</f:Application>
