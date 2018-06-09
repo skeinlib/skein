@@ -10,15 +10,13 @@ package skein
 import skein.tubes.builder.ConfigBuilder;
 import skein.tubes.builder.TubeBuilder;
 
-public class Tubes
-{
-    public static function config():ConfigBuilder
-    {
+public class Tubes {
+
+    public static function config():ConfigBuilder {
         return new ConfigBuilder();
     }
 
-    public static function tube(name:String):TubeBuilder
-    {
+    public static function tube(name:String):TubeBuilder {
         return new TubeBuilder(name);
     }
 }

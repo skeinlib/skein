@@ -45,7 +45,7 @@ public class Posting extends Emitter {
     //-------------------------------------
 
     public function emit(event: String, message: Object, callback: Function = null): void {
-        _tube.connector.whenConnected(function (): void {
+        _tube.neighborhood.whenNotAlone(function (): void {
             var messageId: String = _tube.connector.group.post({event: event, payload: message, from: _tube.connector.myId});
             if (callback != null) {
                 callback(messageId);
@@ -54,7 +54,7 @@ public class Posting extends Emitter {
     }
 
     public function send(message: Object, callback: Function = null): void {
-        emit("message", message, callback);
+        emit(EmitterEvent.MESSAGE, message, callback);
     }
 
     //-------------------------------------

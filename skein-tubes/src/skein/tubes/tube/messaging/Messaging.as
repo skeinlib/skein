@@ -45,7 +45,7 @@ public class Messaging extends Emitter {
     //-------------------------------------
 
     public function emit(event: String, message: Object, callback: Function = null): void {
-        _tube.connector.whenConnected(function(): void {
+        _tube.neighborhood.whenNotAlone(function(): void {
             var result: String = _tube.connector.group.sendToAllNeighbors({
                 event: event,
                 payload: message,
@@ -58,7 +58,7 @@ public class Messaging extends Emitter {
     }
 
     public function send(to: String, message: Object, callback: Function = null): void {
-        _tube.connector.whenConnected(function(): void {
+        _tube.neighborhood.whenNotAlone(function(): void {
             var result: String = _tube.connector.group.sendToNearest({
                 event: EmitterEvent.MESSAGE,
                 payload: message,

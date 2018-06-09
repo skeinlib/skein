@@ -11,6 +11,7 @@ import flash.utils.clearTimeout;
 import flash.utils.setTimeout;
 
 import skein.core.skein_internal;
+import skein.utils.delay.callLater;
 import skein.utils.delay.delayToEvent;
 
 [Event(name="netStatus", type="flash.events.NetStatusEvent")]
@@ -144,11 +145,16 @@ public class Connector extends EventDispatcher
     protected function onGroupConnected():void {
         trace("Connected to NetGroup");
 
-        var timeoutId: uint = setTimeout(function():void {
-            clearTimeout(timeoutId);
+        callLater(function (): void {
             _connected = true;
             dispatchEvent(new Event(Event.CONNECT));
-        }, 1);
+        });
+
+//        var timeoutId: uint = setTimeout(function():void {
+//            clearTimeout(timeoutId);
+//            _connected = true;
+//            dispatchEvent(new Event(Event.CONNECT));
+//        }, 1);
     }
 
     //-----------------------------------

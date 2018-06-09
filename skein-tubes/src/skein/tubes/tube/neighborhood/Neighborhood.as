@@ -7,6 +7,8 @@ import flash.events.EventDispatcher;
 import flash.events.NetStatusEvent;
 
 import skein.tubes.tube.Tube;
+import skein.utils.delay.callLater;
+import skein.utils.delay.delayToEvent;
 
 public class Neighborhood extends EventDispatcher {
 
@@ -51,6 +53,24 @@ public class Neighborhood extends EventDispatcher {
     //  Methods
     //
     //--------------------------------------------------------------------------
+
+    //-------------------------------------
+    //  MARK: Dispose
+    //-------------------------------------
+
+    public function whenNotAlone(callback: Function): void {
+        if (_neighbors.length > 0) {
+            if (callback != null) {
+                callback();
+            }
+        } else {
+            delayToEvent(this, Event.ADDED, function(): void {
+                if (callback != null) {
+                    callLater(callback);
+                }
+            });
+        }
+    }
 
     //-------------------------------------
     //  MARK: Dispose
@@ -142,6 +162,7 @@ public class Neighborhood extends EventDispatcher {
         _neighbors[_neighbors.length] = peerId;
         notifyNeighborConnectCallbacks(peerId);
         dispatchEvent(new Event(Event.CHANGE));
+        dispatchEvent(new Event(Event.ADDED));
     }
 
     protected function handleNeighborRemoved(peerId: String): void {
@@ -151,6 +172,7 @@ public class Neighborhood extends EventDispatcher {
         _neighbors.removeAt(_neighbors.indexOf(peerId));
         notifyNeighborDisconnectCallbacks(peerId);
         dispatchEvent(new Event(Event.CHANGE));
+        dispatchEvent(new Event(Event.REMOVED));
     }
 
     //--------------------------------------------------------------------------

@@ -37,7 +37,7 @@
             });
 
             _tube.messaging.on("broadcast", function (message: Object, from: String, tube: Tube): void {
-                outputTextArea.text += "breadcast from:" + from + ":\n" + message;
+                outputTextArea.text += "broadcast from:" + from + ":\n" + message;
                 _tube.messaging.send(from, "received");
             });
 
