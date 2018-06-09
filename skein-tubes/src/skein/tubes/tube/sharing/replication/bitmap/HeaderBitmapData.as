@@ -5,9 +5,11 @@
  * Time: 12:39 PM
  * To change this template use File | Settings | File Templates.
  */
-package skein.tubes.core.replication
+package skein.tubes.tube.sharing.replication.bitmap
 {
-[RemoteClass(alias="skein.tubes.core.replication.HeaderBitmapData")]
+import skein.tubes.tube.sharing.replication.*;
+
+[RemoteClass(alias="skein.tubes.tube.sharing.replication.HeaderBitmapData")]
 public class HeaderBitmapData extends Header
 {
     public function HeaderBitmapData()

@@ -5,7 +5,7 @@
  * Time: 5:27 PM
  * To change this template use File | Settings | File Templates.
  */
-package skein.tubes.data
+package skein.tubes.tube.media.settings
 {
 import flash.events.Event;
 import flash.events.IEventDispatcher;

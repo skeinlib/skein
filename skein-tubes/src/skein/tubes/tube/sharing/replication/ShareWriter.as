@@ -5,7 +5,7 @@
  * Time: 6:09 PM
  * To change this template use File | Settings | File Templates.
  */
-package skein.tubes.core
+package skein.tubes.tube.sharing.replication
 {
 public interface ShareWriter
 {

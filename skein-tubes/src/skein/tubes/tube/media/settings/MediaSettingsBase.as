@@ -5,7 +5,7 @@
  * Time: 10:36 AM
  * To change this template use File | Settings | File Templates.
  */
-package skein.tubes.data
+package skein.tubes.tube.media.settings
 {
 import flash.events.Event;
 import flash.events.EventDispatcher;
@@ -25,8 +25,7 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
     //
     //--------------------------------------------------------------------------
 
-    public function MediaSettingsBase()
-    {
+    public function MediaSettingsBase() {
         super();
     }
 
@@ -41,14 +40,10 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
     //--------------------------------------
 
     private var _isCameraMuted:Boolean;
-
-    public function get isCameraMuted():Boolean
-    {
+    public function get isCameraMuted():Boolean {
         return _isCameraMuted;
     }
-
-    public function set isCameraMuted(value:Boolean):void
-    {
+    public function set isCameraMuted(value:Boolean):void {
         _isCameraMuted = value;
     }
 
@@ -56,8 +51,7 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
     //  isCameraFront
     //--------------------------------------
 
-    public function get isCameraFront():Boolean
-    {
+    public function get isCameraFront():Boolean {
         return getCameraPosition() == CameraPosition.FRONT;
     }
 
@@ -66,14 +60,10 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
     //--------------------------------------
 
     private var _isMicrophoneMuted:Boolean;
-
-    public function get isMicrophoneMuted():Boolean
-    {
+    public function get isMicrophoneMuted():Boolean {
         return _isMicrophoneMuted;
     }
-
-    public function set isMicrophoneMuted(value:Boolean):void
-    {
+    public function set isMicrophoneMuted(value:Boolean):void {
         _isMicrophoneMuted = value;
     }
 
@@ -82,26 +72,21 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
     //--------------------------------------
 
     private var _video:VideoStreamSettings;
-
     [Bindable(event="videoChanged")]
-    public function get video():VideoStreamSettings
-    {
-        if (!_video)
-        {
+    public function get video():VideoStreamSettings {
+        if (!_video) {
             _video = createDefaultVideo();
         }
 
         return _video;
     }
 
-    public function setVideo(value:VideoStreamSettings):void
-    {
+    public function setVideo(value:VideoStreamSettings):void {
         if (value == _video) return;
 
         _video = value;
 
         dispatchEvent(new Event(Event.CHANGE));
-
         dispatchEvent(new Event("videoChanged"));
     }
 
@@ -110,20 +95,16 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
     //--------------------------------------
 
     private var _camera:Camera;
-
     [Bindable(event="cameraChanged")]
-    public function get camera():Camera
-    {
-        if (!_camera)
-        {
+    public function get camera():Camera {
+        if (!_camera) {
             _camera = createDefaultCamera();
         }
 
         return _camera;
     }
 
-    public function setCamera(value:Camera):void
-    {
+    public function setCamera(value:Camera):void {
         if (value == _camera) return;
 
         _camera = value;
@@ -131,7 +112,6 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
         applyCameraSettings(_camera);
 
         dispatchEvent(new Event(Event.CHANGE));
-
         dispatchEvent(new Event("cameraChanged"));
     }
 
@@ -142,18 +122,15 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
     private var _microphone:Microphone;
 
     [Bindable(event="microphoneChanged")]
-    public function get microphone():Microphone
-    {
-        if (!_microphone)
-        {
+    public function get microphone():Microphone {
+        if (!_microphone) {
             _microphone = createDefaultMicrophone();
         }
 
         return _microphone;
     }
 
-    public function setMicrophone(value:Microphone):void
-    {
+    public function setMicrophone(value:Microphone):void {
         if (value == _microphone) return;
 
         _microphone = value;
@@ -161,7 +138,6 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
         applyMicrophoneSettings(_microphone);
 
         dispatchEvent(new Event(Event.CHANGE));
-
         dispatchEvent(new Event("microphoneChanged"));
     }
 
@@ -175,8 +151,7 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
     //  Methods: camera
     //--------------------------------------
 
-    public function getCameraPosition():String
-    {
+    public function getCameraPosition():String {
         return _camera ? _camera.position : null;
     }
 
@@ -184,23 +159,19 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
     //  Methods: speaker
     //--------------------------------------
 
-    public function setAudioMode(mode:String):void
-    {
+    public function setAudioMode(mode:String):void {
         SoundMixer.audioPlaybackMode = mode;
     }
 
-    public function toggleAudio():void
-    {
+    public function toggleAudio():void {
         SoundMixer.useSpeakerphoneForVoice = !SoundMixer.useSpeakerphoneForVoice;
     }
 
-    public function useHeadset():void
-    {
+    public function useHeadset():void {
         SoundMixer.useSpeakerphoneForVoice = false;
     }
 
-    public function useSpeaker():void
-    {
+    public function useSpeaker():void {
         SoundMixer.useSpeakerphoneForVoice = true;
     }
 
@@ -214,9 +185,7 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
     //  Abstract methods: video
     //--------------------------------------
 
-
-    protected function createDefaultVideo():VideoStreamSettings
-    {
+    protected function createDefaultVideo():VideoStreamSettings {
         return null;
     }
 
@@ -224,13 +193,11 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
     //  Abstract methods: camera
     //--------------------------------------
 
-    protected function createDefaultCamera():Camera
-    {
+    protected function createDefaultCamera():Camera {
         return null;
     }
 
-    protected function applyCameraSettings(camera:Camera):void
-    {
+    protected function applyCameraSettings(camera:Camera):void {
 
     }
 
@@ -238,13 +205,11 @@ public class MediaSettingsBase extends EventDispatcher implements MediaSettings
     //  Abstract methods: microphone
     //--------------------------------------
 
-    protected function createDefaultMicrophone():Microphone
-    {
+    protected function createDefaultMicrophone():Microphone {
         return null;
     }
 
-    protected function applyMicrophoneSettings(microphone:Microphone):void
-    {
+    protected function applyMicrophoneSettings(microphone:Microphone):void {
 
     }
 }

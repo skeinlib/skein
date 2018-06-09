@@ -1,11 +1,11 @@
 /**
  * Created with IntelliJ IDEA.
  * User: mobitile
- * Date: 1/3/14
- * Time: 11:56 AM
+ * Date: 12/28/13
+ * Time: 4:28 PM
  * To change this template use File | Settings | File Templates.
  */
-package skein.tubes.controls
+package skein.tubes.tube.sharing
 {
 import avmplus.getQualifiedClassName;
 
@@ -15,13 +15,10 @@ import flash.net.NetGroup;
 import flash.utils.getDefinitionByName;
 
 import skein.core.skein_internal;
-
 import skein.tubes.core.Config;
-import skein.tubes.core.ShareWriter;
+import skein.tubes.tube.sharing.replication.ShareReader;
 
-use namespace skein_internal;
-
-public class Taker extends EventDispatcher
+public class Giver extends EventDispatcher      // Quota
 {
     //--------------------------------------------------------------------------
     //
@@ -37,16 +34,16 @@ public class Taker extends EventDispatcher
     //
     //--------------------------------------------------------------------------
 
-    public function Taker(data:Object, start:Number, end:Number, autoStart:Boolean=true)
+    public function Giver(data: Object, start: Number, end: Number, autoStart: Boolean=true)
     {
         super();
 
-        var type:Class = getDefinitionByName(getQualifiedClassName(data)) as Class;
+        var type: Class = getDefinitionByName(getQualifiedClassName(data)) as Class;
 
-        writer = Config.sharedInstance().getWriter(type);
-        writer.setTarget(data);
+        reader = Config.shared.getReader(type);
+        reader.setSource(data, PACKAGE_SIZE);
 
-        this.startIndex = this.currentIndex = start;
+        this.startIndex = start;
         this.endIndex = end;
 
         if (autoStart)
@@ -61,7 +58,7 @@ public class Taker extends EventDispatcher
 
     protected var data:Object;
 
-    protected var writer:ShareWriter;
+    protected var reader:ShareReader;
 
     protected var currentIndex:Number;
 
@@ -92,7 +89,7 @@ public class Taker extends EventDispatcher
             group.removeEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
 
             if (isStarted && !isPaused)
-                group.removeHaveObjects(currentIndex, endIndex);
+                group.removeHaveObjects(startIndex, endIndex);
         }
 
         group = value;
@@ -102,7 +99,7 @@ public class Taker extends EventDispatcher
             group.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
 
             if (isStarted && !isPaused)
-                group.removeHaveObjects(currentIndex, endIndex);
+                group.removeHaveObjects(startIndex, endIndex);
         }
     }
 
@@ -120,7 +117,7 @@ public class Taker extends EventDispatcher
 
             if (group)
             {
-                group.addWantObjects(currentIndex, endIndex);
+                group.addHaveObjects(startIndex, endIndex);
             }
         }
     }
@@ -132,7 +129,7 @@ public class Taker extends EventDispatcher
             isPaused = true;
 
             if (group)
-                group.removeWantObjects(currentIndex, endIndex);
+                group.removeHaveObjects(startIndex, endIndex);
         }
     }
 
@@ -143,7 +140,7 @@ public class Taker extends EventDispatcher
             isPaused = false;
 
             if (group)
-                group.addHaveObjects(currentIndex, endIndex);
+                group.addHaveObjects(startIndex, endIndex);
         }
     }
 
@@ -156,16 +153,12 @@ public class Taker extends EventDispatcher
     //  Methods internal
     //---------------------------------------
 
-    protected function handleResult(index:Number, object:Object):void
+    protected function handleRequest(requestId:int, index:Number):void
     {
-        currentIndex = index;
-
-        group.removeWantObjects(currentIndex, currentIndex);
-
-        writer.write(index, PACKAGE_SIZE, object,
+        reader.read(index, PACKAGE_SIZE,
             function(data:Object):void
             {
-//                group.addHaveObjects(index, index);
+                group.writeRequestedObject(requestId, data);
             });
     }
 
@@ -179,9 +172,9 @@ public class Taker extends EventDispatcher
     {
         switch (event.info.code)
         {
-            case "NetGroup.Replication.Fetch.Result" :
+            case "NetGroup.Replication.Request" :
 
-                handleResult(event.info.index, event.info.object);
+                handleRequest(event.info.requestID, event.info.index);
 
                 break;
         }

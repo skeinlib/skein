@@ -5,14 +5,16 @@
  * Time: 12:36 PM
  * To change this template use File | Settings | File Templates.
  */
-package skein.tubes.core.replication
+package skein.tubes.tube.sharing.replication.bitmap
 {
+import skein.tubes.tube.sharing.replication.*;
+
 import flash.display.BitmapData;
 import flash.geom.Rectangle;
 import flash.utils.ByteArray;
 
-import skein.tubes.core.ShareReader;
-import skein.tubes.core.replication.HeaderBitmapData;
+import skein.tubes.tube.sharing.replication.ShareReader;
+import skein.tubes.tube.sharing.replication.bitmap.HeaderBitmapData;
 
 public class BitmapDataReader implements ShareReader
 {

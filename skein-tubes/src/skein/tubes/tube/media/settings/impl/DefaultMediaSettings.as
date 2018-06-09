@@ -5,14 +5,16 @@
  * Time: 10:42 AM
  * To change this template use File | Settings | File Templates.
  */
-package skein.tubes.data.settings
+package skein.tubes.tube.media.settings.impl
 {
+import skein.tubes.tube.media.settings.*;
+
 import flash.media.Camera;
 import flash.media.Microphone;
 import flash.media.SoundCodec;
 import flash.media.VideoStreamSettings;
 
-import skein.tubes.data.MediaSettingsBase;
+import skein.tubes.tube.media.settings.MediaSettingsBase;
 
 public class DefaultMediaSettings extends MediaSettingsBase
 {

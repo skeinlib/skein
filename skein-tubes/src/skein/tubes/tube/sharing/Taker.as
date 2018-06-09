@@ -1,12 +1,14 @@
 /**
  * Created with IntelliJ IDEA.
  * User: mobitile
- * Date: 12/28/13
- * Time: 4:28 PM
+ * Date: 1/3/14
+ * Time: 11:56 AM
  * To change this template use File | Settings | File Templates.
  */
-package skein.tubes.controls
+package skein.tubes.tube.sharing
 {
+import skein.tubes.tube.sharing.replication.*;
+
 import avmplus.getQualifiedClassName;
 
 import flash.events.EventDispatcher;
@@ -15,10 +17,13 @@ import flash.net.NetGroup;
 import flash.utils.getDefinitionByName;
 
 import skein.core.skein_internal;
-import skein.tubes.core.Config;
-import skein.tubes.core.ShareReader;
 
-public class Giver extends EventDispatcher      // Quota
+import skein.tubes.core.Config;
+import skein.tubes.tube.sharing.replication.ShareWriter;
+
+use namespace skein_internal;
+
+public class Taker extends EventDispatcher
 {
     //--------------------------------------------------------------------------
     //
@@ -34,16 +39,16 @@ public class Giver extends EventDispatcher      // Quota
     //
     //--------------------------------------------------------------------------
 
-    public function Giver(data:Object, start:Number, end:Number, autoStart:Boolean=true)
+    public function Taker(data:Object, start:Number, end:Number, autoStart:Boolean=true)
     {
         super();
 
         var type:Class = getDefinitionByName(getQualifiedClassName(data)) as Class;
 
-        reader = Config.sharedInstance().getReader(type);
-        reader.setSource(data, PACKAGE_SIZE);
+        writer = Config.shared.getWriter(type);
+        writer.setTarget(data);
 
-        this.startIndex = start;
+        this.startIndex = this.currentIndex = start;
         this.endIndex = end;
 
         if (autoStart)
@@ -58,7 +63,7 @@ public class Giver extends EventDispatcher      // Quota
 
     protected var data:Object;
 
-    protected var reader:ShareReader;
+    protected var writer:ShareWriter;
 
     protected var currentIndex:Number;
 
@@ -89,7 +94,7 @@ public class Giver extends EventDispatcher      // Quota
             group.removeEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
 
             if (isStarted && !isPaused)
-                group.removeHaveObjects(startIndex, endIndex);
+                group.removeHaveObjects(currentIndex, endIndex);
         }
 
         group = value;
@@ -99,7 +104,7 @@ public class Giver extends EventDispatcher      // Quota
             group.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
 
             if (isStarted && !isPaused)
-                group.removeHaveObjects(startIndex, endIndex);
+                group.removeHaveObjects(currentIndex, endIndex);
         }
     }
 
@@ -117,7 +122,7 @@ public class Giver extends EventDispatcher      // Quota
 
             if (group)
             {
-                group.addHaveObjects(startIndex, endIndex);
+                group.addWantObjects(currentIndex, endIndex);
             }
         }
     }
@@ -129,7 +134,7 @@ public class Giver extends EventDispatcher      // Quota
             isPaused = true;
 
             if (group)
-                group.removeHaveObjects(startIndex, endIndex);
+                group.removeWantObjects(currentIndex, endIndex);
         }
     }
 
@@ -140,7 +145,7 @@ public class Giver extends EventDispatcher      // Quota
             isPaused = false;
 
             if (group)
-                group.addHaveObjects(startIndex, endIndex);
+                group.addHaveObjects(currentIndex, endIndex);
         }
     }
 
@@ -153,12 +158,16 @@ public class Giver extends EventDispatcher      // Quota
     //  Methods internal
     //---------------------------------------
 
-    protected function handleRequest(requestId:int, index:Number):void
+    protected function handleResult(index:Number, object:Object):void
     {
-        reader.read(index, PACKAGE_SIZE,
+        currentIndex = index;
+
+        group.removeWantObjects(currentIndex, currentIndex);
+
+        writer.write(index, PACKAGE_SIZE, object,
             function(data:Object):void
             {
-                group.writeRequestedObject(requestId, data);
+//                group.addHaveObjects(index, index);
             });
     }
 
@@ -172,9 +181,9 @@ public class Giver extends EventDispatcher      // Quota
     {
         switch (event.info.code)
         {
-            case "NetGroup.Replication.Request" :
+            case "NetGroup.Replication.Fetch.Result" :
 
-                handleRequest(event.info.requestID, event.info.index);
+                handleResult(event.info.index, event.info.object);
 
                 break;
         }
