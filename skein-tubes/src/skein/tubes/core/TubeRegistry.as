@@ -9,7 +9,7 @@ package skein.tubes.core
 {
 import flash.events.Event;
 
-import skein.tubes.Tube;
+import skein.tubes.tube.Tube;
 
 public class TubeRegistry
 {

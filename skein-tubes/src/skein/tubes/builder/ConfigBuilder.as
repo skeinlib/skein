@@ -10,39 +10,37 @@ package skein.tubes.builder
 import skein.core.PropertySetter;
 import skein.core.skein_internal;
 import skein.tubes.core.Config;
+import skein.tubes.tube.media.settings.MediaSettings;
 
 use namespace skein_internal
 
-public class ConfigBuilder
-{
-    public function ConfigBuilder()
-    {
+public class ConfigBuilder {
+
+    // Constructor
+
+    public function ConfigBuilder() {
         super()
     }
 
-    public function server(value:String):ConfigBuilder
-    {
-        Config.server(value);
+    // Builders
 
-        return this;
-    }
-
-    public function settings(value:Object):ConfigBuilder
-    {
-        PropertySetter.set(Config.sharedInstance(), "settings", value);
-
-        return this;
-    }
-
-    public function replication():ConfigReplicationBuilder
-    {
+    public function replication(): ConfigReplicationBuilder {
         return new ConfigReplicationBuilder(this);
     }
 
+    // Builder
 
-    public function configure():ConfigBuilder
-    {
+    public function address(value: String): ConfigBuilder {
+        PropertySetter.set(Config.shared, "address", value);
         return this;
+    }
+
+    public function settings(value: MediaSettings): ConfigBuilder {
+        PropertySetter.set(Config.shared, "settings", value);
+        return this;
+    }
+
+    public function build(): void {
     }
 }
 }

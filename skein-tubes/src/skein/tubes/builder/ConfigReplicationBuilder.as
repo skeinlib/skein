@@ -12,34 +12,33 @@ import skein.tubes.core.Config;
 
 use namespace skein_internal;
 
-public class ConfigReplicationBuilder
-{
-    public function ConfigReplicationBuilder(parent:ConfigBuilder)
-    {
+public class ConfigReplicationBuilder {
+
+    // Constructor
+
+    public function ConfigReplicationBuilder(parent:ConfigBuilder) {
         super();
-
-        this.parent = parent;
+        _parent = parent;
     }
 
-    private var parent:ConfigBuilder;
+    // Variables
 
-    public function setWriterFor(type:Class, factory:Object):ConfigReplicationBuilder
-    {
-        Config.setWriter(type, factory);
+    private var _parent:ConfigBuilder;
 
+    // Builder
+
+    public function setWriterFor(Contract: Class, factory: Object): ConfigReplicationBuilder {
+        Config.setWriter(Contract, factory);
         return this;
     }
 
-    public function setReaderFor(type:Class, factory:Object):ConfigReplicationBuilder
-    {
-        Config.setReader(type, factory);
-
+    public function setReaderFor(Contract: Class, factory: Object): ConfigReplicationBuilder {
+        Config.setReader(Contract, factory);
         return this;
     }
 
-    public function build():ConfigBuilder
-    {
-        return parent;
+    public function build(): ConfigBuilder {
+        return _parent;
     }
 }
 }

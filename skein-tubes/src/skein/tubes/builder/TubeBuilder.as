@@ -8,44 +8,45 @@
 package skein.tubes.builder
 {
 import skein.core.skein_internal;
-import skein.tubes.Tube;
-import skein.tubes.controls.Broadcast;
-import skein.tubes.controls.Playback;
+import skein.tubes.tube.Tube;
+import skein.tubes.tube.media.Broadcast;
+import skein.tubes.tube.media.Playback;
 import skein.tubes.core.TubeRegistry;
-import skein.tubes.data.MediaSettings;
+import skein.tubes.tube.media.settings.MediaSettings;
 
 use namespace skein_internal;
 
-public class TubeBuilder
-{
-    public function TubeBuilder(name:String)
-    {
+public class TubeBuilder {
+
+    // Constructor
+
+    public function TubeBuilder(name: String) {
         super();
-
-        tube = TubeRegistry.get(name);
+        _tube = TubeRegistry.get(name);
     }
 
-    private var tube:Tube;
+    // Tube
 
-    public function settings(value:MediaSettings):TubeBuilder
-    {
-        tube.settings(value);
+    private var _tube:Tube;
 
-        return this;
+    // Builders
+
+    public function connection(): ConnectionBuilder {
+        return new ConnectionBuilder(this, _tube);
     }
 
-    public function broadcast(name:String):Broadcast
-    {
-        return tube.broadcast(name);
+    public function specifier(): GroupSpecifierBuilder {
+        return new GroupSpecifierBuilder(this, _tube);
     }
 
-    public function playback(name:String):Playback
-    {
-        return tube.playback(name);
+    public function get media(): MediaBuilder {
+        return new MediaBuilder(this, _tube);
     }
+
+    // Builder
 
     public function build(): Tube {
-        return tube;
+        return _tube;
     }
 }
 }

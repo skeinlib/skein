@@ -6,27 +6,59 @@
 
     <fx:Script>
         <![CDATA[
+        import feathers.data.VectorCollection;
+
         import skein.Tubes;
-        import skein.tubes.Tube;
+        import skein.tubes.tube;
+        import skein.tubes.tube.Tube;
         import skein.tubes.tubes;
 
-        private var tube: Tube;
+        [Bindable]
+        private var _tube: Tube;
 
         private function setupHandler(): void {
-//            Tubes.config().server("rtmfp:").configure();
-            tube = tubes("messaging").build();
 
-            tube.posting.subscribe(function (message: Object, messageId: String): void {
+            _tube = tubes("skein.tubes.test")
+                .connection()
+                    .address("rtmfp:")
+                .build()
+                .specifier()
+                    .multicastEnabled(true)
+                    .postingEnabled(true)
+                    .routingEnabled(true)
+                    .addIPMulticastAddress("239.254.254.2:30304")
+                    .ipMulticastMemberUpdatesEnabled(true)
+                .build()
+            .build();
+
+            _tube.posting.onMessage(function (message: Object): void {
                 outputTextArea.text += message + "\n";
+            });
+
+            _tube.messaging.onMessage(function (from: String, message: Object): void {
+                outputTextArea.text += "from:" + from + "\n\t" + message;
+            });
+        }
+
+        private function disposeHandler(): void {
+            _tube.dispose();
+            _tube = null;
+        }
+
+        private function postHandler(): void {
+            _tube.posting.send(postingInput.text, function (messageId: String = null): void {
+                postingInput.text = null;
             });
         }
 
         private function sendHandler(): void {
-            if (tube.posting.post(messageInput.text)) {
-                messageInput.text = null;
+            var peerId: String = neighborList.selectedItem as String;
+            if (peerId) {
+                _tube.messaging.send(peerId, messagingInput.text, function(): void {
+                    messagingInput.text = null;
+                });
             }
         }
-
         ]]>
     </fx:Script>
 
@@ -34,7 +66,11 @@
         <f:VerticalLayout horizontalAlign="center" gap="20" paddingTop="40" paddingBottom="40" paddingLeft="20" paddingRight="20" />
     </f:layout>
 
-    <f:Button label="Setup" triggered="setupHandler()" />
+    <f:LayoutGroup>
+        <f:layout><f:HorizontalLayout horizontalAlign="center" /></f:layout>
+        <f:Button label="Setup" triggered="setupHandler()" />
+        <f:Button label="Dispose" triggered="disposeHandler()" />
+    </f:LayoutGroup>
 
     <f:LayoutGroup>
         <f:layoutData><f:VerticalLayoutData percentWidth="100"/></f:layoutData>
@@ -45,9 +81,20 @@
         <f:LayoutGroup>
             <f:layoutData><f:VerticalLayoutData percentWidth="100"/></f:layoutData>
             <f:layout><f:HorizontalLayout gap="10"/></f:layout>
-            <f:TextInput id="messageInput">
+            <f:TextInput id="postingInput">
                 <f:layoutData><f:HorizontalLayoutData percentWidth="100"/></f:layoutData>
             </f:TextInput>
+            <f:Button label="Post" triggered="postHandler()" />
+        </f:LayoutGroup>
+        <f:LayoutGroup>
+            <f:layoutData><f:VerticalLayoutData percentWidth="100"/></f:layoutData>
+            <f:layout><f:HorizontalLayout gap="10"/></f:layout>
+            <f:TextInput id="messagingInput">
+                <f:layoutData><f:HorizontalLayoutData percentWidth="80"/></f:layoutData>
+            </f:TextInput>
+            <f:PickerList id="neighborList" dataProvider="{new VectorCollection(_tube.neighborhood.neighbors)}">
+                <f:layoutData><f:HorizontalLayoutData percentWidth="20"/></f:layoutData>
+            </f:PickerList>
             <f:Button label="Send" triggered="sendHandler()" />
         </f:LayoutGroup>
     </f:LayoutGroup>

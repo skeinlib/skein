@@ -10,7 +10,10 @@ package skein.tubes.core
 import flash.utils.Dictionary;
 
 import skein.core.skein_internal;
-import skein.tubes.data.MediaSettingsBase;
+import skein.tubes.tube.media.settings.MediaSettings;
+import skein.tubes.tube.media.settings.MediaSettingsBase;
+import skein.tubes.tube.sharing.replication.ShareReader;
+import skein.tubes.tube.sharing.replication.ShareWriter;
 
 use namespace skein_internal;
 
@@ -24,28 +27,17 @@ public class Config
 
     //--------------------------------------------------------------------------
     //
-    //  Class functions
+    //  Contracts
     //
     //--------------------------------------------------------------------------
 
-    private static var _server:String;
-
-    skein_internal static function server(value:String):void
-    {
-        _server = value;
-    }
-
     private static var writers:Dictionary = new Dictionary();
-
-    skein_internal static function setWriter(type:Class, generator:Object):void
-    {
+    skein_internal static function setWriter(type:Class, generator:Object):void {
         writers[type] = generator;
     }
 
     private static var readers:Dictionary = new Dictionary();
-
-    skein_internal static function setReader(type:Class, generator:Object):void
-    {
+    skein_internal static function setReader(type:Class, generator:Object):void {
         readers[type] = generator;
     }
 
@@ -56,11 +48,10 @@ public class Config
     //--------------------------------------------------------------------------
 
     private static var instance:Config;
-
-    public static function sharedInstance():Config
-    {
-        if (instance == null)
+    public static function get shared():Config {
+        if (instance == null) {
             instance = new Config();
+        }
 
         return instance;
     }
@@ -71,8 +62,7 @@ public class Config
     //
     //--------------------------------------------------------------------------
 
-    public function Config()
-    {
+    public function Config() {
         super();
     }
 
@@ -86,24 +76,23 @@ public class Config
     //  server
     //-----------------------------------
 
-    public function get server():String
-    {
-        return _server;
+    private static var _address: String = "rtmfp://p2p.rtmfp.net/4eac03fdddf60bb5e7df9cb3-c21addd5ccab";
+    public function get address(): String {
+        return _address;
+    }
+    skein_internal function set address(value: String): void {
+        _address = value;
     }
 
     //-----------------------------------
     //  settings
     //-----------------------------------
 
-    private var _settings:MediaSettingsBase;
-
-    public function get settings():MediaSettingsBase
-    {
+    private var _settings: MediaSettings;
+    public function get settings(): MediaSettings {
         return _settings;
     }
-
-    public function set settings(value:MediaSettingsBase):void
-    {
+    skein_internal function set settings(value: MediaSettings):void {
         _settings = value;
     }
 
@@ -117,44 +106,32 @@ public class Config
     //  Methods: writers
     //-------------------------------------
 
-    public function getWriter(type:Class):ShareWriter
-    {
-        var generator:Object = writers[type];
+    public function getWriter(Type: Class): ShareWriter {
+        var Generator: Object = writers[Type];
 
-        if (generator is Class)
-        {
-            return new generator();
+        if (Generator is Class) {
+            return new Generator();
+        } else if (Generator is ShareWriter) {
+            return Generator as ShareWriter;
         }
-        else if (generator is ShareWriter)
-        {
-            return generator as ShareWriter;
-        }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
     //-------------------------------------
     //  Methods: readers
     //-------------------------------------
 
-    public function getReader(type:Class):ShareReader
-    {
-        var generator:Object = readers[type];
+    public function getReader(Type: Class): ShareReader {
+        var Generator: Object = readers[Type];
 
-        if (generator is Class)
-        {
-            return new generator();
+        if (Generator is Class) {
+            return new Generator();
+        } else if (Generator is ShareReader) {
+            return Generator as ShareReader;
         }
-        else if (generator is ShareReader)
-        {
-            return generator as ShareReader;
-        }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 }
 }

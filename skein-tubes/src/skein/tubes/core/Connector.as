@@ -1,10 +1,8 @@
 package skein.tubes.core
 {
-import flash.events.DataEvent;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.EventDispatcher;
-import flash.events.IEventDispatcher;
 import flash.events.NetStatusEvent;
 import flash.net.GroupSpecifier;
 import flash.net.NetConnection;
@@ -12,11 +10,16 @@ import flash.net.NetGroup;
 import flash.utils.clearTimeout;
 import flash.utils.setTimeout;
 
+import skein.core.skein_internal;
+
+import skein.utils.delay.delayToEvent;
+
 [Event(name="netStatus", type="flash.events.NetStatusEvent")]
 
 [Event(name="error", type="flash.events.ErrorEvent")]
 
 [Event(name="connect", type="flash.events.Event")]
+
 [Event(name="close", type="flash.events.Event")]
 
 public class Connector extends EventDispatcher
@@ -33,9 +36,9 @@ public class Connector extends EventDispatcher
     //
     //----------------------------------------------------------------------
 
-    public function Connector()
-    {
+    public function Connector(name: String) {
         super();
+        _name = name;
     }
 
     //----------------------------------------------------------------------
@@ -44,42 +47,54 @@ public class Connector extends EventDispatcher
     //
     //----------------------------------------------------------------------
 
-    private var address:String;
-
-    private var context:String;
-
     //----------------------------------------------------------------------
     //
     //	Properties
     //
     //----------------------------------------------------------------------
 
-    private var _connected:Boolean;
+    private var _name: String;
+    public function get name(): String {
+        return _name;
+    }
 
-    public function get connected():Boolean
-    {
+    // connected
+
+    private var _connected: Boolean;
+    public function get connected(): Boolean {
         return _connected;
     }
 
-    private var _connection:NetConnection;
+    // connection
 
-    public function get connection():NetConnection
-    {
+    private var _connection: NetConnection;
+    public function get connection(): NetConnection {
         return _connection;
     }
 
-    private var _group:NetGroup;
+    // group
 
-    public function get group():NetGroup
-    {
+    private var _group: NetGroup;
+    public function get group(): NetGroup {
         return _group;
     }
 
-    private var _specifier:GroupSpecifier;
+    private var _address: String;
+    public function get address(): String {
+        return _address || Config.shared.address;
+    }
+    skein_internal function setAddress(value: String): void {
+        _address = value;
+    }
 
-    public function get specifier():GroupSpecifier
-    {
-        return _specifier;
+    // specifier
+
+    private var _specifier: GroupSpecifier;
+    public function get specifier(): GroupSpecifier {
+        return _specifier || new GroupSpecifier(name);
+    }
+    skein_internal function setSpecifier(value: GroupSpecifier): void {
+        _specifier = value;
     }
 
     //----------------------------------------------------------------------
@@ -89,19 +104,59 @@ public class Connector extends EventDispatcher
     //----------------------------------------------------------------------
 
     //-----------------------------------
-    //	Methods: Public API
+    //	MARK: Connect
     //-----------------------------------
 
-    public function connect(address:String=null, context:String="mobitile-capabilities"):void
-    {
-        this.address = address || "rtmfp://p2p.rtmfp.net/4eac03fdddf60bb5e7df9cb3-c21addd5ccab";
-        this.context = context;
-
-        this.doConnect();
+    public function whenConnected(callback: Function): void {
+        if (connected) {
+            callback();
+        } else {
+            delayToEvent(this, Event.CONNECT, callback);
+        }
     }
 
-    public function disconnect():void
-    {
+    public function connect(): void {
+        if (_connection && _connection.connected) {
+            this.dispatchEvent(new Event(Event.CONNECT));
+            return;
+        }
+
+        connectToConnection();
+    }
+
+    protected function connectToConnection(): void {
+        if (_connection == null) {
+            _connection = new NetConnection();
+        }
+
+        _connection.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
+        _connection.connect(address);
+    }
+
+    protected function onConnectionConnected():void {
+        this.connectToGroup();
+    }
+
+    protected function connectToGroup():void {
+        _group = new NetGroup(connection, specifier.groupspecWithAuthorizations());
+        _group.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
+    }
+
+    protected function onGroupConnected():void {
+        trace("Connected to NetGroup");
+
+        var timeoutId: uint = setTimeout(function():void {
+            clearTimeout(timeoutId);
+            _connected = true;
+            dispatchEvent(new Event(Event.CONNECT));
+        }, 1);
+    }
+
+    //-----------------------------------
+    //	MARK: Disconnect
+    //-----------------------------------
+
+    public function disconnect():void {
         trace("Connector.disconnect()");
 
         trace("Attempt to disconnect from NetGroup");
@@ -128,63 +183,95 @@ public class Connector extends EventDispatcher
     }
 
     //-----------------------------------
-    //	Methods: connection
+    //	MARK: Release
     //-----------------------------------
 
-    private function doConnect():void
-    {
-        if (_connection && _connection.connected)
-        {
-            this.dispatchEvent(new Event(Event.CONNECT));
+    public function release(): void {
+        ConnectorRegistry.releaseConnector(this);
+    }
 
-            return;
+    skein_internal function dispose(): void {
+        disconnect();
+        _connection = null;
+        _group = null;
+    }
+
+    //--------------------------------------------------------------------------
+    //
+    //	Wrappers
+    //
+    //--------------------------------------------------------------------------
+
+    public function get myId(): String {
+        return _connection ? _connection.nearID : null;
+    }
+
+    public function convertPeerIDToGroupAddress(peerID: String): String {
+        return _group ? _group.convertPeerIDToGroupAddress(peerID) : null;
+    }
+
+    //--------------------------------------------------------------------------
+    //
+    //	Callbacks
+    //
+    //--------------------------------------------------------------------------
+
+    //-------------------------------------
+    //  MARK: Status callback
+    //-------------------------------------
+
+    protected var _netStatusCallbacks: Vector.<Function> = new <Function>[];
+    public function addNetStatusCallback(handler: Function): Boolean {
+        if (_netStatusCallbacks.indexOf(handler) != -1) {
+            return false;
         }
-
-        if (!_connection)
-            _connection = new NetConnection();
-
-        _connection.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
-        _connection.connect(this.address);
+        _netStatusCallbacks[_netStatusCallbacks.length] = handler;
+        return true;
+    }
+    public function removeNetStatusCallback(handler: Function): Boolean {
+        var index: int = _netStatusCallbacks.indexOf(handler);
+        if (index == -1) {
+            return false;
+        }
+        _netStatusCallbacks.removeAt(_netStatusCallbacks.indexOf(handler));
+        return true;
+    }
+    private function notifyNetStatusCallbacks(event: NetStatusEvent): void {
+        for each (var handler: Function in _netStatusCallbacks) {
+            handler(event);
+        }
     }
 
-    private function onConnected():void
-    {
-        if (!_specifier)
-            _specifier = new GroupSpecifier(this.context);
+    //-------------------------------------
+    //  MARK: Error callback
+    //-------------------------------------
 
-        _specifier.multicastEnabled = true;
-        _specifier.postingEnabled = true;
-        _specifier.routingEnabled = true;
-        _specifier.serverChannelEnabled = true;
-        _specifier.objectReplicationEnabled = true;
-
-        this.doGroupConnect();
+    protected var _errorCallbacks: Vector.<Function> = new <Function>[];
+    public function addErrorCallback(handler: Function): Boolean {
+        if (_errorCallbacks.indexOf(handler) != -1) {
+            return false;
+        }
+        _errorCallbacks[_errorCallbacks.length] = handler;
+        return true;
     }
-
-    //-----------------------------------
-    //	Methods: group
-    //-----------------------------------
-
-    private function doGroupConnect():void
-    {
-        _group = new NetGroup(_connection, _specifier.groupspecWithAuthorizations());
-        _group.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
+    public function removeErrorCallback(handler: Function): Boolean {
+        var index: int = _errorCallbacks.indexOf(handler);
+        if (index == -1) {
+            return false;
+        }
+        _errorCallbacks.removeAt(_errorCallbacks.indexOf(handler));
+        return true;
     }
-
-    private function onGroupConnected():void
-    {
-        trace("Connected to NetGroup");
-
-        const t:uint = setTimeout(
-            function():void
-            {
-                clearTimeout(t);
-
-                _connected = true;
-
-                dispatchEvent(new Event(Event.CONNECT));
-            },
-        1);
+    private function notifyErrorCallbacks(code: String, detail: Object = null): void {
+        for each (var handler: Function in _errorCallbacks) {
+            if (handler.length == 2) {
+                handler(code, detail);
+            } else if (handler.length == 1) {
+                handler(code);
+            } else {
+                handler();
+            }
+        }
     }
 
     //----------------------------------------------------------------------
@@ -197,66 +284,52 @@ public class Connector extends EventDispatcher
     {
         trace(">>>>>>>>>>>>", event.info.code);
 
-        if (event.info.level)
-        {
+        if (event.info.level) {
             trace(event.info.code);
         }
 
-        switch (event.info.code)
-        {
+        switch (event.info.code) {
+
             // NetConnection
 
             case "NetConnection.Connect.Success" :
-
-                this.onConnected()
-
+                this.onConnectionConnected();
                 break;
 
             case "NetConnection.Connect.Closed":
-
                 this.disconnect();
-
                 break;
 
             case "NetConnection.Connect.Failed":
             case "NetConnection.Connect.Rejected":
             case "NetConnection.Connect.AppShutdown":
             case "NetConnection.Connect.InvalidApp":
-
                 this.disconnect();
-                this.dispatchEvent(new ErrorEvent(ErrorEvent.ERROR));
-
+                this.dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, event.info.code));
                 break;
 
             // NetGroup
 
             case "NetGroup.Connect.Success": // e.info.group
-
                 this.onGroupConnected();
-
                 break;
 
             case "NetGroup.Connect.Rejected": // e.info.group
             case "NetGroup.Connect.Failed": // e.info.group
-
                 this.disconnect();
-                this.dispatchEvent(new ErrorEvent(ErrorEvent.ERROR));
-
+                this.dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, event.info.code));
                 break;
 
             case "NetGroup.Neighbor.Connect" :
-
-
                 break;
 
             case "NetGroup.Neighbor.Disconnect" :
-
-
                 break;
         }
 
-        if (this.hasEventListener(event.type))
-        {
+        notifyNetStatusCallbacks(event);
+
+        if (this.hasEventListener(event.type)) {
             this.dispatchEvent(event.clone());
         }
     }

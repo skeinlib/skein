@@ -1,0 +1,151 @@
+/**
+ * Created by max.rozdobudko@gmail.com on 6/8/18.
+ */
+package skein.tubes.tube.neighborhood {
+import flash.events.Event;
+import flash.events.EventDispatcher;
+import flash.events.NetStatusEvent;
+
+import skein.tubes.core.Connector;
+
+public class Neighborhood extends EventDispatcher {
+
+    //--------------------------------------------------------------------------
+    //
+    // Constructor
+    //
+    //--------------------------------------------------------------------------
+
+    public function Neighborhood(connector: Connector) {
+        super();
+
+        _connector = connector;
+        _connector.addNetStatusCallback(netStatusHandler);
+    }
+
+    //--------------------------------------------------------------------------
+    //
+    //  Dependencies
+    //
+    //--------------------------------------------------------------------------
+
+    private var _connector: Connector;
+
+    //--------------------------------------------------------------------------
+    //
+    //  Properties
+    //
+    //--------------------------------------------------------------------------
+
+    // neighbors
+
+    private var _neighbors: Vector.<String> = new <String>[];
+    [Bindable(event="change")]
+    public function get neighbors(): Vector.<String> {
+        return _neighbors;
+    }
+
+    //--------------------------------------------------------------------------
+    //
+    //  Callbacks
+    //
+    //--------------------------------------------------------------------------
+
+    // Callback: Neighbor Connect
+
+    protected var _neighborConnectCallbacks: Vector.<Function> = new <Function>[];
+    public function onConnect(handler: Function): Boolean {
+        if (_neighborConnectCallbacks.indexOf(handler) != -1) {
+            return false;
+        }
+        _neighborConnectCallbacks[_neighborConnectCallbacks.length] = handler;
+        return true;
+    }
+
+    private function notifyNeighborConnectCallbacks(peerId: String): void {
+        for each (var handler: Function in _neighborConnectCallbacks) {
+            if (handler.length == 1) {
+                handler(peerId);
+            } else {
+                handler();
+            }
+        }
+    }
+
+    // Callback: Neighbor Disconnect
+
+    protected var _neighborDisconnectCallbacks: Vector.<Function> = new <Function>[];
+    public function onDisconnect(handler: Function): Boolean {
+        if (_neighborDisconnectCallbacks.indexOf(handler) != -1) {
+            return false;
+        }
+        _neighborDisconnectCallbacks[_neighborDisconnectCallbacks.length] = handler;
+        return true;
+    }
+
+    private function notifyNeighborDisconnectCallbacks(peerId: String): void {
+        for each (var handler: Function in _neighborDisconnectCallbacks) {
+            if (handler.length == 1) {
+                handler(peerId);
+            } else {
+                handler();
+            }
+        }
+    }
+
+    // Callback: off
+
+    public function off(handler: Function): void {
+        if (_neighborConnectCallbacks.indexOf(handler) != -1) {
+            _neighborConnectCallbacks.removeAt(_neighborConnectCallbacks.indexOf(handler));
+        }
+
+        if (_neighborDisconnectCallbacks.indexOf(handler) != -1) {
+            _neighborDisconnectCallbacks.removeAt(_neighborDisconnectCallbacks.indexOf(handler));
+        }
+    }
+
+    //--------------------------------------------------------------------------
+    //
+    //  Event handlers
+    //
+    //--------------------------------------------------------------------------
+
+    protected function handleNeighborAdded(peerId: String): void {
+        if (_neighbors.indexOf(peerId) != -1) {
+            return;
+        }
+        _neighbors[_neighbors.length] = peerId;
+        notifyNeighborConnectCallbacks(peerId);
+        dispatchEvent(new Event(Event.CHANGE));
+    }
+
+    protected function handleNeighborRemoved(peerId: String): void {
+        if (_neighbors.indexOf(peerId) == -1) {
+            return;
+        }
+        _neighbors.removeAt(_neighbors.indexOf(peerId));
+        notifyNeighborDisconnectCallbacks(peerId);
+        dispatchEvent(new Event(Event.CHANGE));
+    }
+
+    //--------------------------------------------------------------------------
+    //
+    //  Event handlers
+    //
+    //--------------------------------------------------------------------------
+
+    private function netStatusHandler(event: NetStatusEvent):void {
+        switch (event.info.code) {
+
+            case "NetGroup.Neighbor.Connect":
+                handleNeighborAdded(event.info.peerID);
+                break;
+
+            case "NetGroup.Neighbor.Disconnect":
+                handleNeighborRemoved(event.info.peerID);
+                break;
+        }
+    }
+}
+}

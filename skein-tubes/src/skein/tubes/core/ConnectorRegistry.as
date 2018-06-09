@@ -9,37 +9,41 @@ package skein.tubes.core
 {
 import flash.utils.Dictionary;
 
+import skein.core.skein_internal;
+
+use namespace skein_internal;
+
 public class ConnectorRegistry
 {
     private static var references:Dictionary;
 
     private static var connectors:Dictionary;
 
-    public static function getConnector(name:String):Connector
-    {
-        var connector:Connector = getExisting(name) || createNew(name);
+    public static function retainConnector(name: String): Connector {
+        var connector: Connector = getExisting(name) || createNew(name);
 
-        if (references == null)
-            references = new Dictionary();
+        if (references == null) {
+            references = new Dictionary(true);
+        }
 
-        if (references[connector])
+        if (references[connector]) {
             references[connector]++;
-        else
+        } else {
             references[connector] = 1;
+        }
 
         return connector;
     }
 
-    public static function freeConnector(connector:Connector):void
-    {
-        if (references[connector])
-        {
-            references[connector]--;
+    public static function releaseConnector(connector: Connector): void {
+        if (!references[connector]) {
+            return;
+        }
 
-            if (references[connector] == 0)
-            {
-                connector.disconnect();
-            }
+        references[connector]--;
+
+        if (references[connector] == 0) {
+            connector.dispose();
         }
     }
 
@@ -48,8 +52,7 @@ public class ConnectorRegistry
         if (!connectors)
             connectors = new Dictionary(true);
 
-        var connector:Connector = new Connector();
-        connector.connect(Config.sharedInstance().server, name);
+        var connector:Connector = new Connector(name);
 
         connectors[connector] = name;
 
