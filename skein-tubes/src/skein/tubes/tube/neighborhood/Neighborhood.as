@@ -6,7 +6,7 @@ import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.events.NetStatusEvent;
 
-import skein.tubes.core.Connector;
+import skein.tubes.tube.Tube;
 
 public class Neighborhood extends EventDispatcher {
 
@@ -16,11 +16,12 @@ public class Neighborhood extends EventDispatcher {
     //
     //--------------------------------------------------------------------------
 
-    public function Neighborhood(connector: Connector) {
+    public function Neighborhood(tube: Tube) {
         super();
 
-        _connector = connector;
-        _connector.addNetStatusCallback(netStatusHandler);
+        _tube = tube;
+        
+        _tube.connector.addNetStatusCallback(netStatusHandler);
     }
 
     //--------------------------------------------------------------------------
@@ -28,8 +29,8 @@ public class Neighborhood extends EventDispatcher {
     //  Dependencies
     //
     //--------------------------------------------------------------------------
-
-    private var _connector: Connector;
+    
+    protected var _tube: Tube;
 
     //--------------------------------------------------------------------------
     //
@@ -43,6 +44,25 @@ public class Neighborhood extends EventDispatcher {
     [Bindable(event="change")]
     public function get neighbors(): Vector.<String> {
         return _neighbors;
+    }
+
+    //--------------------------------------------------------------------------
+    //
+    //  Methods
+    //
+    //--------------------------------------------------------------------------
+
+    //-------------------------------------
+    //  MARK: Dispose
+    //-------------------------------------
+
+    public function dispose(): void {
+        if (_tube) {
+            _tube.connector.removeNetStatusCallback(netStatusHandler);
+            _tube = null;
+        }
+
+        off();
     }
 
     //--------------------------------------------------------------------------
@@ -61,7 +81,6 @@ public class Neighborhood extends EventDispatcher {
         _neighborConnectCallbacks[_neighborConnectCallbacks.length] = handler;
         return true;
     }
-
     private function notifyNeighborConnectCallbacks(peerId: String): void {
         for each (var handler: Function in _neighborConnectCallbacks) {
             if (handler.length == 1) {
@@ -82,7 +101,6 @@ public class Neighborhood extends EventDispatcher {
         _neighborDisconnectCallbacks[_neighborDisconnectCallbacks.length] = handler;
         return true;
     }
-
     private function notifyNeighborDisconnectCallbacks(peerId: String): void {
         for each (var handler: Function in _neighborDisconnectCallbacks) {
             if (handler.length == 1) {
@@ -95,7 +113,13 @@ public class Neighborhood extends EventDispatcher {
 
     // Callback: off
 
-    public function off(handler: Function): void {
+    public function off(handler: Function = null): void {
+        if (handler == null) {
+            _neighborConnectCallbacks.length = 0;
+            _neighborDisconnectCallbacks.length = 0;
+            return;
+        }
+
         if (_neighborConnectCallbacks.indexOf(handler) != -1) {
             _neighborConnectCallbacks.removeAt(_neighborConnectCallbacks.indexOf(handler));
         }

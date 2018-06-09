@@ -11,7 +11,6 @@ import flash.utils.clearTimeout;
 import flash.utils.setTimeout;
 
 import skein.core.skein_internal;
-
 import skein.utils.delay.delayToEvent;
 
 [Event(name="netStatus", type="flash.events.NetStatusEvent")]

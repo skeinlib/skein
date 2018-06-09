@@ -13,7 +13,6 @@ import flash.media.Camera;
 import flash.net.NetStream;
 
 import skein.core.skein_internal;
-import skein.tubes.core.Config;
 import skein.tubes.core.Connector;
 import skein.tubes.enum.CameraPosition;
 import skein.tubes.tube.media.settings.MediaSettings;

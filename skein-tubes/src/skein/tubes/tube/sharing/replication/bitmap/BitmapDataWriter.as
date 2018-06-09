@@ -7,8 +7,6 @@
  */
 package skein.tubes.tube.sharing.replication.bitmap
 {
-import skein.tubes.tube.sharing.replication.*;
-
 import flash.display.BitmapData;
 import flash.utils.ByteArray;
 

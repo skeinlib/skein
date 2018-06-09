@@ -7,8 +7,6 @@
  */
 package skein.tubes.tube.media.settings.impl
 {
-import skein.tubes.tube.media.settings.*;
-
 import flash.media.Camera;
 import flash.media.Microphone;
 import flash.media.SoundCodec;

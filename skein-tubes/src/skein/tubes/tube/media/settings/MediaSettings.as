@@ -7,7 +7,6 @@
  */
 package skein.tubes.tube.media.settings
 {
-import flash.events.Event;
 import flash.events.IEventDispatcher;
 import flash.media.Camera;
 import flash.media.Microphone;

@@ -11,7 +11,6 @@ import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.media.Camera;
 import flash.media.Microphone;
-import flash.media.SoundCodec;
 import flash.media.SoundMixer;
 import flash.media.VideoStreamSettings;
 

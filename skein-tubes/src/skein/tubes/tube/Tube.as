@@ -9,20 +9,17 @@ package skein.tubes.tube
 {
 import flash.events.Event;
 import flash.events.EventDispatcher;
-import flash.net.NetStream;
 
 import skein.core.skein_internal;
-import skein.tubes.core.TubeRegistry;
-import skein.tubes.core.emitter.Emitter;
+import skein.tubes.core.Connector;
+import skein.tubes.core.ConnectorRegistry;
 import skein.tubes.tube.connection.Connection;
 import skein.tubes.tube.media.Broadcast;
 import skein.tubes.tube.media.Playback;
+import skein.tubes.tube.media.settings.MediaSettings;
 import skein.tubes.tube.messaging.Messaging;
 import skein.tubes.tube.neighborhood.Neighborhood;
 import skein.tubes.tube.posting.Posting;
-import skein.tubes.core.ConnectorRegistry;
-import skein.tubes.core.Connector;
-import skein.tubes.tube.media.settings.MediaSettings;
 import skein.tubes.tube.sharing.Giver;
 import skein.utils.delay.callLater;
 import skein.utils.delay.delayToEvent;
@@ -157,7 +154,7 @@ public class Tube extends EventDispatcher
     [Bindable(event="change")]
     public function get posting(): Posting {
         if (_posting == null) {
-            _posting = new Posting(connector);
+            _posting = new Posting(this);
         }
 
         return _posting;
@@ -177,7 +174,7 @@ public class Tube extends EventDispatcher
     [Bindable(event="change")]
     public function get messaging(): Messaging {
         if (_messaging == null) {
-            _messaging = new Messaging(connector);
+            _messaging = new Messaging(this);
         }
 
         return _messaging;
@@ -193,7 +190,7 @@ public class Tube extends EventDispatcher
     [Bindable(event="change")]
     public function get neighborhood(): Neighborhood {
         if (_neighborhood == null) {
-            _neighborhood = new Neighborhood(connector);
+            _neighborhood = new Neighborhood(this);
         }
         return _neighborhood;
     }

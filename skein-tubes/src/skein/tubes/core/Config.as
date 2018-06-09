@@ -11,7 +11,6 @@ import flash.utils.Dictionary;
 
 import skein.core.skein_internal;
 import skein.tubes.tube.media.settings.MediaSettings;
-import skein.tubes.tube.media.settings.MediaSettingsBase;
 import skein.tubes.tube.sharing.replication.ShareReader;
 import skein.tubes.tube.sharing.replication.ShareWriter;
 

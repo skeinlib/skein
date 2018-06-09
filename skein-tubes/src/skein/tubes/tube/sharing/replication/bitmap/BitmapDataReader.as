@@ -7,14 +7,11 @@
  */
 package skein.tubes.tube.sharing.replication.bitmap
 {
-import skein.tubes.tube.sharing.replication.*;
-
 import flash.display.BitmapData;
 import flash.geom.Rectangle;
 import flash.utils.ByteArray;
 
 import skein.tubes.tube.sharing.replication.ShareReader;
-import skein.tubes.tube.sharing.replication.bitmap.HeaderBitmapData;
 
 public class BitmapDataReader implements ShareReader
 {

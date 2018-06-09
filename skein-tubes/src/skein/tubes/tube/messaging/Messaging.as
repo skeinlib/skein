@@ -5,9 +5,9 @@ package skein.tubes.tube.messaging {
 import flash.events.NetStatusEvent;
 
 import skein.core.skein_internal;
-import skein.tubes.core.Connector;
 import skein.tubes.core.emitter.Emitter;
 import skein.tubes.core.emitter.EmitterEvent;
+import skein.tubes.tube.Tube;
 
 use namespace skein_internal;
 
@@ -19,11 +19,11 @@ public class Messaging extends Emitter {
     //
     //--------------------------------------------------------------------------
 
-    public function Messaging(connector: Connector) {
+    public function Messaging(tube: Tube) {
         super();
 
-        _connector = connector;
-        _connector.addNetStatusCallback(netStatusHandler);
+        _tube = tube;
+        _tube.connector.addNetStatusCallback(netStatusHandler);
     }
 
     //--------------------------------------------------------------------------
@@ -32,7 +32,7 @@ public class Messaging extends Emitter {
     //
     //--------------------------------------------------------------------------
 
-    private var _connector: Connector;
+    protected var _tube: Tube;
 
     //--------------------------------------------------------------------------
     //
@@ -44,14 +44,13 @@ public class Messaging extends Emitter {
     //  MARK: Send
     //-------------------------------------
 
-    public function emit(event: String, to: String, message: Object, callback: Function = null): void {
-        _connector.whenConnected(function(): void {
-            var result: String = _connector.group.sendToNearest({
+    public function emit(event: String, message: Object, callback: Function = null): void {
+        _tube.connector.whenConnected(function(): void {
+            var result: String = _tube.connector.group.sendToAllNeighbors({
                 event: event,
                 payload: message,
-                from: _connector.myId,
-                to: to
-            }, _connector.convertPeerIDToGroupAddress(to));
+                from: _tube.connector.myId
+            });
             if (callback != null) {
                 callback(result);
             }
@@ -59,7 +58,17 @@ public class Messaging extends Emitter {
     }
 
     public function send(to: String, message: Object, callback: Function = null): void {
-        emit(EmitterEvent.MESSAGE, to, message, callback);
+        _tube.connector.whenConnected(function(): void {
+            var result: String = _tube.connector.group.sendToNearest({
+                event: EmitterEvent.MESSAGE,
+                payload: message,
+                from: _tube.connector.myId,
+                to: to
+            }, _tube.connector.convertPeerIDToGroupAddress(to));
+            if (callback != null) {
+                callback(result);
+            }
+        });
     }
 
     //-------------------------------------
@@ -75,9 +84,9 @@ public class Messaging extends Emitter {
     //-------------------------------------
 
     public function dispose(): void {
-        if (_connector) {
-            _connector.removeNetStatusCallback(netStatusHandler);
-            _connector = null;
+        if (_tube) {
+            _tube.connector.removeNetStatusCallback(netStatusHandler);
+            _tube = null;
         }
 
         off();
@@ -89,16 +98,28 @@ public class Messaging extends Emitter {
     //
     //--------------------------------------------------------------------------
 
-    private function netStatusHandler(event:NetStatusEvent):void {
+    protected function netStatusHandler(event: NetStatusEvent):void {
         switch (event.info.code) {
             case "NetGroup.SendTo.Notify":
-                if (event.info.fromLocal) {
-                    notifySubscribers(event.info.message, {});
+                if (event.info.message.to) {
+                    handleDirectMessage(event);
                 } else {
-                    _connector.group.sendToNearest(event.info.message, _connector.convertPeerIDToGroupAddress(event.info.message.to));
+                    handleCommonMessage(event);
                 }
                 break;
         }
+    }
+
+    protected function handleDirectMessage(event: NetStatusEvent): void {
+        if (event.info.fromLocal) {
+            notifySubscribers(event.info.message, {tube: _tube});
+        } else {
+            _tube.connector.group.sendToNearest(event.info.message, _tube.connector.convertPeerIDToGroupAddress(event.info.message.to));
+        }
+    }
+
+    protected function handleCommonMessage(event: NetStatusEvent): void {
+        notifySubscribers(event.info.message, {tube: _tube});
     }
 }
 }

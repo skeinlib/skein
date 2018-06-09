@@ -7,8 +7,6 @@
  */
 package skein.tubes.tube.sharing
 {
-import skein.tubes.tube.sharing.replication.*;
-
 import avmplus.getQualifiedClassName;
 
 import flash.events.EventDispatcher;
@@ -17,7 +15,6 @@ import flash.net.NetGroup;
 import flash.utils.getDefinitionByName;
 
 import skein.core.skein_internal;
-
 import skein.tubes.core.Config;
 import skein.tubes.tube.sharing.replication.ShareWriter;
 

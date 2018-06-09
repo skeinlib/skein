@@ -5,7 +5,6 @@ package skein.tubes.builder {
 import flash.net.GroupSpecifier;
 
 import skein.core.skein_internal;
-
 import skein.tubes.tube.Tube;
 
 use namespace skein_internal;

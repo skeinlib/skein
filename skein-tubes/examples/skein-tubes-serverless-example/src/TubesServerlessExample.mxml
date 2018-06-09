@@ -19,24 +19,30 @@
         private function setupHandler(): void {
 
             _tube = tubes("skein.tubes.test")
-                .connection()
-                    .address("rtmfp:")
-                .build()
-                .specifier()
-                    .multicastEnabled(true)
-                    .postingEnabled(true)
-                    .routingEnabled(true)
-                    .addIPMulticastAddress("239.254.254.2:30304")
-                    .ipMulticastMemberUpdatesEnabled(true)
-                .build()
-            .build();
+                        .connection()
+                            .address("rtmfp:")
+                        .build()
+                        .specifier()
+                            .postingEnabled(true)
+                            .routingEnabled(true)
+                            .multicastEnabled(true)
+                            .addIPMulticastAddress("239.254.254.2:30304")
+                            .ipMulticastMemberUpdatesEnabled(true)
+                        .build()
+                    .build();
 
-            _tube.posting.onMessage(function (message: Object): void {
-                outputTextArea.text += message + "\n";
+            _tube.posting.onMessage(function (message: Object, from: String, tube: Tube): void {
+                outputTextArea.text += "post from: " + from + ":\n" + message + "\n";
+                tube.messaging.send(from, "received");
             });
 
-            _tube.messaging.onMessage(function (from: String, message: Object): void {
-                outputTextArea.text += "from:" + from + "\n\t" + message;
+            _tube.messaging.on("broadcast", function (message: Object, from: String, tube: Tube): void {
+                outputTextArea.text += "breadcast from:" + from + ":\n" + message;
+                _tube.messaging.send(from, "received");
+            });
+
+            _tube.messaging.onMessage(function (message: Object, from: String, tube: Tube): void {
+                outputTextArea.text += "message from:" + from + ":\n" + message;
             });
         }
 
@@ -46,18 +52,22 @@
         }
 
         private function postHandler(): void {
-            _tube.posting.send(postingInput.text, function (messageId: String = null): void {
-                postingInput.text = null;
+            _tube.posting.send(postInput.text, function (messageId: String = null): void {
+                postInput.text = null;
             });
         }
 
         private function sendHandler(): void {
             var peerId: String = neighborList.selectedItem as String;
             if (peerId) {
-                _tube.messaging.send(peerId, messagingInput.text, function(): void {
-                    messagingInput.text = null;
+                _tube.messaging.send(peerId, sendInput.text, function (): void {
+                    sendInput.text = null;
                 });
             }
+        }
+
+        private function sendAllHandler(): void {
+            _tube.messaging.emit("broadcast", sendAllInput.text);
         }
         ]]>
     </fx:Script>
@@ -81,7 +91,7 @@
         <f:LayoutGroup>
             <f:layoutData><f:VerticalLayoutData percentWidth="100"/></f:layoutData>
             <f:layout><f:HorizontalLayout gap="10"/></f:layout>
-            <f:TextInput id="postingInput">
+            <f:TextInput id="postInput">
                 <f:layoutData><f:HorizontalLayoutData percentWidth="100"/></f:layoutData>
             </f:TextInput>
             <f:Button label="Post" triggered="postHandler()" />
@@ -89,13 +99,21 @@
         <f:LayoutGroup>
             <f:layoutData><f:VerticalLayoutData percentWidth="100"/></f:layoutData>
             <f:layout><f:HorizontalLayout gap="10"/></f:layout>
-            <f:TextInput id="messagingInput">
+            <f:TextInput id="sendInput">
                 <f:layoutData><f:HorizontalLayoutData percentWidth="80"/></f:layoutData>
             </f:TextInput>
             <f:PickerList id="neighborList" dataProvider="{new VectorCollection(_tube.neighborhood.neighbors)}">
                 <f:layoutData><f:HorizontalLayoutData percentWidth="20"/></f:layoutData>
             </f:PickerList>
             <f:Button label="Send" triggered="sendHandler()" />
+        </f:LayoutGroup>
+        <f:LayoutGroup>
+            <f:layoutData><f:VerticalLayoutData percentWidth="100"/></f:layoutData>
+            <f:layout><f:HorizontalLayout gap="10"/></f:layout>
+            <f:TextInput id="sendAllInput">
+                <f:layoutData><f:HorizontalLayoutData percentWidth="100"/></f:layoutData>
+            </f:TextInput>
+            <f:Button label="Send All" triggered="sendAllHandler()" />
         </f:LayoutGroup>
     </f:LayoutGroup>
 

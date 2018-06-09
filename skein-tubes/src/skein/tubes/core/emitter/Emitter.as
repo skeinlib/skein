@@ -74,6 +74,9 @@ public class Emitter extends EventDispatcher {
         var event: String   = message.event;
         var payload: Object = message.payload;
 
+        info = info || {};
+        info.to = to;
+
         var handlers: Vector.<Function> = _subscribersMap[event];
         if (handlers == null || handlers.length == 0) {
             return;
@@ -81,8 +84,12 @@ public class Emitter extends EventDispatcher {
 
         for (var i: int = 0; i < handlers.length; i++) {
             var handler: Function = handlers[i];
-            if (handler.length == 2) {
-                handler(from, payload);
+            if (handler.length == 4) {
+                handler(payload, from, info.tube, info);
+            } else if (handler.length == 3) {
+                handler(payload, from, info.tube)
+            } else if (handler.length == 2) {
+                handler(payload, from);
             } else if (handler.length == 1) {
                 handler(payload);
             } else {
