@@ -1,6 +1,6 @@
 # skein-tubes
 
-A wrapper for Adobe Flash's RTMFP protocol implementation
+A wrapper for Adobe Flash's RTMFP protocol implementation.
 
 ## Features
 
@@ -12,14 +12,14 @@ A wrapper for Adobe Flash's RTMFP protocol implementation
 
 ## Basic concepts
 
-* `Tube` provides access to all features of one `NetGroup` instance, it takes a `name` in the parameters, this name is used as GroupSpecifier's name.
+* `Tube` provides access to all features of the one `NetGroup` instance, it takes `name` parameter in the constructor, this name is used later as `GroupSpecifier`'s name.
 * `Connector` manages connections using `NetConnection` and `NetGroup` instances, it is an internal class that is not designed to be used directly.
-* `Connection` tube's facet that provides methods for subscription to connetion related events.
-* `Neighborhood` tube's facet that provides information about neighbors
-* `Messaging` tube's facet that is a facade for messaging features like sending direct message or emiting events to all neighbors.
-* `Posting` tube's facet that is a facade for `NetGroup.post()` functionality.
-* `Broadcast` tube's facet that is responsible for publishing audio/video streams.
-* `Playback` tube's facet that is responsible for playing audio/video streams.
+* `Connection` is a tube's facet that provides methods for subscription to connetion related events.
+* `Neighborhood` is a tube's facet that provides information about neighbors
+* `Messaging` a tube's facet that is a facade for messaging features like sending direct message or emiting events to all neighbors.
+* `Posting` a tube's facet that is a facade for `NetGroup.post()` functionality.
+* `Broadcast` a tube's facet that is responsible for publishing audio/video streams.
+* `Playback` a tube's facet that is responsible for playing audio/video streams.
 * `Giver`/`Taker` under development, these tube's facets are responsible for sharing binary data.
 * `Config` contains default settings 
 
@@ -32,7 +32,7 @@ A wrapper for Adobe Flash's RTMFP protocol implementation
 
 ### Configuration
 
-Use `TubeBuilder` to configure a `Tube`, next configuration creates serverless IP multicasting and immediately sends _Hi there!_ after conection established, then all received messages will be printed in the output:
+Use `TubeBuilder` to configure one `Tube` instance. The next configuration creates serverless IP multicasting and immediately sends _Hi there!_ after conection established, all received messages will be printed in the output:
 
 ```as3
 tubes("skein.tubes.test")
@@ -53,7 +53,6 @@ tube("skein.tubes.test").posting.onMessage(function (message: Object): void {
 });
 
 tube("skein.tubes.test").posting.send("Hi there!");
-
 ```
 
 Use `ConfigBuilder` to set global configuration like `address`:
