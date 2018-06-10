@@ -262,7 +262,7 @@ public class Tube extends EventDispatcher
 
         var share: Giver = _shares[index] = new Giver(data, index, NaN);
 
-        if (connector.connected)
+        if (connector.isConnected)
         {
             share.setGroup(connector.group);
         }

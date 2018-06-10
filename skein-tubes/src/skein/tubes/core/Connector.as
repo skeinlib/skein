@@ -47,6 +47,7 @@ public class Connector extends EventDispatcher
     //
     //----------------------------------------------------------------------
 
+
     //----------------------------------------------------------------------
     //
     //	Properties
@@ -58,11 +59,16 @@ public class Connector extends EventDispatcher
         return _name;
     }
 
+    private var _isConnecting: Boolean = false;
+    public function get isConnecting(): Boolean {
+        return _isConnecting;
+    }
+
     // connected
 
-    private var _connected: Boolean;
-    public function get connected(): Boolean {
-        return _connected;
+    private var _isConnected: Boolean;
+    public function get isConnected(): Boolean {
+        return _isConnected;
     }
 
     // connection
@@ -108,7 +114,7 @@ public class Connector extends EventDispatcher
     //-----------------------------------
 
     public function whenConnected(callback: Function): void {
-        if (connected) {
+        if (isConnected) {
             callback();
         } else {
             delayToEvent(this, Event.CONNECT, callback);
@@ -116,12 +122,18 @@ public class Connector extends EventDispatcher
     }
 
     public function connect(): void {
-        if (_connection && _connection.connected) {
-            this.dispatchEvent(new Event(Event.CONNECT));
+
+        if (_isConnected) {
+            return;
+        }
+
+        if (_isConnecting) {
             return;
         }
 
         connectToConnection();
+
+        _isConnecting = true;
     }
 
     protected function connectToConnection(): void {
@@ -146,15 +158,10 @@ public class Connector extends EventDispatcher
         trace("Connected to NetGroup");
 
         callLater(function (): void {
-            _connected = true;
+            _isConnecting = false;
+            _isConnected = true;
             dispatchEvent(new Event(Event.CONNECT));
         });
-
-//        var timeoutId: uint = setTimeout(function():void {
-//            clearTimeout(timeoutId);
-//            _connected = true;
-//            dispatchEvent(new Event(Event.CONNECT));
-//        }, 1);
     }
 
     //-----------------------------------
@@ -166,23 +173,22 @@ public class Connector extends EventDispatcher
 
         trace("Attempt to disconnect from NetGroup");
 
-        if (_group)
-        {
+        if (_group) {
             _group.removeEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
             _group.close();
         }
 
         trace("Attempt to disconnect from NetConnection");
 
-        if (_connection)
-        {
+        if (_connection) {
             _connection.removeEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
             _connection.close();
         }
 
         trace("Disconnected");
 
-        _connected = false;
+        _isConnecting = false;
+        _isConnected = false;
 
         this.dispatchEvent(new Event(Event.CLOSE));
     }

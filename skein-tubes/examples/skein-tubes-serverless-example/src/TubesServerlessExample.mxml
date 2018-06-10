@@ -19,30 +19,30 @@
         private function setupHandler(): void {
 
             _tube = tubes("skein.tubes.test")
-                        .connection()
-                            .address("rtmfp:")
-                        .build()
-                        .specifier()
-                            .postingEnabled(true)
-                            .routingEnabled(true)
-                            .multicastEnabled(true)
-                            .addIPMulticastAddress("239.254.254.2:30304")
-                            .ipMulticastMemberUpdatesEnabled(true)
-                        .build()
+                    .connection()
+                    .address("rtmfp:")
+                    .build()
+                    .specifier()
+                    .postingEnabled(true)
+                    .routingEnabled(true)
+                    .multicastEnabled(true)
+                    .addIPMulticastAddress("239.254.254.2:30304")
+                    .ipMulticastMemberUpdatesEnabled(true)
+                    .build()
                     .build();
 
-            _tube.posting.onMessage(function (message: Object, from: String, tube: Tube): void {
-                outputTextArea.text += "post from: " + from + ":\n" + message + "\n";
-                tube.messaging.send(from, "received");
+            _tube.posting.onMessage(function (message: Object, sender: String, tube: Tube): void {
+                outputTextArea.text += "post from: " + sender + ":\n" + message + "\n";
+                tube.messaging.sendMessage(sender, "received");
             });
 
             _tube.messaging.on("broadcast", function (message: Object, from: String, tube: Tube): void {
                 outputTextArea.text += "broadcast from:" + from + ":\n" + message;
-                _tube.messaging.send(from, "received");
+                _tube.messaging.sendMessage(from, "received");
             });
 
-            _tube.messaging.onMessage(function (message: Object, from: String, tube: Tube): void {
-                outputTextArea.text += "message from:" + from + ":\n" + message;
+            _tube.messaging.onMessage(function (message: Object, sender: String, tube: Tube): void {
+                outputTextArea.text += "message from:" + sender + ":\n" + message;
             });
         }
 
@@ -60,7 +60,7 @@
         private function sendHandler(): void {
             var peerId: String = neighborList.selectedItem as String;
             if (peerId) {
-                _tube.messaging.send(peerId, sendInput.text, function (): void {
+                _tube.messaging.sendMessage(peerId, sendInput.text, function (): void {
                     sendInput.text = null;
                 });
             }
