@@ -11,6 +11,9 @@
             <entry module-name="skein-utils" build-configuration-name="skein-utils">
               <dependency linkage="Merged" />
             </entry>
+            <entry module-name="skein-logger" build-configuration-name="skein-logger">
+              <dependency linkage="Merged" />
+            </entry>
           </entries>
           <sdk name="29.0.0" />
         </dependencies>
@@ -31,5 +34,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="skein-core" exported="" />
     <orderEntry type="module" module-name="skein-utils" exported="" />
+    <orderEntry type="module" module-name="skein-logger" exported="" />
   </component>
 </module>

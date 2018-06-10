@@ -7,10 +7,9 @@ import flash.events.NetStatusEvent;
 import flash.net.GroupSpecifier;
 import flash.net.NetConnection;
 import flash.net.NetGroup;
-import flash.utils.clearTimeout;
-import flash.utils.setTimeout;
 
 import skein.core.skein_internal;
+import skein.logger.Log;
 import skein.utils.delay.callLater;
 import skein.utils.delay.delayToEvent;
 
@@ -137,6 +136,8 @@ public class Connector extends EventDispatcher
     }
 
     protected function connectToConnection(): void {
+        Log.d("skein-tubes", "Attempt to connect to NetConnection with address=\""+ address +"\"");
+
         if (_connection == null) {
             _connection = new NetConnection();
         }
@@ -146,16 +147,19 @@ public class Connector extends EventDispatcher
     }
 
     protected function onConnectionConnected():void {
+        Log.d("skein-tubes", "Established connection to NetConnection");
         this.connectToGroup();
     }
 
     protected function connectToGroup():void {
+        Log.d("skein-tubes", "Attempt to connect to NetGroup with specifier=\""+ specifier +"\"");
+
         _group = new NetGroup(connection, specifier.groupspecWithAuthorizations());
         _group.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
     }
 
     protected function onGroupConnected():void {
-        trace("Connected to NetGroup");
+        Log.d("skein-tubes", "Established connection to NetGroup");
 
         callLater(function (): void {
             _isConnecting = false;
@@ -169,23 +173,21 @@ public class Connector extends EventDispatcher
     //-----------------------------------
 
     public function disconnect():void {
-        trace("Connector.disconnect()");
-
-        trace("Attempt to disconnect from NetGroup");
+        Log.d("skein-tubes", "Attempt to disconnect from NetGroup");
 
         if (_group) {
             _group.removeEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
             _group.close();
         }
 
-        trace("Attempt to disconnect from NetConnection");
+        Log.d("skein-tubes", "Attempt to disconnect from NetConnection");
 
         if (_connection) {
             _connection.removeEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
             _connection.close();
         }
 
-        trace("Disconnected");
+        Log.d("skein-tubes", "Disconnected");
 
         _isConnecting = false;
         _isConnected = false;
@@ -202,6 +204,7 @@ public class Connector extends EventDispatcher
     }
 
     skein_internal function dispose(): void {
+        Log.d("skein-tubes", "Dispose Connector with name " + name);
         disconnect();
         _connection = null;
         _group = null;
@@ -291,13 +294,8 @@ public class Connector extends EventDispatcher
     //
     //----------------------------------------------------------------------
 
-    private function netStatusHandler(event:NetStatusEvent):void
-    {
-        trace(">>>>>>>>>>>>", event.info.code);
-
-        if (event.info.level) {
-            trace(event.info.code);
-        }
+    private function netStatusHandler(event:NetStatusEvent):void {
+        Log.d("skein-tubes", "Handle NetStatusEvent with info.code=\"" + event.info.code + "\"");
 
         switch (event.info.code) {
 

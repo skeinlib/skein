@@ -6,6 +6,8 @@ import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.events.NetStatusEvent;
 
+import skein.logger.Log;
+
 import skein.tubes.tube.Tube;
 import skein.utils.delay.callLater;
 import skein.utils.delay.delayToEvent;
@@ -64,6 +66,7 @@ public class Neighborhood extends EventDispatcher {
                 callback();
             }
         } else {
+            Log.d("skein-tubes", "Neighborhood: wait for at least one peer is connected.");
             delayToEvent(this, Event.ADDED, function(): void {
                 if (callback != null) {
                     callLater(callback);

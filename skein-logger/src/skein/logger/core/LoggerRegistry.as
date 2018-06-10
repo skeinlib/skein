@@ -21,6 +21,7 @@ public class LoggerRegistry {
                 var logger: Logger = new Implementation();
                 logger.appenders = Config.releaseLoggerAppenders(tag);
                 _loggers[tag] = logger;
+                return logger;
             }
         }
         return null;

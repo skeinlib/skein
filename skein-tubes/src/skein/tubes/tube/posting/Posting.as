@@ -5,6 +5,7 @@ package skein.tubes.tube.posting {
 import flash.events.NetStatusEvent;
 
 import skein.core.skein_internal;
+import skein.logger.Log;
 import skein.tubes.core.emitter.Emitter;
 import skein.tubes.core.emitter.EmitterEvent;
 import skein.tubes.tube.Tube;
@@ -45,8 +46,10 @@ public class Posting extends Emitter {
     //-------------------------------------
 
     public function emit(event: String, message: Object, callback: Function = null): void {
+        Log.d("skein-tubes", "Posting: attempt to emit \""+ event +"\" event.");
         _tube.neighborhood.whenNotAlone(function (): void {
             var messageId: String = _tube.connector.group.post({event: event, payload: message, from: _tube.connector.myId});
+            Log.d("skein-tubes", "Posting: event \""+ event +"\" sent.");
             if (callback != null) {
                 callback(messageId);
             }
@@ -87,6 +90,7 @@ public class Posting extends Emitter {
     private function netStatusHandler(event:NetStatusEvent):void {
         switch (event.info.code) {
             case "NetGroup.Posting.Notify":
+                Log.d("skein-tubes", "Post message received.");
                 notifySubscribers(event.info.message, {tube: _tube, messageId: event.info.messageID});
                 break;
         }

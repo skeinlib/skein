@@ -5,6 +5,7 @@ package skein.tubes.tube.messaging {
 import flash.events.NetStatusEvent;
 
 import skein.core.skein_internal;
+import skein.logger.Log;
 import skein.tubes.core.emitter.Emitter;
 import skein.tubes.core.emitter.EmitterEvent;
 import skein.tubes.tube.Tube;
@@ -45,12 +46,14 @@ public class Messaging extends Emitter {
     //-------------------------------------
 
     public function emit(event: String, message: Object = null, callback: Function = null): void {
+        Log.d("skein-tubes", "Messaging: attempt to emit \""+ event +"\" event.");
         _tube.neighborhood.whenNotAlone(function(): void {
             var result: String = _tube.connector.group.sendToAllNeighbors({
                 event: event,
                 payload: message,
                 from: _tube.connector.myId
             });
+            Log.d("skein-tubes", "Messaging: event \""+ event +"\" sent.");
             if (callback != null) {
                 callback(result);
             }
@@ -58,6 +61,7 @@ public class Messaging extends Emitter {
     }
 
     public function send(event: String, to: String, message: Object = null, callback: Function = null): void {
+        Log.d("skein-tubes", "Messaging: attempt to send \""+ event +"\" event.");
         _tube.neighborhood.whenNotAlone(function(): void {
             var result: String = _tube.connector.group.sendToNearest({
                 event: event,
@@ -65,6 +69,7 @@ public class Messaging extends Emitter {
                 from: _tube.connector.myId,
                 to: to
             }, _tube.connector.convertPeerIDToGroupAddress(to));
+            Log.d("skein-tubes", "Messaging: event \""+ event +"\" sent.");
             if (callback != null) {
                 callback(result);
             }
@@ -116,6 +121,7 @@ public class Messaging extends Emitter {
 
     protected function handleDirectMessage(event: NetStatusEvent): void {
         if (event.info.fromLocal) {
+            Log.d("skein-tubes", "Messaging: direct message received");
             notifySubscribers(event.info.message, {tube: _tube});
         } else {
             _tube.connector.group.sendToNearest(event.info.message, _tube.connector.convertPeerIDToGroupAddress(event.info.message.to));
@@ -123,6 +129,7 @@ public class Messaging extends Emitter {
     }
 
     protected function handleCommonMessage(event: NetStatusEvent): void {
+        Log.d("skein-tubes", "Messaging: broadcast message received");
         notifySubscribers(event.info.message, {tube: _tube});
     }
 }
