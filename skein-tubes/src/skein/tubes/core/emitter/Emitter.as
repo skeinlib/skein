@@ -4,6 +4,8 @@
 package skein.tubes.core.emitter {
 import flash.events.EventDispatcher;
 
+import skein.logger.Log;
+
 public class Emitter extends EventDispatcher {
 
     // Constructor
@@ -65,14 +67,16 @@ public class Emitter extends EventDispatcher {
             return;
         }
 
-        if (_subscribersMap == null) {
-            return;
-        }
-
         var from: String    = message.from;
         var to: String      = message.to;
         var event: String   = message.event;
         var payload: Object = message.payload;
+
+        Log.d("skein-tubes", "Event \""+event+"\" with payload \""+payload+"\" received from " + from);
+
+        if (_subscribersMap == null) {
+            return;
+        }
 
         info = info || {};
         info.to = to;

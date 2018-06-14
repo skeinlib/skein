@@ -50,6 +50,12 @@ public class Neighborhood extends EventDispatcher {
         return _neighbors;
     }
 
+    // hasNeighbors
+
+    public function get hasNeighbors(): Boolean {
+        return _neighbors.length > 0;
+    }
+
     //--------------------------------------------------------------------------
     //
     //  Methods

@@ -129,7 +129,7 @@ public class Messaging extends Emitter {
     }
 
     protected function handleCommonMessage(event: NetStatusEvent): void {
-        Log.d("skein-tubes", "Messaging: broadcast message received");
+        Log.d("skein-tubes", "Messaging: broadcast \""+event.info.message.event+"\"message received");
         notifySubscribers(event.info.message, {tube: _tube});
     }
 }
