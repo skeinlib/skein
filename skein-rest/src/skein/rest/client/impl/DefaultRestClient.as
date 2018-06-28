@@ -834,18 +834,7 @@ public class DefaultRestClient implements RestClient
         request.method = method;
         request.contentType = _contentType;
 
-        if (_headers != null)
-            request.requestHeaders = request.requestHeaders.concat(_headers);
-
-        if (Config.sharedInstance().authorization) {
-            var found: Boolean = (_headers || []).some(function(item: Object, ...rest): Boolean {
-                return item is URLRequestHeader && URLRequestHeader(item).name == "Authorization";
-            });
-
-            if (!found) {
-                request.requestHeaders = request.requestHeaders.concat(new URLRequestHeader("Authorization", Config.sharedInstance().authorization));
-            }
-        }
+        request.requestHeaders = request.requestHeaders.concat(gatherRequestHeaders());
 
         if (!isNaN(_timeout) && Object(request).hasOwnProperty("idleTimeout")) {
             request["idleTimeout"] = _timeout;
@@ -870,6 +859,31 @@ public class DefaultRestClient implements RestClient
                 callback();
             }
         }
+    }
+
+    private function gatherRequestHeaders(): Array {
+        var result: Array = [];
+
+        var authorizationFound: Boolean = false;
+
+        var n: int = _headers ? _headers.length : 0;
+        for (var i: int = 0; i < n; i++) {
+            var header: URLRequestHeader = _headers[i];
+            if (header.name == "Authorization") {
+                authorizationFound = true;
+                if (Boolean(header.value)) {
+                    result[result.length] = header;
+                }
+            } else {
+                result[result.length] = header;
+            }
+        }
+
+        if (!authorizationFound && Config.sharedInstance().authorization) {
+            result[result.length] = new URLRequestHeader("Authorization", Config.sharedInstance().authorization);
+        }
+
+        return result;
     }
 
     private function encodeRequest(data: Object, callback: Function): void {
