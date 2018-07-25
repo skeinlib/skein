@@ -62,6 +62,27 @@ public class Emitter extends EventDispatcher {
         }
     }
 
+    public function has(event: String, handler: Function = null): Boolean {
+        if (event == null) {
+            return false;
+        }
+
+        if (!_subscribersMap.hasOwnProperty(event)) {
+            return false;
+        }
+
+        var handlers: Vector.<Function> = _subscribersMap[event];
+        if (handlers == null || handlers.length == 0) {
+            return false;
+        }
+
+        if (handler == null) {
+            return true;
+        }
+
+        return handlers.indexOf(handler) >= 0;
+    }
+
     protected function notifySubscribers(message: Object, info: Object): void {
         if (message == null) {
             return;
