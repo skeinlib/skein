@@ -842,8 +842,8 @@ public class DefaultRestClient implements RestClient
 
         if (data != null) {
             encodeRequest(data,
-                function(data:Object, contentType: String = null):void {
-                    request.data = data;
+                function(encodedData: Object, contentType: String = null):void {
+                    request.data = encodedData;
 
                     if (contentType != null) {
                         request.contentType = contentType;
