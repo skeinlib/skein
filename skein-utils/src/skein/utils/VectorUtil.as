@@ -6,12 +6,13 @@ package skein.utils
 public class VectorUtil
 {
     public static function copy(from: *, to: *): void {
+        to.length = 0;
+
         if (from == null) {
             return;
         }
 
-        for (var i:int = 0; i < from.length; i++)
-        {
+        for (var i:int = 0; i < from.length; i++) {
             to[i] = from[i];
         }
     }
