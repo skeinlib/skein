@@ -512,6 +512,13 @@ public class DefaultRestClient implements RestClient
         return loader;
     }
 
+    public function patch(data:Object = null):Object
+    {
+        send("PATCH", data);
+
+        return loader;
+    }
+
     public function del(data:Object = null):Object
     {
         if (data != null && Config.sharedInstance().fixKnownIssues && Capabilities.version.substr(0, 3) == "AND")
