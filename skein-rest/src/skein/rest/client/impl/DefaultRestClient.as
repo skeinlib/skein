@@ -512,26 +512,32 @@ public class DefaultRestClient implements RestClient
         return loader;
     }
 
-    public function patch(data:Object = null):Object
-    {
+    public function patch(data:Object = null): Object {
+
+        var isAndroid: Boolean = Capabilities.version.substr(0, 3) == "AND";
+        if (isAndroid && data != null && Config.sharedInstance().fixKnownIssues) {
+            // fixes issue with empty BODY for PATCH method on Android platform
+            addHeader(new URLRequestHeader("X-HTTP-Method-Override", "PATCH"));
+            send(URLRequestMethod.POST, data);
+            return loader;
+        }
+
         send("PATCH", data);
 
         return loader;
     }
 
-    public function del(data:Object = null):Object
-    {
-        if (data != null && Config.sharedInstance().fixKnownIssues && Capabilities.version.substr(0, 3) == "AND")
-        {
-            // fixes issue with empty BODY for DELETE method on Android platform
+    public function del(data:Object = null):Object {
 
+        var isAndroid: Boolean = Capabilities.version.substr(0, 3) == "AND";
+        if (isAndroid && data != null && Config.sharedInstance().fixKnownIssues) {
+            // fixes issue with empty BODY for DELETE method on Android platform
             addHeader(new URLRequestHeader("X-HTTP-Method-Override", "DELETE"));
             send(URLRequestMethod.POST, data);
+            return loader;
         }
-        else
-        {
-            send(URLRequestMethod.DELETE, data);
-        }
+
+        send(URLRequestMethod.DELETE, data);
 
         return loader;
     }

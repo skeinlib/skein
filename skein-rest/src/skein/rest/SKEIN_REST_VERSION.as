@@ -1,3 +1,3 @@
 package skein.rest {
-    public const SKEIN_REST_VERSION:String = "1.1.11";
+    public const SKEIN_REST_VERSION:String = "1.1.12";
 }
