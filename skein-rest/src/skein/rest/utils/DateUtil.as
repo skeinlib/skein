@@ -601,17 +601,18 @@ public class DateUtil
         var finalDate:Date;
         try
         {
-            var dateStr:String = str.substring(0, str.indexOf("T"));
-            var timeStr:String = str.substring(str.indexOf("T") + 1, str.length);
+            var timeSeparatorIndex: int = str.indexOf("T");
+            var dateStr: String = timeSeparatorIndex == -1 ? str : str.substring(0, timeSeparatorIndex);
+            var timeStr: String = timeSeparatorIndex == -1 ? "" : str.substring(timeSeparatorIndex + 1, str.length);
             var dateArr:Array = dateStr.split("-");
             var year:Number = Number(dateArr.shift());
             var month:Number = Number(dateArr.shift());
             var date:Number = Number(dateArr.shift());
 
-            var multiplier:Number;
-            var offsetHours:Number;
-            var offsetMinutes:Number;
-            var offsetStr:String;
+            var multiplier: Number = 1;
+            var offsetHours: Number = 0;
+            var offsetMinutes: Number = 0;
+            var offsetStr: String;
 
             if (timeStr.indexOf("Z") != -1)
             {
@@ -637,7 +638,7 @@ public class DateUtil
                 offsetMinutes = Number(offsetStr.substring(offsetStr.indexOf(":") + 1, offsetStr.length));
                 timeStr = timeStr.substring(0, timeStr.indexOf("+"));
             }
-            else // offset is -
+            else if (timeStr.indexOf("-") != -1)
             {
                 multiplier = -1;
                 offsetStr = timeStr.substring(timeStr.indexOf("-") + 1, timeStr.length);
@@ -654,9 +655,9 @@ public class DateUtil
                 offsetMinutes = Number(offsetStr.substring(offsetStr.indexOf(":") + 1, offsetStr.length));
                 timeStr = timeStr.substring(0, timeStr.indexOf("-"));
             }
-            var timeArr:Array = timeStr.split(":");
-            var hour:Number = Number(timeArr.shift());
-            var minutes:Number = Number(timeArr.shift());
+            var timeArr: Array = timeStr.split(":");
+            var hour: Number = (timeArr.length > 0) ? Number(timeArr.shift()) : 0;
+            var minutes: Number = (timeArr.length > 0) ? Number(timeArr.shift()) : 0;
             var secondsArr:Array = (timeArr.length > 0) ? String(timeArr.shift()).split(".") : null;
             var seconds:Number = (secondsArr != null && secondsArr.length > 0) ? Number(secondsArr.shift()) : 0;
             var milliseconds:Number = (secondsArr != null && secondsArr.length > 0) ? Number(secondsArr.shift()) : 0;
@@ -671,7 +672,7 @@ public class DateUtil
         }
         catch (e:Error)
         {
-            var eStr:String = "Unable to parse the string [" + str + "] into a date. ";
+            var eStr:String = "Unable to parse the string " + str + " into a date. ";
             eStr += "The internal error was: " + e.toString();
             throw new Error(eStr);
         }
