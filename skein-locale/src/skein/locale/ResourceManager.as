@@ -9,11 +9,17 @@ package skein.locale
 {
 import flash.events.EventDispatcher;
 
+import skein.core.skein_internal;
+
 import skein.locale.core.*;
 
 import flash.events.Event;
 
+import skein.locale.core.Bundle;
+
 import skein.utils.StringUtil;
+
+use namespace skein_internal;
 
 [Event(name="change", type="flash.events.Event")]
 
@@ -151,25 +157,24 @@ public class ResourceManager extends EventDispatcher
         addBundles(bundles);
     }
 
-    private function addBundles(bundles:Vector.<Bundle>):void
-    {
-        if (bundles && bundles.length > 0)
-        {
-            for (var i:int, n:int = bundles.length; i < n; i++)
-            {
-                var b:Bundle = bundles[i];
+    internal function addBundles(bundles: Vector.<Bundle>): void {
+        if (bundles == null || bundles.length == 0) {
+            return;
+        }
 
-                if (!bundleMap.hasOwnProperty(b.locale))
-                {
-                    bundleMap[b.locale] = {};
+        for (var i: int = 0, n: int = bundles.length; i < n; i++) {
+            var b: Bundle = bundles[i];
 
-                    availableLocales.push(b.locale);
-                }
-
-                bundleMap[b.locale][b.name] = b;
+            if (!bundleMap.hasOwnProperty(b.locale)) {
+                bundleMap[b.locale] = {};
+                availableLocales.push(b.locale);
             }
 
-            dispatchEvent(new Event(Event.CHANGE));
+            if (bundleMap[b.locale].hasOwnProperty(b.name)) {
+                Bundle(bundleMap[b.locale][b.name]).merge(b, BundleMergeStrategy.keepExistingOne);
+            } else {
+                bundleMap[b.locale][b.name] = b;
+            }
         }
     }
 

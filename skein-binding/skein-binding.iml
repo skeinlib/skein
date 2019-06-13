@@ -6,7 +6,7 @@
         <dependencies target-player="27.0">
           <entries>
             <entry module-name="skein-core" build-configuration-name="skein-core">
-              <dependency linkage="Merged" />
+              <dependency linkage="External" />
             </entry>
             <entry library-id="b945489d-ff19-4b3b-964d-64723fe3629c">
               <dependency linkage="Merged" />

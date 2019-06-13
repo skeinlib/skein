@@ -2,14 +2,17 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="skein-locale">
     <configurations>
-      <configuration name="skein-locale" pure-as="true" output-type="Library" output-file="skein-locale-1.0.0.swc" output-folder="$MODULE_DIR$/../bin">
+      <configuration name="skein-locale" pure-as="true" output-type="Library" output-file="skein-locale.swc" output-folder="$MODULE_DIR$/../bin">
         <dependencies target-player="29.0">
           <entries>
             <entry module-name="skein-utils" build-configuration-name="skein-utils">
-              <dependency linkage="Merged" />
+              <dependency linkage="External" />
             </entry>
             <entry module-name="skein-binding" build-configuration-name="skein-binding">
-              <dependency linkage="Merged" />
+              <dependency linkage="External" />
+            </entry>
+            <entry module-name="skein-core" build-configuration-name="skein-core">
+              <dependency linkage="External" />
             </entry>
           </entries>
           <sdk name="29.0.0" />
@@ -31,5 +34,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="skein-utils" exported="" />
     <orderEntry type="module" module-name="skein-binding" exported="" />
+    <orderEntry type="module" module-name="skein-core" exported="" />
   </component>
 </module>

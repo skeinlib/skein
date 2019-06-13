@@ -7,6 +7,10 @@
  */
 package skein.locale.core
 {
+import skein.core.skein_internal;
+
+use namespace skein_internal;
+
 public class Bundle
 {
     public function Bundle(locale:String, name:String, content:Object)
@@ -34,6 +38,21 @@ public class Bundle
     public function get content():Object
     {
         return _content;
+    }
+
+    skein_internal function merge(bundle: Bundle, mergeStrategy: BundleMergeStrategy): Boolean {
+        if (bundle.locale != locale || bundle.name != name) {
+            return false;
+        }
+
+        for (var property: String in bundle.content) {
+            if (content.hasOwnProperty(property) && mergeStrategy == BundleMergeStrategy.keepExistingOne) {
+                continue;
+            }
+            content[property] = bundle.content[property];
+        }
+
+        return true;
     }
 }
 }
