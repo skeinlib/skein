@@ -12,21 +12,20 @@ import skein.locale.core.Parser;
 
 public class BundleParser implements Parser
 {
-    public function BundleParser()
-    {
+    public function BundleParser() {
+        super();
     }
 
-    public function known(data:Object):Boolean
-    {
+    public function known(data: Object): Boolean {
         return data is Bundle || data is Vector.<Bundle>;
     }
 
-    public function parse(data:Object):Vector.<Bundle>
-    {
-        if (data is Vector.<Bundle>)
+    public function parse(data:Object, BundleContentType: Class):Vector.<Bundle> {
+        if (data is Vector.<Bundle>) {
             return data as Vector.<Bundle>;
-        else
+        } else {
             return new <Bundle>[data as Bundle];
+        }
     }
 }
 }

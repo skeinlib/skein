@@ -11,10 +11,15 @@ import skein.core.skein_internal;
 
 use namespace skein_internal;
 
-public class Bundle
-{
-    public function Bundle(locale:String, name:String, content:Object)
-    {
+public class Bundle {
+
+    //--------------------------------------------------------------------------
+    //
+    //  Constructor
+    //
+    //--------------------------------------------------------------------------
+
+    public function Bundle(locale: String, name: String, content: BundleContent) {
         super();
 
         _name = name;
@@ -22,37 +27,51 @@ public class Bundle
         _content = content;
     }
 
-    private var _name:String;
-    public function get name():String
-    {
+    //--------------------------------------------------------------------------
+    //
+    //  Properties
+    //
+    //--------------------------------------------------------------------------
+
+    //-------------------------------------
+    //  name
+    //-------------------------------------
+
+    private var _name: String;
+    public function get name(): String {
         return _name;
     }
 
-    private var _locale:String;
-    public function get locale():String
-    {
+    //-------------------------------------
+    //  locale
+    //-------------------------------------
+
+    private var _locale: String;
+    public function get locale(): String {
         return _locale;
     }
 
-    private var _content:Object;
-    public function get content():Object
-    {
+    //-------------------------------------
+    //  content
+    //-------------------------------------
+
+    private var _content: BundleContent;
+    public function get content(): BundleContent {
         return _content;
     }
+
+    //--------------------------------------------------------------------------
+    //
+    //  Methods
+    //
+    //--------------------------------------------------------------------------
 
     skein_internal function merge(bundle: Bundle, mergeStrategy: BundleMergeStrategy): Boolean {
         if (bundle.locale != locale || bundle.name != name) {
             return false;
         }
 
-        for (var property: String in bundle.content) {
-            if (content.hasOwnProperty(property) && mergeStrategy == BundleMergeStrategy.keepExistingOne) {
-                continue;
-            }
-            content[property] = bundle.content[property];
-        }
-
-        return true;
+        return this.content.merge(bundle.content, mergeStrategy);
     }
 }
 }

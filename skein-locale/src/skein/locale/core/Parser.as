@@ -7,10 +7,10 @@
  */
 package skein.locale.core
 {
-public interface Parser
-{
-    function known(data:Object):Boolean;
+public interface Parser {
 
-    function parse(data:Object):Vector.<Bundle>;
+    function known(data: Object): Boolean;
+
+    function parse(data: Object, BundleContentType: Class): Vector.<Bundle>;
 }
 }

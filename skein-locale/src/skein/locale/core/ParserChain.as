@@ -10,27 +10,43 @@ package skein.locale.core
 import skein.locale.core.parser.BundleParser;
 import skein.locale.core.parser.PropertiesParser;
 
-public class ParserChain
-{
-    public function ParserChain()
-    {
+public class ParserChain {
+
+    //--------------------------------------------------------------------------
+    //
+    //  Constructor
+    //
+    //--------------------------------------------------------------------------
+
+    public function ParserChain() {
         super();
 
-        this.parsers = new <Parser>
-        [
+        this.parsers = new <Parser>[
             new BundleParser(),
             new PropertiesParser(),
         ];
     }
 
+    //--------------------------------------------------------------------------
+    //
+    //  Variables
+    //
+    //--------------------------------------------------------------------------
+
     private var parsers:Vector.<Parser>;
 
-    public function parse(data:Object):Vector.<Bundle>
-    {
-        for (var i:int, n:int = parsers.length; i < n; i++)
-        {
-            if (parsers[i].known(data))
-                return parsers[i].parse(data);
+    //--------------------------------------------------------------------------
+    //
+    //  Methods
+    //
+    //--------------------------------------------------------------------------
+
+    public function parse(data: Object, BundleContentType: Class): Vector.<Bundle> {
+
+        for (var i:int, n:int = parsers.length; i < n; i++) {
+            if (parsers[i].known(data)) {
+                return parsers[i].parse(data, BundleContentType);
+            }
         }
 
         return null;

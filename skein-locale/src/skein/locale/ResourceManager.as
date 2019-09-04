@@ -16,6 +16,8 @@ import skein.locale.core.*;
 import flash.events.Event;
 
 import skein.locale.core.Bundle;
+import skein.locale.core.bundle.MapBasedBundleContent;
+import skein.locale.core.bundle.SimpleBundleContent;
 
 import skein.utils.StringUtil;
 
@@ -23,8 +25,14 @@ use namespace skein_internal;
 
 [Event(name="change", type="flash.events.Event")]
 
-public class ResourceManager extends EventDispatcher
-{
+public class ResourceManager extends EventDispatcher {
+
+    //--------------------------------------------------------------------------
+    //
+    //  Singleton
+    //
+    //--------------------------------------------------------------------------
+
     private static var _instance:ResourceManager;
 
     public static function get instance():ResourceManager
@@ -35,8 +43,13 @@ public class ResourceManager extends EventDispatcher
         return _instance;
     }
 
-    public function ResourceManager()
-    {
+    //--------------------------------------------------------------------------
+    //
+    //  Constructor
+    //
+    //--------------------------------------------------------------------------
+
+    public function ResourceManager() {
         super();
     }
 
@@ -53,11 +66,11 @@ public class ResourceManager extends EventDispatcher
         {
             if (params && params.length > 0)
             {
-                return StringUtil.substitute(b.content[key], params);
+                return StringUtil.substitute(b.content.getResource(key), params);
             }
             else
             {
-                return b.content[key];
+                return b.content.getResource(key);
             }
         }
         else
@@ -65,6 +78,14 @@ public class ResourceManager extends EventDispatcher
             return null;
         }
     }
+
+    //--------------------------------------------------------------------------
+    //
+    //  Config
+    //
+    //--------------------------------------------------------------------------
+
+    public var shouldPreferMapBasedBundleContent: Boolean = false;
 
     //--------------------------------------------------------------------------
     //
@@ -150,9 +171,10 @@ public class ResourceManager extends EventDispatcher
         }
     }
 
-    private function parseSource(source:Source):void
-    {
-        var bundles:Vector.<Bundle> = parsers.parse(source.getData());
+    private function parseSource(source:Source):void {
+        var BundleContentType: Class = shouldPreferMapBasedBundleContent ? MapBasedBundleContent : SimpleBundleContent;
+
+        var bundles:Vector.<Bundle> = parsers.parse(source.getData(), BundleContentType);
 
         addBundles(bundles);
     }
@@ -200,7 +222,7 @@ public class ResourceManager extends EventDispatcher
             if (bundle == null)
                 continue;
 
-            if (bundle.content && Object(bundle.content).hasOwnProperty(resource))
+            if (bundle.content && bundle.content.hasResource(resource))
                 return bundle;
         }
 

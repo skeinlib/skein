@@ -8,20 +8,20 @@
 package skein.locale.core.parser
 {
 import skein.locale.core.Bundle;
+import skein.locale.core.BundleContent;
 import skein.locale.core.Parser;
 import skein.locale.core.RawData;
 import skein.utils.StringUtil;
-import skein.utils.StringUtil;
 
-public class PropertiesParser implements Parser
-{
+public class PropertiesParser implements Parser {
+
     private static const PATTERN:RegExp = /[\w\.]+\s*=\s*\.*/;
 
-    public function PropertiesParser()
-    {
+    public function PropertiesParser() {
+        super();
     }
 
-    public function known(data:Object):Boolean
+    public function known(data: Object): Boolean
     {
         var result:Boolean =
             data is RawData && PATTERN.test(String(RawData(data).content));
@@ -29,24 +29,27 @@ public class PropertiesParser implements Parser
         return result;
     }
 
-    public function parse(data:Object):Vector.<Bundle>
-    {
+    public function parse(data: Object, BundleContentType: Class): Vector.<Bundle> {
+
         var raw:RawData = data as RawData;
 
         var src:String = String(RawData(data).content);
 
-        var o:Object = {};
+        var content: BundleContent = new BundleContentType();
 
-        for each (var line:String in src.split("\n"))
-        {
+        for each (var line:String in src.split("\n")) {
             var assignmentIndex:int = line.indexOf("=");
 
             var key:String = StringUtil.trim(line.substring(0, assignmentIndex));
+            key = key.split("\\n").join("\n");
 
-            o[key] = line.substring(assignmentIndex + 1);
+            var value: String = line.substring(assignmentIndex + 1);
+            value = value.split("\\n").join("\n");
+
+            content.setResource(key, value);
         }
 
-        var bundle:Bundle = new Bundle(raw.locale, raw.bundle, o);
+        var bundle:Bundle = new Bundle(raw.locale, raw.bundle, content);
 
         return new <Bundle>[bundle];
     }
