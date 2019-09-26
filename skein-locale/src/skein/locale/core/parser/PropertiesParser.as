@@ -15,7 +15,7 @@ import skein.utils.StringUtil;
 
 public class PropertiesParser implements Parser {
 
-    private static const PATTERN:RegExp = /[\w\.]+\s*=\s*\.*/;
+    private static const PATTERN:RegExp = /.+=.+/;
 
     public function PropertiesParser() {
         super();

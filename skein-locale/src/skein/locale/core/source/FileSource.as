@@ -65,6 +65,8 @@ public class FileSource extends EventDispatcher implements Source
 
         loader.addErrorCallback(function():void
         {
+            trace("[skein-locale] Can't load resource at: " + url);
+
             loader.dispose();
         });
 
