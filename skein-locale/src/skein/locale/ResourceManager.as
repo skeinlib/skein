@@ -58,25 +58,18 @@ public class ResourceManager extends EventDispatcher {
     private var availableLocales:Array = [];
 
     [Bindable(event="change")]
-    public function getString(bundle:String, key:String, params:Array=null):String
-    {
-        var b:Bundle = findBundle(bundle, key);
+    public function getString(bundle: String, key: String, params: Array = null): String {
+        var b: Bundle = findBundle(bundle, key);
 
-        if (b != null)
-        {
-            if (params && params.length > 0)
-            {
-                return StringUtil.substitute(b.content.getResource(key), params);
-            }
-            else
-            {
-                return b.content.getResource(key);
-            }
+        if (b == null) {
+            return key;
         }
-        else
-        {
-            return null;
-        }
+
+        var string: String = params && params.length > 0
+            ? StringUtil.substitute(b.content.getResource(key), params)
+            : b.content.getResource(key);
+
+        return string || key;
     }
 
     //--------------------------------------------------------------------------
