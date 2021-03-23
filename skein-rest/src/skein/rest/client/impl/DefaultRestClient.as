@@ -951,6 +951,12 @@ public class DefaultRestClient implements RestClient
             addParam(Config.sharedInstance().accessTokenKey, Config.sharedInstance().accessToken);
         }
 
+        if (Config.sharedInstance().hasParams) {
+            for (var name: String in Config.sharedInstance().params) {
+                addParam(name, Config.sharedInstance().getParam(name));
+            }
+        }
+
         if (_params)
         {
             var variables:URLVariables = new URLVariables();

@@ -215,6 +215,41 @@ public class Config extends EventDispatcher
     }
 
     //-----------------------------------
+    //  params
+    //-----------------------------------
+
+    private var _params: Object;
+    [Bindable(event="paramsChanged")]
+    public function get params(): Object {
+        return _params;
+    }
+    public function set params(value: Object): void {
+        if (value == _params) return;
+        _params = value;
+        dispatchEvent(new Event("paramsChanged"));
+    }
+
+    public function get hasParams(): Boolean {
+        return _params != null;
+    }
+
+    public function addParam(name: String, value: Object): void {
+        if (name == null || value == null) {
+            return;
+        }
+        _params ||= {};
+        _params[name] = value;
+        dispatchEvent(new Event("paramsChanged"));
+    }
+
+    public function getParam(name: String): Object {
+        if (_params == null) {
+            return null;
+        }
+        return _params[name];
+    }
+
+    //-----------------------------------
     //  username
     //-----------------------------------
 

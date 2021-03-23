@@ -41,6 +41,11 @@ public class RestConfigBuilder
         return this;
     }
 
+    public function addParam(name: String, value: Object): RestConfigBuilder {
+        Config.sharedInstance().addParam(name, value);
+        return this;
+    }
+
     public function beforeResultHook(hook: Function): RestConfigBuilder {
         Config.setBeforeResultHook(hook);
         return this;
