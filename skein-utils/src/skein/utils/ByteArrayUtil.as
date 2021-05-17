@@ -37,5 +37,22 @@ public class ByteArrayUtil
 
         return string1 == string2;
     }
+
+    public static function bytes(ba1:ByteArray, ba2:ByteArray):Boolean
+    {
+        if (ba1 == null && ba2 == null) return true;
+
+        if (ba1 == null || ba2 == null) return false;
+
+        if (ba1.length != ba2.length) return false;
+
+        while (ba1.bytesAvailable) {
+            if (ba1.readByte() != ba2.readByte()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
 }

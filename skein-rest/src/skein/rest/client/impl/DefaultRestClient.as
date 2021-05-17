@@ -156,32 +156,28 @@ public class DefaultRestClient implements RestClient
     //  params
     //------------------------------------
 
-    private var _params:Object;
-
-    public function addParam(key:String, value:Object, defaultValue:Object = null):RestClient
-    {
-        if (!value)
-        {
-            if (!(value is Boolean) && !(value is Number && !isNaN(value as Number)))
-            {
+    public function addParam(key: String, value: Object, defaultValue: Object = null): RestClient {
+        if (!value) {
+            if (!(value is Boolean) && !(value is Number && !isNaN(value as Number))) {
                 value = defaultValue;
             }
         }
 
-        if (value != null)
-        {
+        if (value != null) {
             _params ||= {};
-
             _params[key] = String(value);
         }
 
         return this;
     }
 
-    public function params(value:Object):RestClient
-    {
-        _params = value;
+    private var _isParamsExplicitlySet: Boolean = false;
 
+    private var _params:Object;
+
+    public function params(value:Object):RestClient {
+        _params = value;
+        _isParamsExplicitlySet = true;
         return this;
     }
 
@@ -802,6 +798,7 @@ public class DefaultRestClient implements RestClient
 
         _headers = null;
         _params = null;
+        _isParamsExplicitlySet = false;
         _fields = null;
         _contentType = DEFAULT_CONTENT_TYPE;
         _actualResponseContentType = null;
@@ -935,43 +932,33 @@ public class DefaultRestClient implements RestClient
 
     private function encodeParams():String
     {
-        if (accessTokenSpecified)
-        {
-            if (_accessTokenValue)
-            {
+        if (accessTokenSpecified) {
+            if (_accessTokenValue) {
                 addParam(_accessTokenKey, _accessTokenValue);
-            }
-            else
-            {
+            } else {
                 // ignore default token
             }
-        }
-        else if (Config.sharedInstance().accessToken)
-        {
+        } else if (Config.sharedInstance().accessToken) {
             addParam(Config.sharedInstance().accessTokenKey, Config.sharedInstance().accessToken);
         }
 
-        if (Config.sharedInstance().hasParams) {
+        if (Config.sharedInstance().hasParams && !_isParamsExplicitlySet) {
             for (var name: String in Config.sharedInstance().params) {
                 addParam(name, Config.sharedInstance().getParam(name));
             }
         }
 
-        if (_params)
-        {
-            var variables:URLVariables = new URLVariables();
-
-            for (var p:String in _params)
-            {
-                variables[p] = _params[p];
-            }
-
-            return variables.toString();
-        }
-        else
-        {
+        if (_params == null) {
             return "";
         }
+
+        var variables: URLVariables = new URLVariables();
+
+        for (var p:String in _params) {
+            variables[p] = _params[p];
+        }
+
+        return variables.toString();
     }
 
     internal function handleResult(data:Object, responseCode:uint, headers:Array, callback:Function):void
