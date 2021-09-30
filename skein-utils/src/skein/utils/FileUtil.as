@@ -37,36 +37,33 @@ public class FileUtil {
 
     // Save
 
-    public static function save(file:Object, data:Object, callback:Function = null):void
-    {
-        var outputProgressHandler:Function = function(event:OutputProgressEvent):void
-        {
-            if (event.bytesPending == 0)
-            {
+    public static function save(file: Object, data: Object, callback: Function = null):void {
+        var outputProgressHandler:Function = function(event: OutputProgressEvent): void {
+            if (event.bytesPending == 0) {
                 stream.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
                 stream.removeEventListener(OutputProgressEvent.OUTPUT_PROGRESS, outputProgressHandler);
 
                 stream.close();
 
-                if (data is ByteArray && ByteArray(data).length != event.bytesTotal)
-                {
+                if (data is ByteArray && ByteArray(data).length != event.bytesTotal) {
                     enterDebugger();
                 }
 
-                if (callback != null)
+                if (callback != null) {
                     callback(event.bytesTotal);
+                }
             }
         };
 
-        var errorHandler:Function = function(event:IOErrorEvent):void
-        {
+        var errorHandler:Function = function(event: IOErrorEvent): void {
             stream.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
             stream.removeEventListener(OutputProgressEvent.OUTPUT_PROGRESS, outputProgressHandler);
 
             stream.close();
 
-            if (callback != null)
+            if (callback != null) {
                 callback(new Error(event.text, event.errorID));
+            }
         };
 
         var stream:Object = new FileStream();
@@ -77,44 +74,32 @@ public class FileUtil {
         {
             stream.openAsync(file, FileMode.WRITE);
 
-            if (data is ByteArray)
-            {
+            if (data is ByteArray) {
                 stream.writeBytes(data as ByteArray);
-            }
-            else
-            {
+            } else if (data is String) {
+                stream.writeUTFBytes(data);
+            } else {
                 stream.writeObject(data);
             }
-        }
-        catch (error:Error)
-        {
-            if (callback != null)
+        } catch (error: Error) {
+            if (callback != null) {
                 callback(error);
+            }
         }
     }
 
     // Read as Object
 
-    public static function readObject(file:Object, callback:Function):void
-    {
-        open(file, function(value:*=undefined):void
-        {
-            if (value is FileStream)
-            {
+    public static function readObject(file: Object, callback: Function): void {
+        open(file, function(value: *): void {
+            if (value is FileStream) {
                 var stream:Object = value as FileStream;
-
                 var object:Object = stream.readObject();
-
                 stream.close();
-
                 callback(object);
-            }
-            else if (value is Error)
-            {
+            } else if (value is Error) {
                 callback(value as Error);
-            }
-            else
-            {
+            } else {
                 callback();
             }
         });
@@ -122,27 +107,32 @@ public class FileUtil {
 
     // Read as ByteArray
 
-    public static function readBytes(file:Object, callback:Function):void
-    {
-        open(file, function(value:*=undefined):void
-        {
-            if (value is FileStream)
-            {
+    public static function readBytes(file: Object, callback: Function): void {
+        open(file, function(value:*=undefined):void {
+            if (value is FileStream) {
                 var stream:Object = value as FileStream;
-
                 var bytes:ByteArray = new ByteArray();
                 stream.readBytes(bytes);
-
                 stream.close();
-
                 callback(bytes);
-            }
-            else if (value is Error)
-            {
+            } else if (value is Error) {
                 callback(value as Error);
+            } else {
+                callback();
             }
-            else
-            {
+        });
+    }
+
+    public static function readUTFBytes(file: Object, callback: Function): void {
+        open(file, function(value: *): void {
+            if (value is FileStream) {
+                var stream: Object = value as FileStream;
+                var string: String = stream.readUTFBytes(stream.bytesAvailable);
+                stream.close();
+                callback(string);
+            } else if (value is Error) {
+                callback(value as Error);
+            } else {
                 callback();
             }
         });
